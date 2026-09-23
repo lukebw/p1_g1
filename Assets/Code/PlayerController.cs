@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public InputAction moveAction;
     public InputAction interactAction;
     public SpriteRenderer spriteRenderer;
+    public ChopHitbox chopHitbox;
 
     public Vector2 speed = new Vector2(15, 15);
 
@@ -39,6 +41,8 @@ public class PlayerController : MonoBehaviour
         if (interactAction.triggered)
         {
             Debug.Log("Interact action triggered");
+            List<Collider> activeCollisions = chopHitbox.GetActiveCollisions();
+            // TODO: get gameObjects from colliders to access the script and deal damage
         }
     }
 }
