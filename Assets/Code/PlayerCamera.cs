@@ -4,11 +4,12 @@ public class PlayerCamera : MonoBehaviour
 {
     public Transform playerTransform;
 
-    public int cameraOffsetZ = -10;
+    public float cameraOffsetZ;
 
     void Start()
     {
         transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, cameraOffsetZ);
+        cameraOffsetZ = playerTransform.position.z - 10;
     }
 
     void Update()
