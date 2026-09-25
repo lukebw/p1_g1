@@ -40,9 +40,12 @@ public class PlayerController : MonoBehaviour
 
         if (interactAction.triggered)
         {
-            Debug.Log("Interact action triggered");
             List<Collider> activeCollisions = chopHitbox.GetActiveCollisions();
-            // TODO: get gameObjects from colliders to access the script and deal damage
+
+            foreach (Collider collider in activeCollisions)
+            {
+                collider.gameObject.GetComponent<TreeHurtbox>()?.RegisterHit(1);
+            }
         }
     }
 }
