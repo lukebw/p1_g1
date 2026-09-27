@@ -3,39 +3,26 @@ using System.Collections.Generic;
 
 public class ChopHitbox : MonoBehaviour
 {
-    public Transform playerTransform;
-    public SpriteRenderer playerSprite;
+    List<Collider2D> activeCollisions = new List<Collider2D>();
 
-    public List<Collider> activeCollisions = new List<Collider>();
-
-    public float offsetX = 0.75f;
-
-    void Update()
-    {
-        // Extend the hitbox slightly in front of the player depending on the direction they are facing
-        transform.position = playerTransform.position + new Vector3(playerSprite.flipX ? -offsetX : offsetX, 0, 0);
-    }
-
-    public List<Collider> GetActiveCollisions()
+    public List<Collider2D> GetActiveCollisions()
     {
         return activeCollisions;
     }
 
-    void OnTriggerEnter(Collider hurtbox)
+    void OnTriggerEnter2D(Collider2D hurtbox)
     {
         if (!activeCollisions.Contains(hurtbox) && hurtbox.gameObject.tag == "Tree")
         {
             activeCollisions.Add(hurtbox);
-            Debug.Log("Number of active collisions: " + activeCollisions.Count);
         }
     }
 
-    void OnTriggerExit(Collider hurtbox)
+    void OnTriggerExit2D(Collider2D hurtbox)
     {
-        if (activeCollisions.Contains(hurtbox) && hurtbox.gameObject.tag == "Tree")
+        if (activeCollisions.Contains(hurtbox))
         {
             activeCollisions.Remove(hurtbox);
-            Debug.Log("Number of active collisions: " + activeCollisions.Count);
         }
     }
 }

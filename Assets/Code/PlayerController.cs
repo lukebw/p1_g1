@@ -6,9 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     // Components assigned in Unity Editor
     public InputAction moveAction;
-    public InputAction interactAction;
     public SpriteRenderer spriteRenderer;
-    public ChopHitbox chopHitbox;
 
     public Vector2 speed = new Vector2(15, 15);
 
@@ -16,9 +14,6 @@ public class PlayerController : MonoBehaviour
     {
         moveAction = InputSystem.actions.FindAction("Move");
         moveAction.Enable();
-
-        interactAction = InputSystem.actions.FindAction("Interact");
-        interactAction.Enable();
     }
 
     void Update()
@@ -36,16 +31,6 @@ public class PlayerController : MonoBehaviour
         else if (moveInput.x > 0)
         {
             spriteRenderer.flipX = false;
-        }
-
-        if (interactAction.triggered)
-        {
-            List<Collider> activeCollisions = chopHitbox.GetActiveCollisions();
-
-            foreach (Collider collider in activeCollisions)
-            {
-                collider.gameObject.GetComponent<TreeHurtbox>()?.RegisterHit(1);
-            }
         }
     }
 }

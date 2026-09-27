@@ -21,7 +21,8 @@ public class Tree : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-            Debug.Log("You got 5 cheese!");
+            // TODO: Spawn cheese to be collected upon death
+            Debug.Log("You got some cheese!");
             Destroy(gameObject);
         }
     }
