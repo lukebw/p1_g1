@@ -13,7 +13,7 @@ TagManager:
   - Water
   - UI
   - Choppable
-  - 
+  - Cursor
   - 
   - 
   - 
@@ -47,6 +47,9 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 1343617797
+    locked: 0
+  - name: Cursor
+    uniqueID: 1468205107
     locked: 0
   m_RenderingLayers:
   - Default
