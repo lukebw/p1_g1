@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 550c507031b14b08bd0e4d90890e0a81, type: 3}
+  m_Name: TabletSettings
+  m_EditorClassIdentifier:
+  townBackground: {fileID: 0}
+  cheeseTree: {fileID: 0}
+  envelopeIcon: {fileID: 0}
+  shopIcon: {fileID: 0}
+  closeIcon: {fileID: 0}
+  upgradeButtonArtwork: {fileID: 0}
+  interfaceFont: {fileID: 0}
+  backgroundColor: {r: 0.20, g: 0.30, b: 0.34, a: 1}
+  treeColor: {r: 0.90, g: 0.73, b: 0.31, a: 1}
+  treeSize: {x: 150, y: 200}
+  startingCheeses: 500
+  baseMoveSpeed: 4
+  baseCollectRange: 0
+  baseTreeProduction: 1
+  baseCheesePrice: 1
+  treeCapacity: 100
+  initialTreeStock: 10
+
+  upgrades:
+  - id: move-speed
+    available: 1
+    title: Move Speed
+    description: Increase player movement speed.
+    effect: 0
+    icon: {fileID: 0}
+    levels:
+    - price: 20
+      value: 6
+      treeScale: 1
+    - price: 50
+      value: 8
+      treeScale: 1
+  - id: collect-range
+    available: 1
+    title: Collect Range
+    description: No range at level 0. Unlock and expand collection radius.
+    effect: 1
+    icon: {fileID: 0}
+    levels:
+    - price: 30
+      value: 2
+      treeScale: 1
+    - price: 60
+      value: 4
+      treeScale: 1
+  - id: tree-growth
+    available: 1
+    title: Upgrades for Tree
+    description: Increase tree size and cheese production.
+    effect: 2
+    icon: {fileID: 0}
+    levels:
+    - price: 60
+      value: 2
+      treeScale: 1.2
+    - price: 120
+      value: 4
+      treeScale: 1.45
+    - price: 240
+      value: 8
+      treeScale: 1.7
+  - id: auto-collect
+    available: 1
+    title: Auto Collect
+    description: Collect automatically each second, matching the tree production rate.
+    effect: 3
+    icon: {fileID: 0}
+    levels:
+    - price: 150
+      value: 1
+      treeScale: 1
+  - id: double-cheese
+    available: 1
+    title: Double Cheese Value
+    description: Double each cheese's cheese yield, not the number produced.
+    effect: 4
+    icon: {fileID: 0}
+    levels:
+    - price: 260
+      value: 2
+      treeScale: 1
