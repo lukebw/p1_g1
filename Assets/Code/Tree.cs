@@ -2,17 +2,9 @@ using UnityEngine;
 
 public class Tree : MonoBehaviour
 {
+    public GameObject cheesePrefab;
+
     public int health = 5;
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
 
     public void TakeDamage(int damage)
     {
@@ -22,10 +14,19 @@ public class Tree : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-            // TODO: Spawn cheese to be collected upon death
             // TODO: Add death or fade out animation
-            Debug.Log("You got some cheese!");
+            SpawnCheese(3);
             Destroy(gameObject);
+        }
+    }
+
+    void SpawnCheese(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            // Spawn the cheese at a random distance near the center of the tree
+            Vector3 spawnOffset = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0);
+            Instantiate(cheesePrefab, transform.position + spawnOffset, Quaternion.identity);
         }
     }
 }
