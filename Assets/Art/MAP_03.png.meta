@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 71aefe9b73f1c2440909975f076120d6
+guid: ac150c536c1be0640869f6a960a1faec
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3218785287198652767
-    second: Cheese_tree_01_0
+      213: 8552090757374080669
+    second: MAP_03_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -76,7 +76,7 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -115,23 +115,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cheese_tree_01_0
+      name: MAP_03_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 26
-        width: 160
-        height: 217
+        y: 0
+        width: 1280
+        height: 1280
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f59bab33a2c6bac20800000000000000
-      internalID: 3218785287198652767
+      spriteID: d96fe20ab312fa670800000000000000
+      internalID: 8552090757374080669
       vertices: []
       indices: 
       edges: []
@@ -140,7 +140,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0bea4e1844689d14086bcb7d65361fd6
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -150,7 +150,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Cheese_tree_01_0: 3218785287198652767
+      MAP_03_0: 8552090757374080669
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
