@@ -7,6 +7,48 @@ namespace CheeseTownPhone
     // Purchase IDs survive reorder. Removing/disabling a row removes its effect without refund.
     public sealed class TownProgress
     {
+        public sealed class Letter
+        {
+            public string Id { get; }
+            public string Body { get; }
+            public bool IsRead { get; internal set; }
+            internal Letter(string id, string body) { Id = id; Body = body; }
+        }
+        readonly List<Letter> letters = new List<Letter>();
+        readonly HashSet<string> sentLetters = new HashSet<string>();
+        public IReadOnlyList<Letter> Letters => letters.AsReadOnly();
+        public long TotalCollected { get; private set; }
+        public bool MailStopped => TotalCollected >= 500;
+        public int UnreadCount => letters.FindAll(l => !l.IsRead).Count;
+        public void ReadLetter(int index)
+        {
+            if (index < 0 || index >= letters.Count || letters[index].IsRead) return;
+            letters[index].IsRead = true;
+            Changed?.Invoke();
+        }
+        void SendLetter(string id, string body)
+        {
+            if (sentLetters.Add(id)) letters.Add(new Letter(id, body));
+        }
+        void CheckLetters()
+        {
+            if (TotalCollected >= 10)
+                SendLetter("shop", "Your first 10 cheeses!\n\nVisit UPGRADES to improve your movement, collection range and cheese tree.\n\nMayor Ellis");
+            if (TotalCollected >= 100)
+                SendLetter("reserve", "Our reserves are sufficient.\n\nThank you for collecting 100 cheeses. You can keep playing and improving the town.\n\nMayor Ellis");
+            if (TotalCollected >= 350)
+                SendLetter("stop-request", "Please stop collecting.\n\nYou have collected 350 cheeses. We have more than enough for the town; please give the tree a rest.\n\nMayor Ellis");
+            // No further ordinary letters after 500; upgrade completion remains independent.
+            bool hasUpgrades = false, allMax = true;
+            foreach (var option in config.upgrades)
+            {
+                if (option == null || !option.available || option.levels.Count == 0) continue;
+                hasUpgrades = true;
+                if (Level(option) < option.levels.Count) allMax = false;
+            }
+            if (hasUpgrades && allMax)
+                SendLetter("all-max", "Every upgrade is complete!\n\nYou have reached the highest level of every available upgrade. Thank you for all your work for the town.\n\nMayor Ellis");
+        }
         readonly Dictionary<string, int> purchases = new Dictionary<string, int>();
         TabletSettings config;
         float autoTimer, autoCredit;
@@ -47,7 +89,7 @@ namespace CheeseTownPhone
             }
             foreach (var key in new List<string>(purchases.Keys)) if (!live.Contains(key)) purchases.Remove(key);
             Stock = Mathf.Min(Stock, Capacity);
-            Recalculate(); Changed?.Invoke();
+            Recalculate(); CheckLetters(); Changed?.Invoke();
         }
         public int Level(UpgradeOption o) => o != null && purchases.TryGetValue(o.id, out int value) ? Mathf.Min(value, o.levels.Count) : 0;
         public bool CanBuy(UpgradeOption o) => o != null && o.available && config.upgrades.Contains(o) && Level(o) < o.levels.Count && Cheeses >= o.levels[Level(o)].price;
@@ -56,7 +98,7 @@ namespace CheeseTownPhone
             if (!CanBuy(o)) return false;
             int current = Level(o);
             Cheeses -= o.levels[current].price; purchases[o.id] = current + 1;
-            Recalculate(); Changed?.Invoke(); return true;
+            Recalculate(); CheckLetters(); Changed?.Invoke(); return true;
         }
         void Recalculate()
         {
@@ -102,7 +144,15 @@ namespace CheeseTownPhone
         {
             if (amount <= 0) return;
             Stock = Mathf.Max(0, Stock - amount);
+            CollectWorld(amount);
+        }
+        // World pickups and tree transfers count physical pieces, before their sale value.
+        public void CollectWorld(int amount)
+        {
+            if (amount <= 0) return;
+            TotalCollected += amount;
             Cheeses = (int)Math.Min(1000000000L, (long)Cheeses + (long)amount * UnitPrice);
+            CheckLetters(); Changed?.Invoke();
         }
         public int Collect()
         {

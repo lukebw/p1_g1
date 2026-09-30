@@ -115,6 +115,9 @@ namespace CheeseTownPhone.Editor
             before = progress.Cheeses; progress.Tick(1);
             Check(progress.Cheeses == before+4, "auto uses doubled cheese payout");
             Check(demo.GetComponentsInChildren<Text>(true).All(t=>t.text.IndexOf("coin",StringComparison.OrdinalIgnoreCase)<0), "no coins UI");
+            progress.ReadLetter(0);
+            int letterCount = progress.Letters.Count, unreadCount = progress.UnreadCount;
+            long collected = progress.TotalCollected;
             int wallet = progress.Cheeses;
             yield return SceneManager.LoadSceneAsync("CheeseTownPhone");
             yield return null;
@@ -124,6 +127,7 @@ namespace CheeseTownPhone.Editor
             player = FindAnyObjectByType<PlayerController>(); tree = FindAnyObjectByType<TreeHurtbox>();
             Check(ReferenceEquals(TownSession.Instance.Progress, progress), "scene reload retains same progress");
             Check(progress.Cheeses==wallet, "wallet retained");
+            Check(progress.TotalCollected == collected && progress.Letters.Count == letterCount && progress.UnreadCount == unreadCount && progress.Letters[0].IsRead, "mail history, unread and quantity survive scene reload");
             Near(player.speed.x, 8, "new player inherits speed"); Near(player.CollectRange, 4, "new player inherits range");
             Near(tree.transform.parent.localScale.x, original.x*1.2f, "new tree inherits growth");
             Check(FindObjectsByType<TownSession>(FindObjectsSortMode.None).Length==1, "single session");

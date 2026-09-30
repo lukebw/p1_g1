@@ -9,7 +9,9 @@ public class CollectionRadius : MonoBehaviour
         // Pick up the detected object if it is a collectible
         if (collectible.gameObject.tag == "Collectible")
         {
-            Debug.Log("You collected 1 " + collectible.gameObject.name + "!"); // TODO: add to actual inventory
+            if (!collectible.gameObject.activeSelf) return;
+            collectible.gameObject.SetActive(false);
+            CheeseTownPhone.TownSession.Instance.Progress.CollectWorld(1);
             Destroy(collectible.gameObject);
         }
     }

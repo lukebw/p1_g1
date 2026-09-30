@@ -21,6 +21,7 @@ namespace CheeseTownPhone.Editor
         [MenuItem("Cheese Town/Run Data Checks")]
         public static void DataChecks()
         {
+            MailChecks();
             var c = Config();
             try
             {
@@ -62,6 +63,43 @@ namespace CheeseTownPhone.Editor
             }
             finally { UnityEngine.Object.DestroyImmediate(c); }
         }
+        public static void MailChecks()
+        {
+            var c = Config();
+            try
+            {
+                c.initialTreeStock = 9;
+                var p = new TownProgress(c);
+                p.Grant(1000);
+                Check(p.TotalCollected == 0 && p.Letters.Count == 0, "wallet is not collection");
+                Check(p.Collect() == 9 && p.Letters.Count == 0, "below first threshold");
+                Check(p.Collect() == 0 && p.TotalCollected == 9, "empty collection");
+                p.Tick(1); p.Collect();
+                Check(p.TotalCollected == 10 && p.Letters.Single().Id == "shop", "10 introduces shop");
+                p.ReadLetter(0); p.Reconfigure(c);
+                Check(p.UnreadCount == 0 && p.Letters.Count == 1, "read and dedup survive reconfigure");
+                p.CollectWorld(89); Check(p.Letters.Count == 1, "99 boundary");
+                p.CollectWorld(1); Check(p.Letters.Count == 2, "100 reserve");
+                p.CollectWorld(249); Check(p.Letters.Count == 2, "349 boundary");
+                p.CollectWorld(1); Check(p.Letters.Count == 3, "350 stop request");
+                p.CollectWorld(149); Check(!p.MailStopped, "499 boundary");
+                p.CollectWorld(1); Check(p.MailStopped && p.Letters.Count == 3, "500 stops ordinary mail");
+                p.CollectWorld(100); Check(p.Letters.Count == 3 && p.UnreadCount == 2, "history retained after cutoff");
+                foreach (var o in c.upgrades) while (p.CanBuy(o)) p.Buy(o);
+                Check(p.Letters.Count == 4 && p.Letters[3].Id == "all-max", "completion after cutoff");
+                p.Reconfigure(c); p.Tick(2);
+                Check(p.Letters.Count == 4, "completion only once");
+                var q = new TownProgress(c);
+                q.Buy(c.upgrades[4]); q.Buy(c.upgrades[3]); q.Tick(10);
+                Check(q.TotalCollected == 10 && q.Letters.Count == 1, "auto physical quantity excludes value multiplier");
+                var jump = new TownProgress(c); jump.CollectWorld(600);
+                Check(jump.Letters.Select(l => l.Id).SequenceEqual(new[]{"shop","reserve","stop-request"}), "batch crossing preserves ordered letters");
+                c.upgrades.Clear(); q.Reconfigure(c);
+                Check(q.Letters.Count == 1, "empty shop is not completion");
+            }
+            finally { UnityEngine.Object.DestroyImmediate(c); }
+            Debug.Log("MAIL_CHECKS_PASS");
+        }
         [MenuItem("Cheese Town/Run Demo Checks (Play Mode)")]
         public static void Run()
         {
@@ -101,7 +139,7 @@ namespace CheeseTownPhone.Editor
                 }
                 finally { demo.UseSettings(original); UnityEngine.Object.DestroyImmediate(editable); UnityEngine.Object.DestroyImmediate(sprite); UnityEngine.Object.DestroyImmediate(image); }
                 Press(kb,Key.Escape); Check(demo.PhoneOpen,"Escape returns from shop");
-                Click(demo,"Letters button"); Click(demo,"Reply to mayor"); Check(demo.Progress.WelcomeClaimed,"mayor reply");
+                demo.Progress.CollectWorld(10); Click(demo,"Letters button"); Click(demo,"Reply to mayor"); Check(demo.Progress.Letters[0].IsRead,"letter read");
                 Press(kb,Key.Escape); Press(kb,Key.Escape); Check(!demo.PhoneOpen,"Escape closes tablet from town");
                 Press(kb,Key.Tab); Click(demo,"Shop button");
                 File.WriteAllText(Output("Tablet-ui-checks.txt"),"PASS: scene load; Tab toggle; launcher; five shop rows; player/tree filters; buy button; mayor reply; Escape back/close. Unity "+Application.unityVersion+".\n");

@@ -23,7 +23,9 @@ namespace CheeseTownPhone
         RectTransform stage, tree;
         GameObject tablet, shop, mail;
         Text wallet, stock, stats, priceLabel, notice, letter, reply, shopWallet;
-        Button collectButton, replyButton;
+        Button collectButton, replyButton, previousLetter, nextLetter;
+        Text unreadBadge, closedUnread;
+        int selectedLetter = -1;
         readonly List<Row> rows = new List<Row>();
         int revision, page, filter;
         float noticeUntil, nextRefresh;
@@ -126,6 +128,7 @@ namespace CheeseTownPhone
             Label(stage,"Closed hint","Your town, messages and upgrades in one place.",430,394,740,45,21,muted,false,TextAnchor.MiddleCenter);
             Action(stage,"Open tablet","OPEN TABLET   [TAB]",625,480,350,62,TogglePhone,true);
             } else Action(stage,"Open tablet","TABLET [TAB]",1220,20,300,52,TogglePhone,true);
+            closedUnread = Label(stage,"Closed unread","",1120,78,400,35,19,accent,true,TextAnchor.MiddleRight);
             tablet = Box(stage,"Landscape tablet",70,55,1460,790,new Color(.055f,.075f,.09f)).gameObject;
             tablet.GetComponent<Image>().raycastTarget = true;
             var frame = tablet.transform;
@@ -134,6 +137,7 @@ namespace CheeseTownPhone
             Label(frame,"Tablet caption","CHEESE TREE",36,54,225,20,12,muted);
             wallet = Label(frame,"Wallet","",540,25,340,36,25,accent,true,TextAnchor.MiddleRight);
             AppButton(frame,"Letters button","ENVELOPE",settings.envelopeIcon,942,() => ShowPage(2));
+            unreadBadge = Label(frame,"Unread mail","",942,74,280,24,14,accent,true);
             AppButton(frame,"Shop button","UPGRADES",settings.shopIcon,1086,() => ShowPage(1));
             AppButton(frame,"Close tablet","CLOSE",settings.closeIcon,1230,TogglePhone);
             if (settings.townBackground == null)
@@ -210,7 +214,9 @@ namespace CheeseTownPhone
             Label(mail.transform,"Sender","MAYOR ELLIS  /  TOWN HALL",34,81,710,29,14,accent,true);
             letter = Label(mail.transform,"Mayor message","",34,134,887,258,23,paper);
             reply = Label(mail.transform,"Reply text","",34,405,887,67,18,muted);
-            replyButton = Action(mail.transform,"Reply to mayor","",34,499,887,66,ReplyToMayor,true);
+            previousLetter = Action(mail.transform,"Previous letter","PREVIOUS",34,499,210,66,() => SelectLetter(selectedLetter - 1));
+            replyButton = Action(mail.transform,"Reply to mayor","MARK AS READ",264,499,397,66,ReplyToMayor,true);
+            nextLetter = Action(mail.transform,"Next letter","NEXT",681,499,240,66,() => SelectLetter(selectedLetter + 1));
         }
         void ChangeFilter(int value) { filter = value; Render(PhoneOpen); }
         public void TogglePhone() { tablet.SetActive(!tablet.activeSelf); if (PhoneOpen) ShowPage(0); }
@@ -254,8 +260,12 @@ namespace CheeseTownPhone
         }
         public void ReplyToMayor()
         {
-            if (!Progress.WelcomeClaimed) Progress.ClaimWelcome();
-            else Progress.ClaimTask();
+            Progress.ReadLetter(selectedLetter);
+            Refresh();
+        }
+        void SelectLetter(int index)
+        {
+            selectedLetter = Mathf.Clamp(index, 0, Progress.Letters.Count - 1);
             Refresh();
         }
         void Notify(string value) { notice.text = value; noticeUntil = Time.unscaledTime+4; }
@@ -281,25 +291,20 @@ namespace CheeseTownPhone
                     Progress.Cheeses < row.option.levels[level].price ? "NEED "+(row.option.levels[level].price-Progress.Cheeses)+" CHEESES" :
                     row.option.levels[level].price+" CHEESES  /  BUY";
             }
-            if (!Progress.WelcomeClaimed)
-            {
-                letter.text = "Welcome!\n\nThis tablet connects you to the town and its cheese tree. All my messages will arrive here.\n\nPlease accept 40 cheeses to get started.\n\nMayor Ellis";
-                reply.text = "Reply: I'd love to help the town.";
-                replyButton.GetComponentInChildren<Text>().text = "SEND REPLY & ACCEPT 40 CHEESES";
-                replyButton.interactable = true;
-            }
-            else if (!Progress.TaskClaimed)
-            {
-                letter.text = "Let's get started.\n\nCollect cheese from the tree three times, then send me an update here.\n\nProgress: "+Mathf.Min(3,Progress.HarvestCount)+" / 3 collections\nReward: 80 cheeses\n\nMayor Ellis";
-                reply.text = Progress.TaskReady ? "Reply: The first collections are complete!" : "Return to Town and collect when cheese is available.";
-                replyButton.GetComponentInChildren<Text>().text = Progress.TaskReady ? "SEND UPDATE & CLAIM 80 CHEESES" : "COLLECT 3 TIMES TO REPLY";
-                replyButton.interactable = Progress.TaskReady;
-            }
-            else
-            {
-                letter.text = "Thank you!\n\nYour reward has been added to your wallet. Use the shop to improve your abilities and the cheese tree.\n\nI'll send future town news here.\n\nMayor Ellis";
-                reply.text = "Conversation complete."; replyButton.GetComponentInChildren<Text>().text = "ALL CAUGHT UP"; replyButton.interactable = false;
-            }
+            int count = Progress.Letters.Count;
+            if (selectedLetter < 0 && count > 0) selectedLetter = 0;
+            string unread = Progress.UnreadCount > 0 ? Progress.UnreadCount + " UNREAD LETTERS" : "";
+            unreadBadge.text = unread;
+            closedUnread.text = unread;
+            closedUnread.gameObject.SetActive(!PhoneOpen);
+            letter.text = count == 0 ? "No letters yet.\n\nCollect cheese to hear from Mayor Ellis." : Progress.Letters[selectedLetter].Body;
+            reply.text = count == 0 ? "Collected: " + Progress.TotalCollected :
+                "LETTER " + (selectedLetter + 1) + " / " + count +
+                (Progress.Letters[selectedLetter].IsRead ? "  |  READ" : "  |  UNREAD");
+            if (Progress.MailStopped) reply.text += "\nOrdinary mail has ended. Your letter history remains available.";
+            previousLetter.interactable = selectedLetter > 0;
+            nextLetter.interactable = selectedLetter >= 0 && selectedLetter < count - 1;
+            replyButton.interactable = count > 0 && !Progress.Letters[selectedLetter].IsRead;
         }
         string Current(UpgradeEffect effect)
         {
