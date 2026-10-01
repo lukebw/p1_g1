@@ -335,3 +335,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   cheesePrefab: {fileID: 9047057671090921397, guid: 8863c1f2a6929b64f9ae6a1d2b67e8d4, type: 3}
   health: 5
+  treeVisual: {fileID: 4375836299896825270}
+  stumpSprite: {fileID: 3218785287198652767, guid: 8c97a3c9bed34b2e864fd43e84ba68b0, type: 3}
+  shakeDuration: 0.2
+  shakeAngle: 4
+  minLeafCount: 3
+  maxLeafCount: 6
+  minCheeseCount: 2
+  maxCheeseCount: 4
+  canopyHeight: 0.76
+  spawnWidth: 0.1
+  minSpreadRadius: 0.8
+  maxSpreadRadius: 2.6
