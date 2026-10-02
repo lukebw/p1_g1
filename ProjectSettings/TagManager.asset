@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Tree
-  - Cursor
   - Collectible
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -15,7 +15,7 @@ TagManager:
   - Water
   - UI
   - Choppable
-  - Cursor
+  - Weapon
   - Collectible
   - 
   - 

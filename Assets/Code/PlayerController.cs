@@ -6,11 +6,18 @@ public class PlayerController : MonoBehaviour
 {
     public InputAction moveAction;
     public InputAction interactAction;
-    public SpriteRenderer spriteRenderer;
+    public SpriteRenderer playerSpriteRenderer;
+    public SpriteRenderer weaponSpriteRenderer;
     public ChopHitbox chopHitbox;
     public Vector2 speed = new Vector2(4, 4);
     public float CollectRange { get; private set; }
     TownProgress progress;
+
+    // Position and rotation constants, to make the weapon appear strapped to the player's back.
+    static Vector3 weaponIdlePosition = new Vector3(0.41f, 0.3f, 0f);
+    static float weaponIdleRotation = -45f;
+    static Vector3 weaponIdlePositionFlipped = new Vector3(0f, 0.3f, 0f);
+    static float weaponIdleRotationFlipped = -135f;
 
     void Start()
     {
@@ -18,7 +25,7 @@ public class PlayerController : MonoBehaviour
         interactAction = InputSystem.actions?.FindAction("Interact");
         moveAction?.Enable();
         interactAction?.Enable();
-        if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (playerSpriteRenderer == null) playerSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     void OnEnable()
@@ -68,16 +75,25 @@ public class PlayerController : MonoBehaviour
         transform.position += new Vector3(positionDelta.x, positionDelta.y, 0);
 
         // Flip sprite horizontally based on movement direction
-        if (spriteRenderer != null && moveInput.x < 0)
+        if (playerSpriteRenderer != null && moveInput.x < 0)
         {
-            spriteRenderer.flipX = true;
+            playerSpriteRenderer.flipX = true;
+            SetAxeIdlePosition(true);
         }
-        else if (spriteRenderer != null && moveInput.x > 0)
+        else if (playerSpriteRenderer != null && moveInput.x > 0)
         {
-            spriteRenderer.flipX = false;
+            playerSpriteRenderer.flipX = false;
+            SetAxeIdlePosition(false);
         }
 
         if ((interactAction != null && interactAction.triggered) || (Keyboard.current?.eKey.wasPressedThisFrame ?? false))
             CollectNearby();
+    }
+
+    void SetAxeIdlePosition(bool isFlipped)
+    {
+        weaponSpriteRenderer.transform.localPosition = isFlipped ? weaponIdlePositionFlipped : weaponIdlePosition;
+        weaponSpriteRenderer.transform.localRotation = Quaternion.Euler(0, 0, isFlipped ? weaponIdleRotationFlipped : weaponIdleRotation);
+        weaponSpriteRenderer.flipY = !isFlipped; // The weapon sprite's y flip is the inverse of the player sprite's x flip
     }
 }
