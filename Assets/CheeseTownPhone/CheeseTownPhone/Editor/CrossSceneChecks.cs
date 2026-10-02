@@ -88,12 +88,13 @@ namespace CheeseTownPhone.Editor
             var tree = FindAnyObjectByType<TreeHurtbox>();
             var demo = FindAnyObjectByType<CheeseTownDemo>();
             Check(player != null && tree != null && demo != null, "real scene player/tree/tablet");
-            Check(demo.OpeningOpen, "new session shows opening");
+            Check(!demo.PhoneOpen, "new session leaves world visible");
+            Check(progress.Letters[0].Id == "welcome" && !progress.Letters[0].IsRead, "welcome arrives unread");
             demo.TogglePhone();
-            Check(!demo.PhoneOpen, "opening blocks tablet shortcut");
-            for (int i = 0; i < 3; i++)
-                demo.GetComponentsInChildren<Button>().Single(b => b.name == "Opening next").onClick.Invoke();
-            Check(!demo.OpeningOpen && session.OpeningComplete, "opening completes after three pages");
+            Check(demo.PhoneOpen && demo.GetComponentsInChildren<Text>().Any(t => t.text.Contains("Welcome to Cheese Town!")), "tablet opens welcome in mailbox");
+            demo.ReplyToMayor();
+            Check(progress.Letters[0].IsRead && !progress.GameEnded, "welcome read without ending game");
+            demo.TogglePhone();
             Check(ReferenceEquals(progress, demo.Progress), "shared economy");
             Near(player.MovementDelta(Vector2.right, 1).x, 4, "base movement");
             Near(player.MovementDelta(Vector2.one, 1).magnitude, 4, "diagonal normalized");
@@ -128,7 +129,7 @@ namespace CheeseTownPhone.Editor
             yield return SceneManager.LoadSceneAsync("CheeseTownPhone");
             yield return null;
             Check(ReferenceEquals(FindAnyObjectByType<CheeseTownDemo>().Progress, progress), "tablet scene retains progress");
-            Check(!FindAnyObjectByType<CheeseTownDemo>().OpeningOpen, "completed opening stays closed after scene change");
+            Check(!FindAnyObjectByType<CheeseTownDemo>().PhoneOpen, "mail stays closed after scene change");
             yield return SceneManager.LoadSceneAsync("Wilderness");
             yield return null;
             player = FindAnyObjectByType<PlayerController>(); tree = FindAnyObjectByType<TreeHurtbox>();

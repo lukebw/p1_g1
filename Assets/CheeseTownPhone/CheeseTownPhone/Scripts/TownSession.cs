@@ -17,8 +17,6 @@ namespace CheeseTownPhone
         }
         public TabletSettings Settings { get; private set; }
         public TownProgress Progress { get; private set; }
-        public bool OpeningComplete { get; private set; }
-        public void CompleteOpening() { OpeningComplete = true; }
         bool ownsSettings;
         int revision;
 

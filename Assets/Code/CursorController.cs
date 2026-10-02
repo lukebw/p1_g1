@@ -51,7 +51,7 @@ public class CursorController : MonoBehaviour
     void OnChopStarted(InputAction.CallbackContext context)
     {
         var tablet = FindAnyObjectByType<CheeseTownPhone.CheeseTownDemo>();
-        if (tablet != null && (tablet.OpeningOpen || tablet.EndingOpen)) return;
+        if (tablet != null && (tablet.PhoneOpen || tablet.EndingOpen)) return;
         transform.rotation = Quaternion.Euler(0, 0, 45);
         if (chopHitbox == null) return;
         HashSet<Tree> hitTrees = new HashSet<Tree>();

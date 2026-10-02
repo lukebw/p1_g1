@@ -78,6 +78,7 @@ namespace CheeseTownPhone
             config.ValidateSettings();
             Cheeses = config.startingCheeses;
             Stock = config.initialTreeStock;
+            SendLetter("welcome", "Welcome to Cheese Town! I'm Mayor Ellis.\n\nWe're happy to have you here. Walk up to a cheese tree and press E to collect. Gather 10 cheeses, and I'll write again.\n\nUse your tablet to read letters and visit UPGRADES. Enjoy your first day!\n\nMayor Ellis");
             Reconfigure(settings);
         }
         public void Reconfigure(TabletSettings settings)

@@ -15,17 +15,11 @@ namespace CheeseTownPhone
         public TabletSettings Settings => settings;
         public TownProgress Progress { get; private set; }
         public bool PhoneOpen => tablet != null && tablet.activeSelf;
-        public bool OpeningOpen => opening != null && opening.activeSelf;
         public bool EndingOpen => Progress != null && Progress.GameEnded;
         GameObject ending;
-        GameObject opening;
-        Text openingMessage, openingCounter, openingNextLabel;
-        int openingStep;
-        readonly string[] openingLines = {
-            "Welcome to Cheese Town! I'm Mayor Ellis.\n\nWe're happy to have a new neighbor. I hope you'll feel at home here.",
-            "See that cheese tree? It helps keep our town supplied.\n\nWalk up to a tree and press E to collect cheese. Start with 10 cheeses, and I'll send you a letter.",
-            "Press TAB to open your town tablet. You can read my letters and visit UPGRADES there.\n\nTake your time, explore, and enjoy your first day in Cheese Town!"
-        };
+        Button tabletLauncher;
+        Outline welcomeGlow;
+        bool WelcomeUnread => Progress != null && Progress.Letters.Count > 0 && !Progress.Letters[0].IsRead;
         public Canvas ScreenCanvas { get; private set; }
         readonly Color ink = new Color(.08f,.12f,.16f), paper = new Color(.92f,.94f,.92f);
         readonly Color muted = new Color(.59f,.69f,.71f), accent = new Color(.86f,.73f,.36f);
@@ -80,7 +74,7 @@ namespace CheeseTownPhone
             controls = new InputActionMap("Cheese Town Tablet");
             controls.AddAction("Tablet", InputActionType.Button, "<Keyboard>/tab").performed += _ => TogglePhone();
             controls.AddAction("Back", InputActionType.Button, "<Keyboard>/escape").performed += _ =>
-            { if (OpeningOpen || EndingOpen) return; if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
+            { if (EndingOpen) return; if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
             controls.AddAction("Collect", InputActionType.Button, "<Keyboard>/e").performed += _ => TryHarvest();
             controls.Enable();
         }
@@ -137,9 +131,14 @@ namespace CheeseTownPhone
             Box(stage,"Outside tablet",0,0,1600,900,ink);
             Label(stage,"Closed title","TOWN TABLET",450,318,700,60,42,paper,true,TextAnchor.MiddleCenter);
             Label(stage,"Closed hint","Your town, messages and upgrades in one place.",430,394,740,45,21,muted,false,TextAnchor.MiddleCenter);
-            Action(stage,"Open tablet","OPEN TABLET   [TAB]",625,480,350,62,TogglePhone,true);
-            } else Action(stage,"Open tablet","TABLET [TAB]",1220,20,300,52,TogglePhone,true);
+            tabletLauncher = Action(stage,"Open tablet","OPEN TABLET   [TAB]",625,480,350,62,TogglePhone,true);
+            } else tabletLauncher = Action(stage,"Open tablet","TABLET [TAB]",1220,20,300,52,TogglePhone,true);
+            welcomeGlow = tabletLauncher.gameObject.AddComponent<Outline>();
+            welcomeGlow.effectDistance = new Vector2(4, -4);
             closedUnread = Label(stage,"Closed unread","",1120,78,400,35,19,accent,true,TextAnchor.MiddleRight);
+            var hintShadow = closedUnread.gameObject.AddComponent<Shadow>();
+            hintShadow.effectColor = new Color(0, 0, 0, .95f);
+            hintShadow.effectDistance = new Vector2(1, -2);
             tablet = Box(stage,"Landscape tablet",70,55,1460,790,new Color(.055f,.075f,.09f)).gameObject;
             tablet.GetComponent<Image>().raycastTarget = true;
             var frame = tablet.transform;
@@ -165,7 +164,6 @@ namespace CheeseTownPhone
             notice = Label(frame,"Notification","",335,126,780,46,20,accent,true,TextAnchor.MiddleCenter);
             BuildShop(frame); BuildMail(frame);
             tablet.SetActive(open); ShowPage(page); Refresh();
-            BuildOpening();
             BuildEnding(frame);
             if (EndingOpen) ShowEnding();
         }
@@ -185,34 +183,6 @@ namespace CheeseTownPhone
             foreach (Transform child in tablet.transform)
                 child.gameObject.SetActive(child.name == "Town Background Sprite Slot" || child.gameObject == ending);
             ending.SetActive(true);
-            EventSystem.current?.SetSelectedGameObject(null);
-        }
-        void BuildOpening()
-        {
-            opening = Box(stage,"Opening dialogue",0,0,1600,900,new Color(0,0,0,.72f)).gameObject;
-            opening.GetComponent<Image>().raycastTarget = true;
-            var panel = Box(opening.transform,"Welcome panel",300,220,1000,460,new Color(.09f,.15f,.18f));
-            Label(panel,"Welcome title","WELCOME TO CHEESE TOWN",40,30,920,48,32,paper,true);
-            Label(panel,"Opening speaker","MAYOR ELLIS",40,90,920,30,18,accent,true);
-            openingMessage = Label(panel,"Opening message","",40,145,920,180,25,paper);
-            openingCounter = Label(panel,"Opening progress","",40,365,160,50,18,muted);
-            var next = Action(panel,"Opening next","NEXT",640,355,320,65,AdvanceOpening,true);
-            openingNextLabel = next.GetComponentInChildren<Text>();
-            opening.SetActive(!TownSession.Instance.OpeningComplete);
-            RefreshOpening();
-        }
-        void RefreshOpening()
-        {
-            openingMessage.text = openingLines[openingStep];
-            openingCounter.text = (openingStep + 1) + " / " + openingLines.Length;
-            openingNextLabel.text = openingStep == openingLines.Length - 1 ? "LET'S BEGIN!" : "NEXT";
-        }
-        public void AdvanceOpening()
-        {
-            if (!OpeningOpen) return;
-            if (openingStep < openingLines.Length - 1) { openingStep++; RefreshOpening(); return; }
-            TownSession.Instance.CompleteOpening();
-            opening.SetActive(false);
             EventSystem.current?.SetSelectedGameObject(null);
         }
         void BuildShop(Transform frame)
@@ -279,7 +249,17 @@ namespace CheeseTownPhone
             nextLetter = Action(mail.transform,"Next letter","NEXT",681,499,240,66,() => SelectLetter(selectedLetter + 1));
         }
         void ChangeFilter(int value) { filter = value; Render(PhoneOpen); }
-        public void TogglePhone() { if (OpeningOpen || EndingOpen) return; tablet.SetActive(!tablet.activeSelf); if (PhoneOpen) ShowPage(0); }
+        public void TogglePhone()
+        {
+            if (EndingOpen) return;
+            tablet.SetActive(!tablet.activeSelf);
+            if (PhoneOpen)
+            {
+                if (WelcomeUnread) selectedLetter = 0;
+                ShowPage(WelcomeUnread ? 2 : 0);
+            }
+            Refresh();
+        }
         public void ShowPage(int value)
         {
             if (EndingOpen) return;
@@ -302,6 +282,8 @@ namespace CheeseTownPhone
         void Update()
         {
             if (!built) return;
+            if (welcomeGlow != null)
+                welcomeGlow.effectColor = new Color(1f, .86f, .3f, .45f + .25f * Mathf.Sin(Time.unscaledTime * 3f));
             if (revision != settings.Revision) { Progress.Reconfigure(settings); Render(PhoneOpen); }
             if (EndingOpen && ending != null && !ending.activeSelf) ShowEnding();
 
@@ -310,7 +292,7 @@ namespace CheeseTownPhone
         }
         public void TryHarvest()
         {
-            if (OpeningOpen || EndingOpen || !PhoneOpen || page != 0) return;
+            if (EndingOpen || !PhoneOpen || page != 0) return;
             int amount = Progress.Collect();
             Notify(amount == 0 ? "The tree is growing more cheese." : amount+" cheese  =  +"+((long)amount*Progress.UnitPrice)+" cheeses");
             Refresh();
@@ -360,7 +342,10 @@ namespace CheeseTownPhone
             if (selectedLetter < 0 && count > 0) selectedLetter = 0;
             string unread = Progress.UnreadCount > 0 ? Progress.UnreadCount + " UNREAD LETTERS" : "";
             unreadBadge.text = unread;
-            closedUnread.text = unread;
+            closedUnread.text = WelcomeUnread ? "YOU HAVE A WELCOME LETTER" : unread;
+            welcomeGlow.enabled = WelcomeUnread && !PhoneOpen;
+            tabletLauncher.GetComponentInChildren<Text>().text = WelcomeUnread
+                ? "NEW LETTER   [TAB]" : "TABLET   [TAB]";
             closedUnread.gameObject.SetActive(!PhoneOpen);
             letter.text = count == 0 ? "No letters yet.\n\nCollect cheese to hear from Mayor Ellis." : Progress.Letters[selectedLetter].Body;
             reply.text = count == 0 ? "Collected: " + Progress.TotalCollected :

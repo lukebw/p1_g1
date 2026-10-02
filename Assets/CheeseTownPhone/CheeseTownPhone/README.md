@@ -1,6 +1,6 @@
 # Cheese Town: shared upgrades
 
-New play sessions begin with a three-page welcome from Mayor Ellis. Click NEXT, then LET'S BEGIN! to enter the game. The opening introduces cheese collection, the first letter at 10 cheeses, and TAB for the tablet. Movement, collection and tablet shortcuts are blocked during the conversation. Completing it is remembered across scene changes for the current session; restarting the game shows it again.
+New play sessions leave the world visible and playable. A pulsing gold outline and NEW LETTER [TAB] highlight the tablet launcher. Clicking it or pressing TAB opens Mayor Ellis's welcome letter in the normal mailbox. Reading the letter clears the highlight; later openings return to the town home screen. The welcome letter remains in mail history across scene changes, and restarting the game resets it.
 
 Reading the all-upgrades-complete letter (all-max) with FINISH READING now ends the game. The tablet switches to its existing town background with GAME OVER, hiding the mailbox, tree readouts and shop controls. TAB and Escape cannot dismiss the ending. Movement, chopping, cheese collection and production stop. The ending survives scene reloads within the same session. The ending reuses the existing TAB town interface and does not require additional artwork.
 

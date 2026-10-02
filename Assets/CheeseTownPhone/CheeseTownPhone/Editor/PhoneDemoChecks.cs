@@ -70,46 +70,78 @@ namespace CheeseTownPhone.Editor
             {
                 c.initialTreeStock = 9;
                 var p = new TownProgress(c);
+                Check(p.Letters.Count == 1 && p.Letters[0].Id == "welcome" && p.UnreadCount == 1, "new session receives welcome");
+                p.ReadLetter(0);
+                Check(!p.GameEnded, "welcome is not ending");
                 p.Grant(1000);
-                Check(p.TotalCollected == 0 && p.Letters.Count == 0, "wallet is not collection");
-                Check(p.Collect() == 9 && p.Letters.Count == 0, "below first threshold");
+                Check(p.TotalCollected == 0 && p.Letters.Count == 1, "wallet is not collection");
+                Check(p.Collect() == 9 && p.Letters.Count == 1, "below first threshold");
                 Check(p.Collect() == 0 && p.TotalCollected == 9, "empty collection");
                 p.Tick(1); p.Collect();
-                Check(p.TotalCollected == 10 && p.Letters.Single().Id == "shop", "10 introduces shop");
-                p.ReadLetter(0); p.Reconfigure(c);
-                Check(p.UnreadCount == 0 && p.Letters.Count == 1, "read and dedup survive reconfigure");
-                p.CollectWorld(89); Check(p.Letters.Count == 1, "99 boundary");
-                p.CollectWorld(1); Check(p.Letters.Count == 2, "100 reserve");
-                p.CollectWorld(249); Check(p.Letters.Count == 2, "349 boundary");
-                p.CollectWorld(1); Check(p.Letters.Count == 3, "350 stop request");
+                Check(p.TotalCollected == 10 && p.Letters[1].Id == "shop", "10 introduces shop");
+                p.ReadLetter(1); p.Reconfigure(c);
+                Check(p.UnreadCount == 0 && p.Letters.Count == 2, "read and dedup survive reconfigure");
+                p.CollectWorld(89); Check(p.Letters.Count == 2, "99 boundary");
+                p.CollectWorld(1); Check(p.Letters.Count == 3, "100 reserve");
+                p.CollectWorld(249); Check(p.Letters.Count == 3, "349 boundary");
+                p.CollectWorld(1); Check(p.Letters.Count == 4, "350 stop request");
                 p.CollectWorld(149); Check(!p.MailStopped, "499 boundary");
-                p.CollectWorld(1); Check(p.MailStopped && p.Letters.Count == 3, "500 stops ordinary mail");
-                p.CollectWorld(100); Check(p.Letters.Count == 3 && p.UnreadCount == 2, "history retained after cutoff");
+                p.CollectWorld(1); Check(p.MailStopped && p.Letters.Count == 4, "500 stops ordinary mail");
+                p.CollectWorld(100); Check(p.Letters.Count == 4 && p.UnreadCount == 2, "history retained after cutoff");
                 foreach (var o in c.upgrades) while (p.CanBuy(o)) p.Buy(o);
-                Check(p.Letters.Count == 4 && p.Letters[3].Id == "all-max", "completion after cutoff");
+                Check(p.Letters.Count == 5 && p.Letters[4].Id == "all-max", "completion after cutoff");
                 p.Reconfigure(c); p.Tick(2);
-                Check(p.Letters.Count == 4, "completion only once");
+                Check(p.Letters.Count == 5, "completion only once");
                 Check(!p.GameEnded, "receiving final letter does not end game");
-                p.ReadLetter(1); p.ReadLetter(2);
+                p.ReadLetter(2); p.ReadLetter(3);
                 Check(!p.GameEnded, "ordinary letters do not end game");
-                p.ReadLetter(3);
-                Check(p.GameEnded && p.Letters[3].IsRead, "reading final letter ends game");
+                p.ReadLetter(4);
+                Check(p.GameEnded && p.Letters[4].IsRead, "reading final letter ends game");
                 int endingWallet = p.Cheeses;
                 long endingCollected = p.TotalCollected;
                 float endingStock = p.Stock;
-                p.Tick(10); p.CollectWorld(100); p.Collect(); p.ReadLetter(3); p.Reconfigure(c);
+                p.Tick(10); p.CollectWorld(100); p.Collect(); p.ReadLetter(4); p.Reconfigure(c);
                 Check(p.GameEnded && p.Cheeses == endingWallet && p.TotalCollected == endingCollected && p.Stock == endingStock,
                     "ending freezes collection and production and survives reconfigure");
                 var q = new TownProgress(c);
                 q.Buy(c.upgrades[4]); q.Buy(c.upgrades[3]); q.Tick(10);
-                Check(q.TotalCollected == 10 && q.Letters.Count == 1, "auto physical quantity excludes value multiplier");
+                Check(q.TotalCollected == 10 && q.Letters.Count == 2, "auto physical quantity excludes value multiplier");
                 var jump = new TownProgress(c); jump.CollectWorld(600);
-                Check(jump.Letters.Select(l => l.Id).SequenceEqual(new[]{"shop","reserve","stop-request"}), "batch crossing preserves ordered letters");
+                Check(jump.Letters.Select(l => l.Id).SequenceEqual(new[]{"welcome","shop","reserve","stop-request"}), "batch crossing preserves ordered letters");
                 c.upgrades.Clear(); q.Reconfigure(c);
-                Check(q.Letters.Count == 1, "empty shop is not completion");
+                Check(q.Letters.Count == 2, "empty shop is not completion");
             }
             finally { UnityEngine.Object.DestroyImmediate(c); }
             Debug.Log("MAIL_CHECKS_PASS");
+        }
+        [MenuItem("Cheese Town/Run Welcome Checks (Play Mode)")]
+        public static void WelcomeChecks()
+        {
+            var demo = UnityEngine.Object.FindAnyObjectByType<CheeseTownDemo>();
+            if (!EditorApplication.isPlaying || demo == null) throw new Exception("Start a fresh Play session for welcome checks.");
+            Check(!demo.PhoneOpen && !demo.EndingOpen, "startup leaves world visible");
+            var launcher = demo.GetComponentsInChildren<Button>().Single(b => b.name == "Open tablet");
+            Check(launcher.GetComponent<Outline>().enabled, "unread welcome highlights launcher");
+            Check(demo.Progress.Letters[0].Id == "welcome" && !demo.Progress.Letters[0].IsRead, "welcome is first unread letter");
+            Click(demo, "Open tablet");
+            Check(demo.PhoneOpen && demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message" && t.text.Contains("Welcome to Cheese Town!")), "click opens normal mailbox welcome");
+            var kb = InputSystem.AddDevice<Keyboard>("WelcomeTestKeyboard");
+            try
+            {
+                Press(kb, Key.Tab); Check(!demo.PhoneOpen, "unread letter can be dismissed");
+                Press(kb, Key.Tab); Check(demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "Tab reopens unread welcome");
+                Click(demo, "Reply to mayor");
+                Check(demo.Progress.Letters[0].IsRead && !demo.EndingOpen, "reading welcome does not end game");
+                Press(kb, Key.Tab);
+                Check(!demo.PhoneOpen && !launcher.GetComponent<Outline>().enabled, "read clears highlight");
+                Press(kb, Key.Tab);
+                Check(!demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "later opening returns to town");
+                Click(demo, "Letters button");
+                Check(demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message" && t.text.Contains("Welcome to Cheese Town!")), "welcome retained in mailbox history");
+                Press(kb, Key.Tab);
+            }
+            finally { InputSystem.RemoveDevice(kb); }
+            Debug.Log("WELCOME_CHECKS_PASS: visible startup, gold launcher, click and Tab mailbox, dismiss unread, read clears highlight, normal home and retained letter.");
         }
         [MenuItem("Cheese Town/Run Demo Checks (Play Mode)")]
         public static void Run()
@@ -121,7 +153,7 @@ namespace CheeseTownPhone.Editor
             var kb=InputSystem.AddDevice<Keyboard>("TabletTestKeyboard");
             try
             {
-                while (demo.OpeningOpen) Click(demo,"Opening next");
+
                 Press(kb,Key.Tab); Check(demo.PhoneOpen,"Tab opens");
                 Press(kb,Key.Tab); Check(!demo.PhoneOpen,"Tab closes");
                 Click(demo,"Open tablet"); Check(demo.PhoneOpen,"launcher");
