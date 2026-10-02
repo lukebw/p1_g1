@@ -60,6 +60,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // Disable player controls if the phone is open, or enable them if closed.
+        var tablet = FindAnyObjectByType<CheeseTownDemo>();
+        if (tablet != null && tablet.PhoneOpen)
+        {
+            moveAction?.Disable();
+        } else if (tablet != null && !tablet.PhoneOpen)
+        {
+            moveAction?.Enable();
+        }
+
         // Read player directional input, then calculate and apply the change in position
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
         Vector2 positionDelta = moveInput * speed * Time.deltaTime;
@@ -75,12 +85,6 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.flipX = false;
         }
 
-        var tablet = FindAnyObjectByType<CheeseTownDemo>();
-        if (tablet != null && tablet.PhoneOpen) return;
-        Vector2 input = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
-        Vector2 delta = MovementDelta(input, Time.deltaTime);
-        transform.position += new Vector3(delta.x, delta.y, 0);
-        if (spriteRenderer != null && input.x != 0) spriteRenderer.flipX = input.x < 0;
         if ((interactAction != null && interactAction.triggered) || (Keyboard.current?.eKey.wasPressedThisFrame ?? false))
             CollectNearby();
     }
