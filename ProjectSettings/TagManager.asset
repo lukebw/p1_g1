@@ -7,6 +7,7 @@ TagManager:
   - Tree
   - Cursor
   - Collectible
+  - Terrain
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Choppable
   - Cursor
   - Collectible
-  - 
+  - Terrain
   - 
   - 
   - 
