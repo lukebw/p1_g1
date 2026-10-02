@@ -89,6 +89,17 @@ namespace CheeseTownPhone.Editor
                 Check(p.Letters.Count == 4 && p.Letters[3].Id == "all-max", "completion after cutoff");
                 p.Reconfigure(c); p.Tick(2);
                 Check(p.Letters.Count == 4, "completion only once");
+                Check(!p.GameEnded, "receiving final letter does not end game");
+                p.ReadLetter(1); p.ReadLetter(2);
+                Check(!p.GameEnded, "ordinary letters do not end game");
+                p.ReadLetter(3);
+                Check(p.GameEnded && p.Letters[3].IsRead, "reading final letter ends game");
+                int endingWallet = p.Cheeses;
+                long endingCollected = p.TotalCollected;
+                float endingStock = p.Stock;
+                p.Tick(10); p.CollectWorld(100); p.Collect(); p.ReadLetter(3); p.Reconfigure(c);
+                Check(p.GameEnded && p.Cheeses == endingWallet && p.TotalCollected == endingCollected && p.Stock == endingStock,
+                    "ending freezes collection and production and survives reconfigure");
                 var q = new TownProgress(c);
                 q.Buy(c.upgrades[4]); q.Buy(c.upgrades[3]); q.Tick(10);
                 Check(q.TotalCollected == 10 && q.Letters.Count == 1, "auto physical quantity excludes value multiplier");
@@ -110,6 +121,7 @@ namespace CheeseTownPhone.Editor
             var kb=InputSystem.AddDevice<Keyboard>("TabletTestKeyboard");
             try
             {
+                while (demo.OpeningOpen) Click(demo,"Opening next");
                 Press(kb,Key.Tab); Check(demo.PhoneOpen,"Tab opens");
                 Press(kb,Key.Tab); Check(!demo.PhoneOpen,"Tab closes");
                 Click(demo,"Open tablet"); Check(demo.PhoneOpen,"launcher");

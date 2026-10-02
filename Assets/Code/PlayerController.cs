@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        var openingTablet = FindAnyObjectByType<CheeseTownDemo>();
+        if (openingTablet != null && (openingTablet.OpeningOpen || openingTablet.EndingOpen)) return;
         // Read player directional input, then calculate and apply the change in position
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
         Vector2 positionDelta = moveInput * speed * Time.deltaTime;

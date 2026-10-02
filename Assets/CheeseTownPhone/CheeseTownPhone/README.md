@@ -1,5 +1,9 @@
 # Cheese Town: shared upgrades
 
+New play sessions begin with a three-page welcome from Mayor Ellis. Click NEXT, then LET'S BEGIN! to enter the game. The opening introduces cheese collection, the first letter at 10 cheeses, and TAB for the tablet. Movement, collection and tablet shortcuts are blocked during the conversation. Completing it is remembered across scene changes for the current session; restarting the game shows it again.
+
+Reading the all-upgrades-complete letter (all-max) with FINISH READING now ends the game. The tablet switches to its existing town background with GAME OVER, hiding the mailbox, tree readouts and shop controls. TAB and Escape cannot dismiss the ending. Movement, chopping, cheese collection and production stop. The ending survives scene reloads within the same session. The ending reuses the existing TAB town interface and does not require additional artwork.
+
 Open either CheeseTownPhone or Wilderness and press Play. Tab opens the town tablet and shop in both scenes. In Wilderness, close the tablet to move the mouse; press E (or the configured Interact action) near the tree to collect. The tablet does not replace the world camera or cover gameplay while closed.
 
 All money is cheeses: starting wallet, purchase costs, collection, automatic income and mayor rewards. Double Cheese Value multiplies cheeses awarded per harvest without changing tree production. No separate coin currency remains.

@@ -15,6 +15,17 @@ namespace CheeseTownPhone
         public TabletSettings Settings => settings;
         public TownProgress Progress { get; private set; }
         public bool PhoneOpen => tablet != null && tablet.activeSelf;
+        public bool OpeningOpen => opening != null && opening.activeSelf;
+        public bool EndingOpen => Progress != null && Progress.GameEnded;
+        GameObject ending;
+        GameObject opening;
+        Text openingMessage, openingCounter, openingNextLabel;
+        int openingStep;
+        readonly string[] openingLines = {
+            "Welcome to Cheese Town! I'm Mayor Ellis.\n\nWe're happy to have a new neighbor. I hope you'll feel at home here.",
+            "See that cheese tree? It helps keep our town supplied.\n\nWalk up to a tree and press E to collect cheese. Start with 10 cheeses, and I'll send you a letter.",
+            "Press TAB to open your town tablet. You can read my letters and visit UPGRADES there.\n\nTake your time, explore, and enjoy your first day in Cheese Town!"
+        };
         public Canvas ScreenCanvas { get; private set; }
         readonly Color ink = new Color(.08f,.12f,.16f), paper = new Color(.92f,.94f,.92f);
         readonly Color muted = new Color(.59f,.69f,.71f), accent = new Color(.86f,.73f,.36f);
@@ -69,7 +80,7 @@ namespace CheeseTownPhone
             controls = new InputActionMap("Cheese Town Tablet");
             controls.AddAction("Tablet", InputActionType.Button, "<Keyboard>/tab").performed += _ => TogglePhone();
             controls.AddAction("Back", InputActionType.Button, "<Keyboard>/escape").performed += _ =>
-            { if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
+            { if (OpeningOpen || EndingOpen) return; if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
             controls.AddAction("Collect", InputActionType.Button, "<Keyboard>/e").performed += _ => TryHarvest();
             controls.Enable();
         }
@@ -154,6 +165,55 @@ namespace CheeseTownPhone
             notice = Label(frame,"Notification","",335,126,780,46,20,accent,true,TextAnchor.MiddleCenter);
             BuildShop(frame); BuildMail(frame);
             tablet.SetActive(open); ShowPage(page); Refresh();
+            BuildOpening();
+            BuildEnding(frame);
+            if (EndingOpen) ShowEnding();
+        }
+        void BuildEnding(Transform frame)
+        {
+            ending = Box(frame,"Game ending",0,0,1460,790,Color.clear).gameObject;
+            ending.GetComponent<Image>().raycastTarget = true;
+            var banner = Box(ending.transform,"Ending banner",0,565,1460,225,new Color(.04f,.06f,.08f,.88f));
+            Label(banner,"Game over title","GAME OVER",50,28,1360,92,64,paper,true,TextAnchor.MiddleCenter);
+            Label(banner,"Game over caption","CHEESE TOWN",50,133,1360,40,22,accent,true,TextAnchor.MiddleCenter);
+            ending.SetActive(false);
+        }
+        void ShowEnding()
+        {
+            page = 0;
+            foreach (Transform child in stage) child.gameObject.SetActive(child.gameObject == tablet);
+            foreach (Transform child in tablet.transform)
+                child.gameObject.SetActive(child.name == "Town Background Sprite Slot" || child.gameObject == ending);
+            ending.SetActive(true);
+            EventSystem.current?.SetSelectedGameObject(null);
+        }
+        void BuildOpening()
+        {
+            opening = Box(stage,"Opening dialogue",0,0,1600,900,new Color(0,0,0,.72f)).gameObject;
+            opening.GetComponent<Image>().raycastTarget = true;
+            var panel = Box(opening.transform,"Welcome panel",300,220,1000,460,new Color(.09f,.15f,.18f));
+            Label(panel,"Welcome title","WELCOME TO CHEESE TOWN",40,30,920,48,32,paper,true);
+            Label(panel,"Opening speaker","MAYOR ELLIS",40,90,920,30,18,accent,true);
+            openingMessage = Label(panel,"Opening message","",40,145,920,180,25,paper);
+            openingCounter = Label(panel,"Opening progress","",40,365,160,50,18,muted);
+            var next = Action(panel,"Opening next","NEXT",640,355,320,65,AdvanceOpening,true);
+            openingNextLabel = next.GetComponentInChildren<Text>();
+            opening.SetActive(!TownSession.Instance.OpeningComplete);
+            RefreshOpening();
+        }
+        void RefreshOpening()
+        {
+            openingMessage.text = openingLines[openingStep];
+            openingCounter.text = (openingStep + 1) + " / " + openingLines.Length;
+            openingNextLabel.text = openingStep == openingLines.Length - 1 ? "LET'S BEGIN!" : "NEXT";
+        }
+        public void AdvanceOpening()
+        {
+            if (!OpeningOpen) return;
+            if (openingStep < openingLines.Length - 1) { openingStep++; RefreshOpening(); return; }
+            TownSession.Instance.CompleteOpening();
+            opening.SetActive(false);
+            EventSystem.current?.SetSelectedGameObject(null);
         }
         void BuildShop(Transform frame)
         {
@@ -219,9 +279,10 @@ namespace CheeseTownPhone
             nextLetter = Action(mail.transform,"Next letter","NEXT",681,499,240,66,() => SelectLetter(selectedLetter + 1));
         }
         void ChangeFilter(int value) { filter = value; Render(PhoneOpen); }
-        public void TogglePhone() { tablet.SetActive(!tablet.activeSelf); if (PhoneOpen) ShowPage(0); }
+        public void TogglePhone() { if (OpeningOpen || EndingOpen) return; tablet.SetActive(!tablet.activeSelf); if (PhoneOpen) ShowPage(0); }
         public void ShowPage(int value)
         {
+            if (EndingOpen) return;
             page = value;
             if (shop != null) shop.SetActive(page == 1);
             if (mail != null) mail.SetActive(page == 2);
@@ -242,26 +303,30 @@ namespace CheeseTownPhone
         {
             if (!built) return;
             if (revision != settings.Revision) { Progress.Reconfigure(settings); Render(PhoneOpen); }
+            if (EndingOpen && ending != null && !ending.activeSelf) ShowEnding();
 
             if (Time.unscaledTime >= nextRefresh) { Refresh(); nextRefresh = Time.unscaledTime + .1f; }
             if (noticeUntil > 0 && Time.unscaledTime > noticeUntil) { notice.text = ""; noticeUntil = 0; }
         }
         public void TryHarvest()
         {
-            if (!PhoneOpen || page != 0) return;
+            if (OpeningOpen || EndingOpen || !PhoneOpen || page != 0) return;
             int amount = Progress.Collect();
             Notify(amount == 0 ? "The tree is growing more cheese." : amount+" cheese  =  +"+((long)amount*Progress.UnitPrice)+" cheeses");
             Refresh();
         }
         public void Buy(UpgradeOption option)
         {
+            if (EndingOpen) return;
             if (Progress.Buy(option)) Notify(option.title+" upgraded.");
             Refresh();
         }
         public void ReplyToMayor()
         {
+            if (EndingOpen || !PhoneOpen || page != 2) return;
             Progress.ReadLetter(selectedLetter);
             Refresh();
+            if (EndingOpen) ShowEnding();
         }
         void SelectLetter(int index)
         {
@@ -305,6 +370,8 @@ namespace CheeseTownPhone
             previousLetter.interactable = selectedLetter > 0;
             nextLetter.interactable = selectedLetter >= 0 && selectedLetter < count - 1;
             replyButton.interactable = count > 0 && !Progress.Letters[selectedLetter].IsRead;
+            replyButton.GetComponentInChildren<Text>().text = count > 0 && Progress.Letters[selectedLetter].Id == TownProgress.FinalLetterId
+                ? "FINISH READING" : "MARK AS READ";
         }
         string Current(UpgradeEffect effect)
         {

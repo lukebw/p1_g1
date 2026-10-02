@@ -88,6 +88,12 @@ namespace CheeseTownPhone.Editor
             var tree = FindAnyObjectByType<TreeHurtbox>();
             var demo = FindAnyObjectByType<CheeseTownDemo>();
             Check(player != null && tree != null && demo != null, "real scene player/tree/tablet");
+            Check(demo.OpeningOpen, "new session shows opening");
+            demo.TogglePhone();
+            Check(!demo.PhoneOpen, "opening blocks tablet shortcut");
+            for (int i = 0; i < 3; i++)
+                demo.GetComponentsInChildren<Button>().Single(b => b.name == "Opening next").onClick.Invoke();
+            Check(!demo.OpeningOpen && session.OpeningComplete, "opening completes after three pages");
             Check(ReferenceEquals(progress, demo.Progress), "shared economy");
             Near(player.MovementDelta(Vector2.right, 1).x, 4, "base movement");
             Near(player.MovementDelta(Vector2.one, 1).magnitude, 4, "diagonal normalized");
@@ -122,6 +128,7 @@ namespace CheeseTownPhone.Editor
             yield return SceneManager.LoadSceneAsync("CheeseTownPhone");
             yield return null;
             Check(ReferenceEquals(FindAnyObjectByType<CheeseTownDemo>().Progress, progress), "tablet scene retains progress");
+            Check(!FindAnyObjectByType<CheeseTownDemo>().OpeningOpen, "completed opening stays closed after scene change");
             yield return SceneManager.LoadSceneAsync("Wilderness");
             yield return null;
             player = FindAnyObjectByType<PlayerController>(); tree = FindAnyObjectByType<TreeHurtbox>();
@@ -132,6 +139,25 @@ namespace CheeseTownPhone.Editor
             Near(tree.transform.parent.localScale.x, original.x*1.2f, "new tree inherits growth");
             Check(FindObjectsByType<TownSession>(FindObjectsSortMode.None).Length==1, "single session");
             Check(FindObjectsByType<CheeseTownDemo>(FindObjectsSortMode.None).Length==1, "single tablet");
+            demo = FindAnyObjectByType<CheeseTownDemo>();
+            progress.Grant(100000);
+            foreach (var option in demo.Settings.upgrades) while (progress.CanBuy(option)) progress.Buy(option);
+            Check(!demo.EndingOpen, "final letter delivery does not show ending");
+            demo.TogglePhone(); demo.ShowPage(2);
+            int finalIndex = progress.Letters.ToList().FindIndex(l => l.Id == TownProgress.FinalLetterId);
+            for (int i = 0; i < finalIndex; i++)
+                demo.GetComponentsInChildren<Button>().Single(b => b.name == "Next letter").onClick.Invoke();
+            demo.GetComponentsInChildren<Button>().Single(b => b.name == "Reply to mayor").onClick.Invoke();
+            Check(demo.EndingOpen && demo.PhoneOpen, "reading final letter opens town ending");
+            Check(demo.GetComponentsInChildren<Text>().Any(t => t.text == "GAME OVER"), "ending title visible");
+            Check(!demo.GetComponentsInChildren<Button>().Any(), "ending hides gameplay controls");
+            demo.TogglePhone(); demo.ShowPage(1);
+            Check(demo.PhoneOpen && !demo.GetComponentsInChildren<Button>().Any(), "ending cannot reopen gameplay");
+            yield return SceneManager.LoadSceneAsync("CheeseTownPhone");
+            yield return null;
+            demo = FindAnyObjectByType<CheeseTownDemo>();
+            Check(demo.EndingOpen && demo.PhoneOpen && demo.GetComponentsInChildren<Text>().Any(t => t.text == "GAME OVER"),
+                "ending survives scene reload");
             Time.timeScale = 1;
         }
     }

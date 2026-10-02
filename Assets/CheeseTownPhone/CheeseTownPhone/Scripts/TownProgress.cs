@@ -19,11 +19,14 @@ namespace CheeseTownPhone
         public IReadOnlyList<Letter> Letters => letters.AsReadOnly();
         public long TotalCollected { get; private set; }
         public bool MailStopped => TotalCollected >= 500;
+        public const string FinalLetterId = "all-max";
+        public bool GameEnded { get; private set; }
         public int UnreadCount => letters.FindAll(l => !l.IsRead).Count;
         public void ReadLetter(int index)
         {
             if (index < 0 || index >= letters.Count || letters[index].IsRead) return;
             letters[index].IsRead = true;
+            if (letters[index].Id == FinalLetterId) GameEnded = true;
             Changed?.Invoke();
         }
         void SendLetter(string id, string body)
@@ -92,7 +95,7 @@ namespace CheeseTownPhone
             Recalculate(); CheckLetters(); Changed?.Invoke();
         }
         public int Level(UpgradeOption o) => o != null && purchases.TryGetValue(o.id, out int value) ? Mathf.Min(value, o.levels.Count) : 0;
-        public bool CanBuy(UpgradeOption o) => o != null && o.available && config.upgrades.Contains(o) && Level(o) < o.levels.Count && Cheeses >= o.levels[Level(o)].price;
+        public bool CanBuy(UpgradeOption o) => !GameEnded && o != null && o.available && config.upgrades.Contains(o) && Level(o) < o.levels.Count && Cheeses >= o.levels[Level(o)].price;
         public bool Buy(UpgradeOption o)
         {
             if (!CanBuy(o)) return false;
@@ -122,7 +125,7 @@ namespace CheeseTownPhone
         }
         public void Tick(float delta)
         {
-            if (delta <= 0 || float.IsNaN(delta) || float.IsInfinity(delta)) return;
+            if (GameEnded || delta <= 0 || float.IsNaN(delta) || float.IsInfinity(delta)) return;
             // Step at one-second auto-collection boundaries so frame size cannot change the economy.
             while (delta > .00001f)
             {
@@ -142,20 +145,21 @@ namespace CheeseTownPhone
         }
         void Transfer(int amount)
         {
-            if (amount <= 0) return;
+            if (GameEnded || amount <= 0) return;
             Stock = Mathf.Max(0, Stock - amount);
             CollectWorld(amount);
         }
         // World pickups and tree transfers count physical pieces, before their sale value.
         public void CollectWorld(int amount)
         {
-            if (amount <= 0) return;
+            if (GameEnded || amount <= 0) return;
             TotalCollected += amount;
             Cheeses = (int)Math.Min(1000000000L, (long)Cheeses + (long)amount * UnitPrice);
             CheckLetters(); Changed?.Invoke();
         }
         public int Collect()
         {
+            if (GameEnded) return 0;
             int amount = Mathf.FloorToInt(Stock);
             if (amount <= 0) return 0;
             Transfer(amount); HarvestCount++; Changed?.Invoke(); return amount;
