@@ -43,6 +43,14 @@ namespace CheeseTownPhone
         public Sprite closeIcon;
         public Sprite upgradeButtonArtwork;
         public Font interfaceFont;
+        // BEGIN ADDED: Separate skin slots keep two-times exports reusable.
+        [Header("Pixel UI - 640 x 360 layout, artwork exported at 2x")]
+        public Sprite mainFrame;
+        public Sprite backButtonArtwork;
+        public Sprite collectButtonArtwork;
+        public Sprite unreadDot;
+        public Sprite walletIcon;
+        // END ADDED
         [Header("Placeholder colors and layout")]
         public Color backgroundColor = new Color(.20f, .30f, .34f, 1);
         public Color treeColor = new Color(.90f, .73f, .31f, 1);

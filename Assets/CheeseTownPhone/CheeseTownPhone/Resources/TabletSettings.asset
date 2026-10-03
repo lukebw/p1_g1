@@ -13,14 +13,19 @@ MonoBehaviour:
   m_Name: TabletSettings
   m_EditorClassIdentifier:
   townBackground: {fileID: 0}
-  cheeseTree: {fileID: 0}
-  envelopeIcon: {fileID: 0}
-  shopIcon: {fileID: 0}
+  cheeseTree: {fileID: 3218785287198652767, guid: 71aefe9b73f1c2440909975f076120d6, type: 3}
+  envelopeIcon: {fileID: 21300000, guid: a405e24caf20fce4e9d81fa83ca02386, type: 3}
+  shopIcon: {fileID: 21300000, guid: a92419d895d970d4dbd902fe535bb8c1, type: 3}
   closeIcon: {fileID: 0}
   upgradeButtonArtwork: {fileID: 0}
-  interfaceFont: {fileID: 0}
-  backgroundColor: {r: 0.20, g: 0.30, b: 0.34, a: 1}
-  treeColor: {r: 0.90, g: 0.73, b: 0.31, a: 1}
+  interfaceFont: {fileID: 12800000, guid: 4b9acbe7db3434143acc143c9438540d, type: 3}
+  mainFrame: {fileID: 21300000, guid: d7be2e7e1dd84c4428113e44714f1eea, type: 3}
+  backButtonArtwork: {fileID: 21300000, guid: f0ed895e0537d3f4c86d0e1bdbc897d1, type: 3}
+  collectButtonArtwork: {fileID: 21300000, guid: f1d25a81494c8f448b7cb3cab5dff747, type: 3}
+  unreadDot: {fileID: 21300000, guid: cf54dc24d00b9e64cba0c7eb70e13391, type: 3}
+  walletIcon: {fileID: -3106762493133011889, guid: beeec93932302e44897ce6273e9b3b09, type: 3}
+  backgroundColor: {r: 0.2, g: 0.3, b: 0.34, a: 1}
+  treeColor: {r: 0.9, g: 0.73, b: 0.31, a: 1}
   treeSize: {x: 150, y: 200}
   startingCheeses: 500
   baseMoveSpeed: 4
@@ -29,7 +34,6 @@ MonoBehaviour:
   baseCheesePrice: 1
   treeCapacity: 100
   initialTreeStock: 10
-
   upgrades:
   - id: move-speed
     available: 1

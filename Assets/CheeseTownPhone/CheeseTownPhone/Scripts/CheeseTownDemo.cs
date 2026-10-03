@@ -9,7 +9,9 @@ using UnityEngine.UI;
 namespace CheeseTownPhone
 {
     [DisallowMultipleComponent]
-    public sealed class CheeseTownDemo : MonoBehaviour
+    // BEGIN CHANGED: Keep the new skin separate from economy and navigation.
+    public sealed partial class CheeseTownDemo : MonoBehaviour
+    // END CHANGED
     {
         [SerializeField] TabletSettings settings;
         public TabletSettings Settings => settings;
@@ -124,6 +126,10 @@ namespace CheeseTownPhone
         }
         void Render(bool open)
         {
+            // BEGIN ADDED: Route configured artwork through the native pixel layout.
+            ConfigurePixelLayout();
+            if (HasPixelSkin) { RenderPixelSkin(open); return; }
+            // END ADDED
             foreach (Transform child in stage) { child.gameObject.SetActive(false); Release(child.gameObject); }
             rows.Clear(); revision = settings.Revision;
             font = settings.interfaceFont != null ? settings.interfaceFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -266,6 +272,9 @@ namespace CheeseTownPhone
             page = value;
             if (shop != null) shop.SetActive(page == 1);
             if (mail != null) mail.SetActive(page == 2);
+            // BEGIN ADDED: Pixel panels share one frame but hide home-only content.
+            UpdatePixelPageVisibility();
+            // END ADDED
             Refresh();
         }
         public void ApplyConfiguration()
@@ -282,6 +291,9 @@ namespace CheeseTownPhone
         void Update()
         {
             if (!built) return;
+            // BEGIN ADDED: Window changes must retain integer UI enlargement.
+            UpdatePixelScale();
+            // END ADDED
             if (welcomeGlow != null)
                 welcomeGlow.effectColor = new Color(1f, .86f, .3f, .45f + .25f * Mathf.Sin(Time.unscaledTime * 3f));
             if (revision != settings.Revision) { Progress.Reconfigure(settings); Render(PhoneOpen); }
@@ -319,14 +331,23 @@ namespace CheeseTownPhone
         public void Refresh()
         {
             if (wallet == null || letter == null) return;
-            wallet.text = Progress.Cheeses+"  CHEESES"; shopWallet.text = "WALLET   "+Progress.Cheeses+" CHEESES";
+            // BEGIN CHANGED: The cheese icon identifies currency in the new header.
+            wallet.text = HasPixelSkin ? Progress.Cheeses.ToString() : Progress.Cheeses+"  CHEESES";
+            shopWallet.text = "WALLET   "+Progress.Cheeses+" CHEESES";
+            // END CHANGED
             stock.text = "Stored: "+Mathf.FloorToInt(Progress.Stock)+" / "+Progress.Capacity+" cheese";
             stats.text = "PLAYER PARAMETERS\nSpeed "+Progress.MoveSpeed.ToString("0.##")+"   |   Range "+Progress.CollectRange.ToString("0.##")+
                 "   |   Auto "+(Progress.AutoEnabled ? Progress.AutoRate.ToString("0.##")+"/s" : "OFF");
             priceLabel.text = "TREE PARAMETERS\nProduction "+Progress.Production.ToString("0.##")+"/s   |   Value "+Progress.UnitPrice+" cheeses / harvest";
-            float treeFit = Mathf.Min(1, 340 / (settings.treeSize.y * Progress.TreeScale), 600 / (settings.treeSize.x * Progress.TreeScale));
+            // BEGIN CHANGED: Keep growing UI trees inside the new content area.
+            float treeFit = HasPixelSkin
+                ? Mathf.Min(1, 194 / (tree.sizeDelta.y * Progress.TreeScale), 240 / (tree.sizeDelta.x * Progress.TreeScale))
+                : Mathf.Min(1, 340 / (settings.treeSize.y * Progress.TreeScale), 600 / (settings.treeSize.x * Progress.TreeScale));
+            // END CHANGED
             tree.localScale = Vector3.one * Progress.TreeScale * treeFit;
-            collectButton.interactable = Progress.Stock >= 1;
+            // BEGIN CHANGED: Collection is only actionable on the town page.
+            collectButton.interactable = Progress.Stock >= 1 && (!HasPixelSkin || page == 0);
+            // END CHANGED
             foreach (var row in rows)
             {
                 int level = Progress.Level(row.option), max = row.option.levels.Count;
@@ -342,6 +363,9 @@ namespace CheeseTownPhone
             if (selectedLetter < 0 && count > 0) selectedLetter = 0;
             string unread = Progress.UnreadCount > 0 ? Progress.UnreadCount + " UNREAD LETTERS" : "";
             unreadBadge.text = unread;
+            // BEGIN ADDED: The supplied dot reflects the existing unread count.
+            UpdateUnreadDot();
+            // END ADDED
             closedUnread.text = WelcomeUnread ? "YOU HAVE A WELCOME LETTER" : unread;
             welcomeGlow.enabled = WelcomeUnread && !PhoneOpen;
             tabletLauncher.GetComponentInChildren<Text>().text = WelcomeUnread

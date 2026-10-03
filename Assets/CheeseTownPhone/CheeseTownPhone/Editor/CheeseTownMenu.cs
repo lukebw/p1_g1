@@ -7,13 +7,17 @@ namespace CheeseTownPhone.Editor
 {
     public static class CheeseTownMenu
     {
-        public const string ConfigPath = "Assets/CheeseTownPhone/Resources/TabletSettings.asset";
+        // BEGIN CHANGED: Menu links must match the project's nested import folder.
+        public const string ConfigPath = "Assets/CheeseTownPhone/CheeseTownPhone/Resources/TabletSettings.asset";
+        // END CHANGED
         [MenuItem("Cheese Town/Open Phone Demo Scene")]
         public static void OpenDemo()
         {
             if (EditorApplication.isPlaying) { Debug.LogWarning("Stop Play before changing scenes."); return; }
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                EditorSceneManager.OpenScene("Assets/CheeseTownPhone/Scenes/CheeseTownPhone.unity");
+                // BEGIN CHANGED: Open the existing scene rather than a missing path.
+                EditorSceneManager.OpenScene("Assets/CheeseTownPhone/CheeseTownPhone/Scenes/CheeseTownPhone.unity");
+                // END CHANGED
         }
         [MenuItem("Cheese Town/Select Tablet Configuration")]
         public static void SelectConfig()
@@ -26,7 +30,9 @@ namespace CheeseTownPhone.Editor
         UnityEditor.Editor embedded;
         public override void OnInspectorGUI()
         {
-            EditorGUILayout.HelpBox("横向平板：Tab 打开/关闭；右上角信封与商店。背景、树和按钮均可替换 Sprite。运行时生成界面，升级在所有场景共享；停止运行后本次进度重置。", MessageType.Info);
+            // BEGIN CHANGED: Describe the supplied header and native pixel layout accurately.
+            EditorGUILayout.HelpBox("横向平板：Tab 打开/关闭；顶部信封与升级按钮。像素 UI 使用 640x360 逻辑尺寸，素材按 2 倍导入并整数放大。背景、树和按钮均可替换 Sprite；升级进度在所有场景共享。", MessageType.Info);
+            // END CHANGED
             DrawDefaultInspector();
             if (GUILayout.Button("选择配置 / Select Tablet Configuration")) CheeseTownMenu.SelectConfig();
             var demo = (CheeseTownDemo)target;
@@ -90,6 +96,13 @@ namespace CheeseTownPhone.Editor
             Preview("Shop",data.shopIcon,new Color(.2f,.3f,.35f));
             Preview("Close",data.closeIcon,new Color(.2f,.3f,.35f));
             Preview("Upgrade button",data.upgradeButtonArtwork,new Color(.2f,.3f,.35f));
+            // BEGIN ADDED: Expose the supplied skin in the existing artwork inspector.
+            Preview("Main frame",data.mainFrame,Color.clear);
+            Preview("Back button",data.backButtonArtwork,Color.clear);
+            Preview("Collect button",data.collectButtonArtwork,Color.clear);
+            Preview("Unread dot",data.unreadDot,Color.clear);
+            Preview("Wallet icon",data.walletIcon,Color.clear);
+            // END ADDED
             foreach (var entry in data.upgrades) if (entry != null) Preview(entry.title+" icon",entry.icon,new Color(.2f,.3f,.35f));
         }
         static void Preview(string title,Sprite sprite,Color fallback)
