@@ -55,13 +55,16 @@ public class CursorController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, 45);
         if (chopHitbox == null) return;
         HashSet<Tree> hitTrees = new HashSet<Tree>();
-        foreach (Collider2D collider in chopHitbox.GetActiveCollisions().ToArray())
+        foreach (Collider2D collider in chopHitbox.GetActiveCollisions())
         {
             if (collider == null || !collider.enabled || !collider.gameObject.activeInHierarchy) continue;
             TreeHurtbox hurtbox = collider.GetComponent<TreeHurtbox>();
             if (hurtbox == null || !hurtbox.enabled) continue;
             Tree tree = hurtbox.tree != null ? hurtbox.tree : hurtbox.GetComponentInParent<Tree>();
-            if (tree != null && hitTrees.Add(tree)) hurtbox.RegisterHit(1);
+            if (tree != null) {
+                hitTrees.Add(tree);
+                hurtbox.RegisterHit(1);
+            }
         }
     }
 

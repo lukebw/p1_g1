@@ -14,9 +14,9 @@ public class PlayerController : MonoBehaviour
     TownProgress progress;
 
     // Position and rotation constants, to make the weapon appear strapped to the player's back.
-    static Vector3 weaponIdlePosition = new Vector3(0.41f, 0.3f, 0f);
+    static Vector3 weaponIdlePosition = new Vector3(0.055f, 0f, 0f);
     static float weaponIdleRotation = -45f;
-    static Vector3 weaponIdlePositionFlipped = new Vector3(0f, 0.3f, 0f);
+    // static Vector3 weaponIdlePositionFlipped = new Vector3(0f, 0.3f, 0f);
     static float weaponIdleRotationFlipped = -135f;
 
     void Start()
@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
 
     void SetAxeIdlePosition(bool isFlipped)
     {
-        weaponSpriteRenderer.transform.localPosition = isFlipped ? weaponIdlePositionFlipped : weaponIdlePosition;
+        weaponSpriteRenderer.transform.localPosition = isFlipped ? -weaponIdlePosition : weaponIdlePosition;
         weaponSpriteRenderer.transform.localRotation = Quaternion.Euler(0, 0, isFlipped ? weaponIdleRotationFlipped : weaponIdleRotation);
         weaponSpriteRenderer.flipY = !isFlipped; // The weapon sprite's y flip is the inverse of the player sprite's x flip
     }
