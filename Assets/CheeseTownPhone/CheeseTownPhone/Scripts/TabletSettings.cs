@@ -51,6 +51,25 @@ namespace CheeseTownPhone
         public Sprite unreadDot;
         public Sprite walletIcon;
         // END ADDED
+        // BEGIN ADDED: Dedicated shop slots preserve supplied button states and row art.
+        [Header("Pixel upgrade page - artwork exported at 2x")]
+        public Sprite upgradeFrame;
+        public Sprite upgradeBackground;
+        public Sprite upgradeRowArtwork;
+        public Sprite upgradeIconBox;
+        public Sprite upgradeLevelArtwork;
+        public Sprite upgradeLevelInactive;
+        public Sprite upgradeLevelActive;
+        public Sprite upgradeBuyDisabled;
+        public Sprite allSelected, allUnselected;
+        public Sprite playerSelected, playerUnselected;
+        public Sprite treeSelected, treeUnselected;
+        // END ADDED
+        // BEGIN ADDED: Reusable views keep layout editing separate from upgrade data.
+        [Header("Reusable upgrade UI")]
+        public UpgradeRowView upgradeRowPrefab;
+        public Font upgradePixelFont;
+        // END ADDED
         [Header("Placeholder colors and layout")]
         public Color backgroundColor = new Color(.20f, .30f, .34f, 1);
         public Color treeColor = new Color(.90f, .73f, .31f, 1);
@@ -72,7 +91,9 @@ namespace CheeseTownPhone
         {
             new UpgradeOption { id = "move-speed", title = "Move Speed", description = "Increase player movement speed.", effect = UpgradeEffect.MoveSpeed,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(20, 6), new UpgradeLevel(50, 8) } },
-            new UpgradeOption { id = "collect-range", title = "Collect Range", description = "No range at level 0. Unlock and expand collection radius.", effect = UpgradeEffect.CollectRange,
+            // BEGIN CHANGED: The base state is displayed as level one.
+            new UpgradeOption { id = "collect-range", title = "Collect Range", description = "No range at level 1. Unlock and expand collection radius.", effect = UpgradeEffect.CollectRange,
+            // END CHANGED
                 levels = new List<UpgradeLevel> { new UpgradeLevel(30, 2), new UpgradeLevel(60, 4) } },
             new UpgradeOption { id = "tree-growth", title = "Upgrades for Tree", description = "Increase tree size and cheese production.", effect = UpgradeEffect.TreeGrowth,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(60, 2, 1.2f), new UpgradeLevel(120, 4, 1.45f), new UpgradeLevel(240, 8, 1.7f) } },

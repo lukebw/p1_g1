@@ -351,6 +351,9 @@ namespace CheeseTownPhone
             foreach (var row in rows)
             {
                 int level = Progress.Level(row.option), max = row.option.levels.Count;
+                // BEGIN ADDED: Skinned rows show price and progress without repeating baked BUY text.
+                if (RefreshPixelUpgradeRow(row, level, max)) continue;
+                // END ADDED
                 row.level.text = "LEVEL "+level+" / "+max;
                 row.current.text = Current(row.option.effect);
                 row.next.text = level < max ? "Next: "+Effect(row.option.effect,row.option.levels[level]) : max == 0 ? "No levels configured" : "Fully upgraded";

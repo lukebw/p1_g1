@@ -17,13 +17,29 @@ MonoBehaviour:
   envelopeIcon: {fileID: 21300000, guid: a405e24caf20fce4e9d81fa83ca02386, type: 3}
   shopIcon: {fileID: 21300000, guid: a92419d895d970d4dbd902fe535bb8c1, type: 3}
   closeIcon: {fileID: 0}
-  upgradeButtonArtwork: {fileID: 0}
-  interfaceFont: {fileID: 12800000, guid: 4b9acbe7db3434143acc143c9438540d, type: 3}
+  upgradeButtonArtwork: {fileID: 21300000, guid: 48bc6b2c777e28549a185018dfd1b1f7, type: 3}
+  interfaceFont: {fileID: 12800000, guid: cf2f6a1dbd2e2104f9f3b708a25c1591, type: 3}
   mainFrame: {fileID: 21300000, guid: d7be2e7e1dd84c4428113e44714f1eea, type: 3}
   backButtonArtwork: {fileID: 21300000, guid: f0ed895e0537d3f4c86d0e1bdbc897d1, type: 3}
   collectButtonArtwork: {fileID: 21300000, guid: f1d25a81494c8f448b7cb3cab5dff747, type: 3}
   unreadDot: {fileID: 21300000, guid: cf54dc24d00b9e64cba0c7eb70e13391, type: 3}
   walletIcon: {fileID: -3106762493133011889, guid: beeec93932302e44897ce6273e9b3b09, type: 3}
+  upgradeFrame: {fileID: 21300000, guid: 65c619f06abd8764eb7d986294b5cd6e, type: 3}
+  upgradeBackground: {fileID: 21300000, guid: 366cf8b19b91ce34da7e6f2692e361d0, type: 3}
+  upgradeRowArtwork: {fileID: 21300000, guid: a000ad292983d1a4a9bb9bef65656431, type: 3}
+  upgradeIconBox: {fileID: 21300000, guid: 85bb7076d1ea1f643af3231dab6b8eb6, type: 3}
+  upgradeLevelArtwork: {fileID: 21300000, guid: 5dd2d6e9c45046f499990dfa5ce2722b, type: 3}
+  upgradeLevelInactive: {fileID: 21300000, guid: 82104fc269e90fc4da86231e452a2f89, type: 3}
+  upgradeLevelActive: {fileID: 21300000, guid: 7ef33e3e535a419409c7de12765982ff, type: 3}
+  upgradeBuyDisabled: {fileID: 21300000, guid: 8068022ba42978d46958a04a04dd3d02, type: 3}
+  allSelected: {fileID: 21300000, guid: 08b6f15880511a849a4c3d976f0cac88, type: 3}
+  allUnselected: {fileID: 21300000, guid: 05e8355b53b33114f9a5c0fc44ef887a, type: 3}
+  playerSelected: {fileID: 21300000, guid: 67416e75ab347f1488217531194e793f, type: 3}
+  playerUnselected: {fileID: 21300000, guid: b9b42fd2d095de54495d82e09d2c8abb, type: 3}
+  treeSelected: {fileID: 21300000, guid: a73a7881b00a3ae4b9fa0048be2a6a5e, type: 3}
+  treeUnselected: {fileID: 21300000, guid: 43d238fec0e48cb4982fffca85535d97, type: 3}
+  upgradeRowPrefab: {fileID: 6028332655563684249, guid: 46d64beb442b8014ea4d0001c9267f45, type: 3}
+  upgradePixelFont: {fileID: 12800000, guid: 0e2df659351337d41baa79f392c40fc7, type: 3}
   backgroundColor: {r: 0.2, g: 0.3, b: 0.34, a: 1}
   treeColor: {r: 0.9, g: 0.73, b: 0.31, a: 1}
   treeSize: {x: 150, y: 200}
@@ -51,7 +67,7 @@ MonoBehaviour:
   - id: collect-range
     available: 1
     title: Collect Range
-    description: No range at level 0. Unlock and expand collection radius.
+    description: No range at level 1. Unlock and expand collection radius.
     effect: 1
     icon: {fileID: 0}
     levels:

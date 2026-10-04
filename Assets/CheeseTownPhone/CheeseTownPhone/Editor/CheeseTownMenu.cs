@@ -103,6 +103,13 @@ namespace CheeseTownPhone.Editor
             Preview("Unread dot",data.unreadDot,Color.clear);
             Preview("Wallet icon",data.walletIcon,Color.clear);
             // END ADDED
+            // BEGIN ADDED: Preview the new shop skin alongside its editable configuration.
+            Preview("Upgrade frame",data.upgradeFrame,Color.clear);
+            Preview("Upgrade background",data.upgradeBackground,Color.clear);
+            Preview("Upgrade row",data.upgradeRowArtwork,Color.clear);
+            Preview("Upgrade icon box",data.upgradeIconBox,Color.clear);
+            Preview("Disabled buy button",data.upgradeBuyDisabled,Color.clear);
+            // END ADDED
             foreach (var entry in data.upgrades) if (entry != null) Preview(entry.title+" icon",entry.icon,new Color(.2f,.3f,.35f));
         }
         static void Preview(string title,Sprite sprite,Color fallback)
