@@ -120,6 +120,8 @@ namespace CheeseTownPhone.Editor
             var demo = UnityEngine.Object.FindAnyObjectByType<CheeseTownDemo>();
             if (!EditorApplication.isPlaying || demo == null) throw new Exception("Start a fresh Play session for welcome checks.");
             Check(!demo.PhoneOpen && !demo.EndingOpen, "startup leaves world visible");
+            // Welcome checks start at the second tutorial step; the integration runner covers real pickup.
+            if (demo.HarvestTutorialActive) { demo.Progress.CollectWorld(1); demo.Refresh(); }
             var launcher = demo.GetComponentsInChildren<Button>().Single(b => b.name == "Open tablet");
             Check(launcher.GetComponent<Outline>().enabled, "unread welcome highlights launcher");
             Check(demo.Progress.Letters[0].Id == "welcome" && !demo.Progress.Letters[0].IsRead, "welcome is first unread letter");

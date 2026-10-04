@@ -73,6 +73,7 @@ namespace CheeseTownPhone
                 events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();
             }
             Render(false);
+            BuildTutorial();
             controls = new InputActionMap("Cheese Town Tablet");
             controls.AddAction("Tablet", InputActionType.Button, "<Keyboard>/tab").performed += _ => TogglePhone();
             controls.AddAction("Back", InputActionType.Button, "<Keyboard>/escape").performed += _ =>
@@ -257,7 +258,7 @@ namespace CheeseTownPhone
         void ChangeFilter(int value) { filter = value; Render(PhoneOpen); }
         public void TogglePhone()
         {
-            if (EndingOpen) return;
+            if (EndingOpen || HarvestTutorialActive) return;
             tablet.SetActive(!tablet.activeSelf);
             if (PhoneOpen)
             {
@@ -369,9 +370,10 @@ namespace CheeseTownPhone
             // BEGIN ADDED: The supplied dot reflects the existing unread count.
             UpdateUnreadDot();
             // END ADDED
-            closedUnread.text = WelcomeUnread ? "YOU HAVE A WELCOME LETTER" : unread;
-            welcomeGlow.enabled = WelcomeUnread && !PhoneOpen;
-            tabletLauncher.GetComponentInChildren<Text>().text = WelcomeUnread
+            closedUnread.text = HarvestTutorialActive ? "" : WelcomeUnread ? "YOU HAVE A WELCOME LETTER" : unread;
+            welcomeGlow.enabled = WelcomeUnread && !PhoneOpen && !HarvestTutorialActive;
+            tabletLauncher.interactable = !HarvestTutorialActive;
+            tabletLauncher.GetComponentInChildren<Text>().text = WelcomeUnread && !HarvestTutorialActive
                 ? "NEW LETTER   [TAB]" : "TABLET   [TAB]";
             closedUnread.gameObject.SetActive(!PhoneOpen);
             letter.text = count == 0 ? "No letters yet.\n\nCollect cheese to hear from Mayor Ellis." : Progress.Letters[selectedLetter].Body;
@@ -409,6 +411,6 @@ namespace CheeseTownPhone
         }
         void OnEnable() { controls?.Enable(); }
         void OnDisable() { controls?.Disable(); }
-        void OnDestroy() { controls?.Dispose();  }
+        void OnDestroy() { controls?.Dispose(); if (tutorialFont != null) Release(tutorialFont); }
     }
 }
