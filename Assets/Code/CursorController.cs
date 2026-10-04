@@ -51,7 +51,9 @@ public class CursorController : MonoBehaviour
     void OnChopStarted(InputAction.CallbackContext context)
     {
         var tablet = FindAnyObjectByType<CheeseTownPhone.CheeseTownDemo>();
-        if (tablet != null && (tablet.PhoneOpen || tablet.EndingOpen)) return;
+        // BEGIN CHANGED: Prevent world chops through a tablet that is still closing.
+        if (tablet != null && tablet.BlocksWorldInput) return;
+        // END CHANGED
         transform.rotation = Quaternion.Euler(0, 0, 45);
         if (chopHitbox == null) return;
         HashSet<Tree> hitTrees = new HashSet<Tree>();

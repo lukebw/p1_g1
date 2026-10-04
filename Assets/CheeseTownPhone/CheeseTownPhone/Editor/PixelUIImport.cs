@@ -99,6 +99,9 @@ namespace CheeseTownPhone.Editor
             // END ADDED
             if (settings.walletIcon == null) settings.walletIcon = AssetDatabase.LoadAllAssetsAtPath("Assets/Art/Cheese_01.png").OfType<Sprite>().FirstOrDefault();
             if (settings.cheeseTree == null) settings.cheeseTree = AssetDatabase.LoadAllAssetsAtPath("Assets/Art/Cheese_tree_01.png").OfType<Sprite>().FirstOrDefault();
+            // BEGIN ADDED: Generate missing views once without overwriting edited prefab layouts.
+            if (settings.tabletPrefab == null) settings.tabletPrefab = TabletPrefabBuilder.Ensure(settings);
+            // END ADDED
             settings.ValidateSettings();
             EditorUtility.SetDirty(settings);
             AssetDatabase.SaveAssets();

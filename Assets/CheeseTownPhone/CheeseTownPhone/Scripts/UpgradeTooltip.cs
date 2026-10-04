@@ -9,10 +9,16 @@ namespace CheeseTownPhone
     public sealed class UpgradeTooltip : MonoBehaviour
     // END CHANGED
     {
-        RectTransform stage, panel, viewport, content;
-        CanvasGroup visibility;
-        Text body;
-        ScrollRect scroll;
+        // BEGIN CHANGED: Persist visual references when the shared overlay is saved in a prefab.
+        [SerializeField] RectTransform stage, panel, viewport, content;
+        [SerializeField] CanvasGroup visibility;
+        [SerializeField] Text body;
+        [SerializeField] ScrollRect scroll;
+        void LateUpdate()
+        {
+            if (content != null) content.anchoredPosition = new Vector2(0, Mathf.Round(content.anchoredPosition.y));
+        }
+        // END CHANGED
         UpgradeRowView owner;
         float showAt;
         Vector2 pointer;

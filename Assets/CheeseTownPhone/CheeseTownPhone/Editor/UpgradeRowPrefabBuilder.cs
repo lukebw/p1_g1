@@ -42,9 +42,13 @@ namespace CheeseTownPhone.Editor
                 var buy = MakeImage(root, "Buy", settings.upgradeButtonArtwork, 379, 9, 176, 37);
                 buy.type = Image.Type.Sliced; buy.pixelsPerUnitMultiplier = 2; buy.raycastTarget = true;
                 view.buy = buy.gameObject.AddComponent<Button>(); view.buy.targetGraphic = buy;
-                view.buy.transition = Selectable.Transition.SpriteSwap;
-                var states = view.buy.spriteState; states.disabledSprite = settings.upgradeBuyDisabled;
-                view.buy.spriteState = states;
+                // BEGIN CHANGED: Match header hover/press tint; RefreshDisplay already supplies disabled artwork.
+                view.buy.transition = Selectable.Transition.ColorTint;
+                var colors = view.buy.colors;
+                colors.normalColor = Color.white; colors.highlightedColor = new Color(1, .95f, .85f);
+                colors.pressedColor = new Color(.8f, .8f, .8f); colors.disabledColor = Color.white;
+                colors.fadeDuration = 0; view.buy.colors = colors;
+                // END CHANGED
                 view.price = MakeText(buy.transform, "Price", "9999", settings.upgradePixelFont, 39, 0, 64, 37, 16, TextAnchor.MiddleCenter);
                 view.markerArea = MakeRect(root, "Level markers", 210, 29, 67, 15);
                 view.markerTemplate = MakeImage(view.markerArea, "Marker template", settings.upgradeLevelInactive, 0, 0, 15, 15);

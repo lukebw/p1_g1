@@ -16,7 +16,9 @@ namespace CheeseTownPhone
         [SerializeField] TabletSettings settings;
         public TabletSettings Settings => settings;
         public TownProgress Progress { get; private set; }
-        public bool PhoneOpen => tablet != null && tablet.activeSelf;
+        // BEGIN CHANGED: Navigation follows the requested state while closing visuals still block gameplay.
+        public bool PhoneOpen => tabletView != null ? tabletView.IsOpen : tablet != null && tablet.activeSelf;
+        // END CHANGED
         public bool EndingOpen => Progress != null && Progress.GameEnded;
         GameObject ending;
         Button tabletLauncher;
@@ -129,6 +131,9 @@ namespace CheeseTownPhone
         {
             // BEGIN ADDED: Route configured artwork through the native pixel layout.
             ConfigurePixelLayout();
+            // BEGIN ADDED: Saved layout references replace runtime construction for configured projects.
+            if (settings.tabletPrefab != null) { RenderPrefab(open); return; }
+            // END ADDED
             if (HasPixelSkin) { RenderPixelSkin(open); return; }
             // END ADDED
             foreach (Transform child in stage) { child.gameObject.SetActive(false); Release(child.gameObject); }
@@ -186,6 +191,9 @@ namespace CheeseTownPhone
         void ShowEnding()
         {
             page = 0;
+            // BEGIN ADDED: Nested prefab pages need an explicit ending state instead of hierarchy assumptions.
+            if (tabletView != null) { tabletView.ShowEnding(); EventSystem.current?.SetSelectedGameObject(null); return; }
+            // END ADDED
             foreach (Transform child in stage) child.gameObject.SetActive(child.gameObject == tablet);
             foreach (Transform child in tablet.transform)
                 child.gameObject.SetActive(child.name == "Town Background Sprite Slot" || child.gameObject == ending);
@@ -255,10 +263,20 @@ namespace CheeseTownPhone
             replyButton = Action(mail.transform,"Reply to mayor","MARK AS READ",264,499,397,66,ReplyToMayor,true);
             nextLetter = Action(mail.transform,"Next letter","NEXT",681,499,240,66,() => SelectLetter(selectedLetter + 1));
         }
-        void ChangeFilter(int value) { filter = value; Render(PhoneOpen); }
+        // BEGIN CHANGED: Filtering preserves the frame, page state and all non-list controls.
+        void ChangeFilter(int value)
+        {
+            if (filter == value) return;
+            filter = value;
+            if (tabletView != null) RebuildPrefabRows(true); else Render(PhoneOpen);
+        }
+        // END CHANGED
         public void TogglePhone()
         {
             if (EndingOpen || HarvestTutorialActive) return;
+            // BEGIN ADDED: Reverse an in-flight transition from its current position.
+            if (tabletView != null) { TogglePrefab(); return; }
+            // END ADDED
             tablet.SetActive(!tablet.activeSelf);
             if (PhoneOpen)
             {
@@ -271,6 +289,9 @@ namespace CheeseTownPhone
         {
             if (EndingOpen) return;
             page = value;
+            // BEGIN ADDED: The view animates page visibility without rebuilding gameplay bindings.
+            if (tabletView != null) { tabletView.SetPage(page); Refresh(); return; }
+            // END ADDED
             if (shop != null) shop.SetActive(page == 1);
             if (mail != null) mail.SetActive(page == 2);
             // BEGIN ADDED: Pixel panels share one frame but hide home-only content.

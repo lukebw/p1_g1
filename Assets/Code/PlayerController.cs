@@ -67,7 +67,9 @@ public class PlayerController : MonoBehaviour
     {
         // Pause world controls while any tablet or story screen is visible.
         var tablet = FindAnyObjectByType<CheeseTownDemo>();
-        if (tablet != null && (tablet.PhoneOpen || tablet.EndingOpen)) return;
+        // BEGIN CHANGED: Keep movement blocked until the closing tablet has left the screen.
+        if (tablet != null && tablet.BlocksWorldInput) return;
+        // END CHANGED
 
         // Read player directional input, then calculate and apply the change in position
         Vector2 moveInput = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;

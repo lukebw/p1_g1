@@ -69,17 +69,23 @@ namespace CheeseTownPhone
 
         void LateUpdate()
         {
-            if (worldScene && tabletLauncher != null)
+            // BEGIN CHANGED: Prefab controls may opt out of automatic screen-edge placement.
+            if (worldScene && tabletLauncher != null && (tabletView == null || tabletView.anchorLauncherToScreen))
+            // END CHANGED
             {
                 // Anchor the entry to the actual screen, even when the pixel tablet is centered.
                 var canvasRect = (RectTransform)ScreenCanvas.transform;
                 var launcherRect = (RectTransform)tabletLauncher.transform;
                 launcherRect.anchorMin = launcherRect.anchorMax = new Vector2(.5f, .5f);
                 launcherRect.pivot = Vector2.one;
-                launcherRect.anchoredPosition = canvasRect.rect.size * .5f - new Vector2(20, 20);
+                // BEGIN CHANGED: Expose launcher margins without changing the tutorial flow.
+                launcherRect.anchoredPosition = canvasRect.rect.size * .5f - (tabletView != null ? tabletView.launcherScreenInset : new Vector2(20, 20));
+                // END CHANGED
                 closedUnread.rectTransform.anchorMin = closedUnread.rectTransform.anchorMax = new Vector2(.5f, .5f);
                 closedUnread.rectTransform.pivot = Vector2.one;
-                closedUnread.rectTransform.anchoredPosition = launcherRect.anchoredPosition - new Vector2(0, launcherRect.rect.height + 5);
+                // BEGIN CHANGED: Keep the unread gap editable with the launcher.
+                closedUnread.rectTransform.anchoredPosition = launcherRect.anchoredPosition - new Vector2(0, launcherRect.rect.height + (tabletView != null ? tabletView.unreadGap : 5));
+                // END CHANGED
             }
             if (tutorialRoot == null) return;
             if (Progress.TotalCollected == 0 && tutorialTree == null) FindTutorialTree();

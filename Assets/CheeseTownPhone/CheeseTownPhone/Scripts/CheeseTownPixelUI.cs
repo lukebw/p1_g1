@@ -140,7 +140,10 @@ namespace CheeseTownPhone
             tablet = Box(stage, "Landscape tablet", 0, 0, 640, 360, Color.clear).gameObject;
             tablet.GetComponent<Image>().raycastTarget = true;
             var frame = tablet.transform;
-            Artwork(frame, "Town Background Sprite Slot", settings.townBackground, "", 31, 68, 578, 223, settings.backgroundColor, false);
+            // BEGIN CHANGED: Cover the transparent inner edge and the space revealed by the moving footer.
+            Box(frame, "Interior backing", 29, 67, 582, 274, settings.backgroundColor);
+            Artwork(frame, "Town Background Sprite Slot", settings.townBackground, "", 30, 68, 580, 223, settings.backgroundColor, false);
+            // END CHANGED
             // BEGIN CHANGED: Keep the shop background below the shared frame and header controls.
             var shopBackdrop = PixelArtwork(frame, "Pixel shop background", settings.upgradeBackground, 0, 0);
             pixelShopBackground = shopBackdrop != null ? shopBackdrop.gameObject : null;

@@ -64,12 +64,18 @@ namespace CheeseTownPhone.Editor
         {
             var button = Button(demo, name);
             Check(button.interactable, name + " is enabled"); button.onClick.Invoke();
+            // BEGIN ADDED: Existing interaction checks assert settled UI; motion is exercised separately.
+            demo.CompleteUITransitions();
+            // END ADDED
         }
         static int BuyCount(CheeseTownDemo demo) => demo.GetComponentsInChildren<Button>().Count(b => b.name.StartsWith("Buy "));
         static void Press(Keyboard keyboard, Key key)
         {
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(key)); InputSystem.Update();
             InputSystem.QueueStateEvent(keyboard, new KeyboardState()); InputSystem.Update();
+            // BEGIN ADDED: Complete only presentation, leaving the input/economy path unchanged.
+            UnityEngine.Object.FindAnyObjectByType<CheeseTownDemo>()?.CompleteUITransitions();
+            // END ADDED
         }
         static void RunChecks()
         {
@@ -116,8 +122,15 @@ namespace CheeseTownPhone.Editor
                 Check(demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "welcome mailbox retained");
                 Click(demo, "Reply to mayor"); Click(demo, "Close tablet");
                 Check(demo.PhoneOpen && !demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "Back returns to main");
-                var frame = demo.GetComponentsInChildren<Image>().Single(i => i.name == "Pixel main frame");
-                Check(frame.rectTransform.sizeDelta == new Vector2(640, 360), "2x PNG maps to native size");
+                // BEGIN CHANGED: Native frame slices allow the footer to move independently.
+                Check(config.tabletPrefab != null && PrefabUtility.IsPartOfPrefabAsset(config.tabletPrefab), "editable tablet prefab assigned");
+                Check(demo.View.frame.GetComponent<RectTransform>().sizeDelta == new Vector2(640, 360), "2x PNG maps to native size");
+                Check(demo.View.frame.GetComponentsInChildren<RawImage>().Length == 4, "frame uses four unchanged texture crops");
+                CheckMotion(demo);
+                // BEGIN ADDED: A contrasting world color exposes gaps that a dark preview background hides.
+                CheckFrameCoverage(demo);
+                // END ADDED
+                // END CHANGED
                 var upgrade = Button(demo, "Shop button");
                 Check(upgrade.GetComponent<RectTransform>().sizeDelta == new Vector2(99, 33), "button export scale");
                 Capture(demo, "PixelUI-Main-1080p.png");
@@ -135,6 +148,9 @@ namespace CheeseTownPhone.Editor
                 Click(demo, "Player filter"); Check(BuyCount(demo) == 3, "player filter");
                 Click(demo, "Tree filter"); Check(BuyCount(demo) == 2, "tree filter");
                 Click(demo, "All filter"); Capture(demo, "PixelUI-Shop-1080p.png");
+                // BEGIN ADDED: Baking the hidden home layout must not leave the shop background disabled.
+                Check(demo.View.shopGroup.GetComponentsInChildren<Image>().Any(i => i.name == "Pixel shop background" && i.sprite == config.upgradeBackground), "shop retains its full-height green background");
+                // END ADDED
                 // BEGIN ADDED: Compare against an uncropped generator to catch missing last lines.
                 foreach (var text in demo.GetComponentsInChildren<Text>().Where(t => t.name == "Title" || t.name == "Description"))
                 {
@@ -178,6 +194,9 @@ namespace CheeseTownPhone.Editor
                 // END ADDED
                 // BEGIN ADDED: Hover retains full text outside the row mask and dismisses on list motion.
                 var firstView = Button(demo, "Buy move-speed").GetComponentInParent<UpgradeRowView>();
+                // BEGIN ADDED: Exercise real pointer states, including refresh and disabled purchases.
+                CheckPurchaseFeedback(demo, firstView);
+                // END ADDED
                 Check(firstView.DisplayLevel == 1 && firstView.DisplayMaxLevel == 3 && firstView.level.text == "LV 1/3", "one-based starting level");
                 // BEGIN ADDED: The default four-level tree fits one marker line at the new art height.
                 Check(Button(demo, "Buy tree-growth").GetComponentInParent<UpgradeRowView>().Height == 55, "four markers fit without an extra row");
@@ -221,7 +240,9 @@ namespace CheeseTownPhone.Editor
                     "tooltip horizontal bounds");
                 Check(-popupRect.anchoredPosition.y >= 72 && -popupRect.anchoredPosition.y + popupRect.rect.height <= 338,
                     "tooltip vertical bounds");
-                demo.ShowPage(0); demo.ShowPage(1); Check(!tooltip.IsVisible, "returning to shop has no stale tooltip");
+                // BEGIN CHANGED: Assert tooltip dismissal after the reversible page transition settles.
+                demo.ShowPage(0); demo.ShowPage(1); demo.CompleteUITransitions(); Check(!tooltip.IsVisible, "returning to shop has no stale tooltip");
+                // END CHANGED
                 // END ADDED
                 // BEGIN CHANGED: Exercise the dedicated description component, not the row.
                 var descriptionHover = firstView.description.GetComponent<UpgradeDescriptionHover>();
@@ -329,7 +350,94 @@ namespace CheeseTownPhone.Editor
             }
         }
         // BEGIN ADDED: Offscreen Unity renders allow review at the target 1080p size.
-        static void Capture(CheeseTownDemo demo, string name)
+        // BEGIN ADDED: Exercise reversals and input gating at intermediate states, with scaled time stopped.
+        static void CheckMotion(CheeseTownDemo demo)
+        {
+            var view = demo.View; var panel = view.panel; var wallet = view.wallet;
+            demo.ShowPage(1); view.Advance(.1f); view.upgrades.Advance(.1f);
+            Check(view.IsTransitioning && view.footerMotion.anchoredPosition.y < view.footerHomePosition.y, "footer moves down while timeScale is zero");
+            Check(view.footerMotion.anchoredPosition.y > view.footerHomePosition.y - view.footerTravel, "footer has a real intermediate pose");
+            Check(view.upgrades.IsDealing && !view.shopGroup.interactable, "cards unfold while page input is gated");
+            Capture(demo, "PixelUI-Shop-Transition-1080p.png");
+            demo.ShowPage(0); view.Advance(.05f); demo.ShowPage(1); demo.CompleteUITransitions();
+            Check(view.panel == panel && view.wallet == wallet && !view.footerGroup.gameObject.activeSelf, "rapid navigation keeps component identity and reaches shop");
+            var scroll = view.upgrades.scroll; scroll.content.anchoredPosition = new Vector2(0, 12);
+            demo.Refresh(); Check(scroll.content.anchoredPosition.y == 12 && !view.upgrades.IsDealing, "refresh preserves scrolling without replaying cards");
+            Click(demo, "Player filter"); Check(demo.View == view && view.panel == panel && view.wallet == wallet, "filter rebuilds only rows");
+            Click(demo, "All filter"); demo.ShowPage(0); demo.CompleteUITransitions();
+            demo.TogglePhone(); view.Advance(.08f);
+            Check(!demo.PhoneOpen && demo.BlocksWorldInput && view.panelGroup.alpha > 0 && view.panelGroup.alpha < 1, "closing fades and blocks world input");
+            demo.TogglePhone(); view.Advance(.04f); demo.TogglePhone(); demo.CompleteUITransitions();
+            Check(!view.IsVisible && !demo.BlocksWorldInput, "reversed close releases gameplay at completion");
+            demo.TogglePhone(); view.Advance(view.openDuration - .00005f);
+            Check(view.IsTransitioning, "near-complete opening still advances to its input-ready endpoint");
+            view.Advance(.001f);
+            Check(demo.PhoneOpen && !view.IsTransitioning && view.homeGroup.interactable, "reopen restores town interaction");
+        }
+        // END ADDED
+        // BEGIN ADDED: Inspect rendered seam pixels at integer scales and an odd-size centered viewport.
+        static void CheckFrameCoverage(CheeseTownDemo demo)
+        {
+            var camera = UnityEngine.Object.FindAnyObjectByType<Camera>();
+            var previous = camera.backgroundColor; camera.backgroundColor = Color.magenta;
+            try
+            {
+                foreach (var size in new[] { new Vector2Int(1280, 720), new Vector2Int(1920, 1080),
+                    new Vector2Int(2560, 1440), new Vector2Int(1601, 901) })
+                {
+                    Capture(demo, "PixelUI-Frame-" + size.x + "x" + size.y + ".png", size.x, size.y, CheckEdgePixels);
+                }
+                demo.ShowPage(1); demo.View.Advance(.15f); demo.View.upgrades.Advance(.15f);
+                Capture(demo, "PixelUI-Frame-Transition.png", 1920, 1080, CheckEdgePixels);
+                demo.CompleteUITransitions();
+                Capture(demo, "PixelUI-Frame-Shop.png", 1920, 1080, CheckEdgePixels);
+                demo.ShowPage(0); demo.CompleteUITransitions();
+            }
+            finally { camera.backgroundColor = previous; }
+        }
+        static void CheckEdgePixels(Texture2D image)
+        {
+            var outside = image.GetPixel(0, 0);
+            Check(outside.r > .9f && outside.g < .1f && outside.b > .9f, "seam probe renders the contrasting world background");
+            float scale = CheeseTownDemo.PixelScaleFor(image.width, image.height);
+            float left = (image.width - 640 * scale) / 2, top = (image.height + 360 * scale) / 2;
+            foreach (float x in new[] { 30.5f, 609.5f })
+                foreach (float y in new[] { 100.5f, 200.5f, 289.5f, 290.5f, 299.5f, 320.5f, 338.5f })
+                {
+                    var pixel = image.GetPixel(Mathf.FloorToInt(left + x * scale), Mathf.FloorToInt(top - y * scale));
+                    Check(!(pixel.r > .9f && pixel.g < .1f && pixel.b > .9f),
+                        "opaque inner frame at " + x + "," + y + " / " + image.width + "x" + image.height);
+                }
+        }
+        static void CheckPurchaseFeedback(CheeseTownDemo demo, UpgradeRowView row)
+        {
+            var button = row.buy; var header = demo.View.shopButton;
+            Check(button.transition == Selectable.Transition.ColorTint && button.colors.fadeDuration == header.colors.fadeDuration
+                && button.colors.highlightedColor == header.colors.highlightedColor && button.colors.pressedColor == header.colors.pressedColor,
+                "buy uses the same hover/press tint as header buttons");
+            var pointer = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
+            EventSystem.current.SetSelectedGameObject(null); button.OnPointerExit(pointer);
+            Check(button.targetGraphic.canvasRenderer.GetColor() == button.colors.normalColor, "buy rests at its normal tint");
+            button.OnPointerEnter(pointer); demo.Refresh();
+            Check(button.targetGraphic.canvasRenderer.GetColor() == button.colors.highlightedColor, "buy hover survives data refresh");
+            Capture(demo, "PixelUI-Buy-Hover.png");
+            button.OnPointerDown(pointer); demo.Refresh();
+            Check(button.targetGraphic.canvasRenderer.GetColor() == button.colors.pressedColor, "buy darkens on pointer down");
+            Capture(demo, "PixelUI-Buy-Pressed.png");
+            button.OnPointerUp(pointer); EventSystem.current.SetSelectedGameObject(null);
+            Check(button.targetGraphic.canvasRenderer.GetColor() == button.colors.highlightedColor, "release restores hover");
+            row.RefreshDisplay(0, row.Option.levels.Count, false, "SPEED", "4", "6");
+            Check(button.targetGraphic.canvasRenderer.GetColor() == Color.white && button.GetComponent<Image>().sprite == row.disabledArtwork,
+                "disabled artwork remains untinted");
+            int coins = demo.Progress.Cheeses, level = demo.Progress.Level(row.Option);
+            button.OnPointerClick(pointer);
+            Check(demo.Progress.Cheeses == coins && demo.Progress.Level(row.Option) == level, "disabled pointer click cannot purchase");
+            demo.Refresh(); button.OnPointerExit(pointer); EventSystem.current.SetSelectedGameObject(null);
+            Check(button.targetGraphic.canvasRenderer.GetColor() == button.colors.normalColor, "pointer exit restores normal tint");
+        }
+        // END ADDED
+        // BEGIN CHANGED: Variable render sizes and pixel inspection verify coverage without changing game settings.
+        static void Capture(CheeseTownDemo demo, string name, int width = 1920, int height = 1080, Action<Texture2D> inspect = null)
         {
             var canvas = demo.ScreenCanvas;
             var camera = UnityEngine.Object.FindAnyObjectByType<Camera>();
@@ -337,17 +445,18 @@ namespace CheeseTownPhone.Editor
             float previousDistance = canvas.planeDistance;
             var previousTarget = camera.targetTexture;
             var scaler = canvas.GetComponent<CanvasScaler>(); float previousScale = scaler.scaleFactor;
-            var texture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.ARGB32);
-            var image = new Texture2D(1920, 1080, TextureFormat.RGBA32, false);
+            var texture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32);
+            var image = new Texture2D(width, height, TextureFormat.RGBA32, false);
             var previousActive = RenderTexture.active;
             try
             {
                 texture.Create(); camera.targetTexture = texture;
                 canvas.renderMode = RenderMode.ScreenSpaceCamera; canvas.worldCamera = camera; canvas.planeDistance = 1;
-                scaler.scaleFactor = 3; Canvas.ForceUpdateCanvases();
+                scaler.scaleFactor = CheeseTownDemo.PixelScaleFor(width, height); Canvas.ForceUpdateCanvases();
                 RenderPipeline.SubmitRenderRequest(camera, new UniversalRenderPipeline.SingleCameraRequest { destination = texture });
-                RenderTexture.active = texture; image.ReadPixels(new Rect(0, 0, 1920, 1080), 0, 0); image.Apply();
+                RenderTexture.active = texture; image.ReadPixels(new Rect(0, 0, width, height), 0, 0); image.Apply();
                 Directory.CreateDirectory("Logs"); File.WriteAllBytes("Logs/" + name, image.EncodeToPNG());
+                inspect?.Invoke(image);
             }
             finally
             {
@@ -357,6 +466,7 @@ namespace CheeseTownPhone.Editor
                 UnityEngine.Object.DestroyImmediate(image); UnityEngine.Object.DestroyImmediate(texture);
             }
         }
+        // END CHANGED
         // END ADDED
         static void Finish(Exception error)
         {
@@ -367,7 +477,7 @@ namespace CheeseTownPhone.Editor
             Directory.CreateDirectory("Logs");
             string result = error == null
                 // BEGIN CHANGED: Include the new skin, wheel and state checks in the report.
-                ? "PASS: description-only hover; effect-only tooltip; triangle glyph/preview cue; click-through popup/Buy pointer hits; immediate dismissal; long details scrolling; prefab; bitmap Point font; one-based levels; four-digit prices; data-only upgrades; player/tree purchase connections; 2x artwork; integer UI scale; pointer/wheel bounds; filters/disabled states; navigation; payout; buy/debit/max; wallet; mail; empty shop; ending. Unity " + Application.unityVersion
+                ? "PASS: opaque frame seams at 720p/1080p/1440p/odd viewport and during transition; buy hover/press/release/exit tint; tint survives refresh; disabled artwork/click guard; editable tablet prefab; cropped wood frame; green shop background; intermediate footer/card animation; unscaled motion; rapid reversals; closing world-input lock; component identity across filtering; scroll preserved on refresh; description-only hover; effect-only tooltip; triangle glyph/preview cue; click-through popup/Buy pointer hits; immediate dismissal; long details scrolling; prefab; bitmap Point font; one-based levels; four-digit prices; data-only upgrades; player/tree purchase connections; 2x artwork; integer UI scale; pointer/wheel bounds; filters/disabled states; navigation; payout; buy/debit/max; wallet; mail; empty shop; ending. Unity " + Application.unityVersion
                 // END CHANGED
                 : "FAIL: " + error;
             File.WriteAllText("Logs/pixel-ui-checks.txt", result);

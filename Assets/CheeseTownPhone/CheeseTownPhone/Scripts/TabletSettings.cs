@@ -69,6 +69,10 @@ namespace CheeseTownPhone
         [Header("Reusable upgrade UI")]
         public UpgradeRowView upgradeRowPrefab;
         public Font upgradePixelFont;
+        // BEGIN ADDED: Artists edit the saved tablet hierarchy instead of generated layout code.
+        [Header("Editable tablet UI")]
+        public TabletView tabletPrefab;
+        // END ADDED
         // END ADDED
         [Header("Placeholder colors and layout")]
         public Color backgroundColor = new Color(.20f, .30f, .34f, 1);
