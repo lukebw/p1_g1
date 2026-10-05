@@ -120,6 +120,7 @@ namespace CheeseTownPhone.Editor
             {
                 Press(keyboard, Key.Tab); Check(demo.PhoneOpen, "Tab opens welcome mailbox");
                 Check(demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "welcome mailbox retained");
+                CheckMailPresentation(demo);
                 Click(demo, "Reply to mayor"); Click(demo, "Close tablet");
                 Check(demo.PhoneOpen && !demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "Back returns to main");
                 // BEGIN CHANGED: Native frame slices allow the footer to move independently.
@@ -272,6 +273,7 @@ namespace CheeseTownPhone.Editor
                 Check(testPlayer.speed.x == 6 && firstView.DisplayLevel == 2, "world player receives prefab purchase");
                 // END ADDED
                 Check(demo.GetComponentsInChildren<Text>().Single(t => t.name == "Wallet").text == demo.Progress.Cheeses.ToString(), "live numeric wallet");
+                Check(demo.View.hudWallet.text == demo.Progress.Cheeses.ToString(), "HUD reflects purchase debit while hidden");
                 Click(demo, "Buy move-speed"); Check(!Button(demo, "Buy move-speed").interactable, "max-level purchase disabled");
                 // BEGIN ADDED: Sprite state and level markers must follow actual purchase progress.
                 Check(Button(demo, "Buy move-speed").GetComponent<Image>().overrideSprite == config.upgradeBuyDisabled, "max-level disabled artwork");
@@ -290,8 +292,9 @@ namespace CheeseTownPhone.Editor
                 while (Button(demo, "Next letter").interactable) Click(demo, "Next letter");
                 Click(demo, "Reply to mayor");
                 Check(!demo.GetComponentsInChildren<Image>().Any(i => i.name == "Unread dot"), "read mail clears dot");
+                Check(!demo.View.hudUnreadDot.activeSelf, "reading all mail clears the gameplay badge too");
                 Press(keyboard, Key.Escape); Press(keyboard, Key.Escape); Check(!demo.PhoneOpen, "Escape back and close");
-                Press(keyboard, Key.Tab); Check(demo.PhoneOpen, "Tab reopens main");
+                Press(keyboard, Key.Tab); Check(demo.PhoneOpen && demo.View.Page == 2, "Tab reopens messages after welcome is read");
                 var originalConfig = demo.Settings;
                 var edited = UnityEngine.Object.Instantiate(originalConfig);
                 demo.UseSettings(edited);
@@ -340,6 +343,7 @@ namespace CheeseTownPhone.Editor
                 foreach (var option in demo.Settings.upgrades) while (demo.Progress.CanBuy(option)) demo.Progress.Buy(option);
                 demo.Refresh(); Click(demo, "Letters button");
                 while (Button(demo, "Next letter").interactable) Click(demo, "Next letter");
+                foreach (var message in demo.Progress.Letters) CheckTextFits(demo.View.letter, message.Body);
                 Click(demo, "Reply to mayor"); Check(demo.EndingOpen, "final-letter ending retained");
                 Capture(demo, "PixelUI-Ending-1080p.png");
             }
@@ -372,8 +376,63 @@ namespace CheeseTownPhone.Editor
             demo.TogglePhone(); view.Advance(view.openDuration - .00005f);
             Check(view.IsTransitioning, "near-complete opening still advances to its input-ready endpoint");
             view.Advance(.001f);
-            Check(demo.PhoneOpen && !view.IsTransitioning && view.homeGroup.interactable, "reopen restores town interaction");
+            Check(demo.PhoneOpen && !view.IsTransitioning && view.mailGroup.interactable, "reopen restores message interaction");
+            demo.ShowPage(0); demo.CompleteUITransitions();
         }
+        // BEGIN ADDED: Validate native mail art, mutually exclusive footer faces and shared HUD data.
+        static void CheckMailPresentation(CheeseTownDemo demo)
+        {
+            var view = demo.View;
+            foreach (var sprite in new[] { demo.Settings.mailPaper, demo.Settings.mailPrevious, demo.Settings.mailNext, demo.Settings.mailRead })
+                Check(sprite != null && sprite.texture.filterMode == FilterMode.Point && sprite.texture.mipmapCount == 1, "mail art stays sharp");
+            Check(view.mailFooter.gameObject.activeInHierarchy && !view.townFooter.gameObject.activeInHierarchy, "mail replaces collection footer");
+            Check(view.read.GetComponentsInChildren<Text>().Length == 0 && view.launcher.GetComponentsInChildren<Text>(true).Length == 0,
+                "baked button lettering is not duplicated and old Tab launcher text is removed");
+            foreach (var letter in demo.Progress.Letters)
+                CheckTextFits(view.letter, letter.Body);
+            Capture(demo, "MailUI-Welcome.png");
+            var pointer = new PointerEventData(EventSystem.current) { button = PointerEventData.InputButton.Left };
+            view.read.OnPointerEnter(pointer);
+            Check(view.read.targetGraphic.canvasRenderer.GetColor() == view.back.colors.highlightedColor, "mail buttons share hover feedback");
+            view.read.OnPointerDown(pointer);
+            Check(view.read.targetGraphic.canvasRenderer.GetColor() == view.back.colors.pressedColor, "mail buttons share press feedback");
+            view.read.OnPointerUp(pointer); view.read.OnPointerExit(pointer); EventSystem.current.SetSelectedGameObject(null);
+            for (int turn = 0; turn < 3; turn++)
+            {
+                demo.ShowPage(turn == 1 ? 2 : 0);
+                for (int frame = 0; frame < 8; frame++)
+                {
+                    view.Advance(view.pageDuration / 8);
+                    Check(!(view.townFooter.gameObject.activeSelf && view.mailFooter.gameObject.activeSelf), "footer faces never overlap");
+                    if (view.IsTransitioning) Check(!view.footerGroup.interactable, "moving controls reject input");
+                    if (turn == 1 && frame == 5) Capture(demo, "MailUI-Footer-Turn.png");
+                }
+            }
+            demo.ShowPage(2); view.Advance(.08f); demo.ShowPage(0); view.Advance(.04f);
+            demo.ShowPage(2); demo.CompleteUITransitions();
+            Check(view.mailFooter.interactable && view.read.IsInteractable() && !view.townFooter.gameObject.activeSelf, "rapid reversal settles on readable mail");
+            Canvas.ForceUpdateCanvases();
+            var point = RectTransformUtility.WorldToScreenPoint(null, view.read.transform.TransformPoint(((RectTransform)view.read.transform).rect.center));
+            var hits = new List<RaycastResult>();
+            demo.ScreenCanvas.GetComponent<GraphicRaycaster>().Raycast(new PointerEventData(EventSystem.current) { position = point }, hits);
+            Check(hits.Count > 0 && hits[0].gameObject == view.read.gameObject, "read button is not covered by collection UI or paper");
+            demo.TogglePhone(); demo.CompleteUITransitions();
+            Check(view.worldHud.gameObject.activeInHierarchy && view.hudWallet.text == demo.Progress.Cheeses.ToString()
+                && view.hudUnreadDot.activeSelf, "closed HUD shows live cheese count and unread badge");
+            Check(view.closedUnread.text == "Press TAB to open messages." && view.closedUnread.gameObject.activeInHierarchy, "tutorial retains the new Tab hint");
+            Capture(demo, "MailUI-Gameplay-HUD.png");
+            Capture(demo, "MailUI-Gameplay-HUD-OddViewport.png", 1601, 901);
+            view.launcher.onClick.Invoke(); demo.CompleteUITransitions();
+            Check(view.Page == 2 && !view.worldHud.gameObject.activeSelf, "HUD envelope opens mail and hides behind panel");
+        }
+        static void CheckTextFits(Text text, string value)
+        {
+            var clipped = new TextGenerator(); var full = new TextGenerator();
+            var generation = text.GetGenerationSettings(text.rectTransform.rect.size);
+            clipped.Populate(value, generation); generation.verticalOverflow = VerticalWrapMode.Overflow; full.Populate(value, generation);
+            Check(clipped.characterCountVisible == full.characterCountVisible, "complete mail body fits paper: " + value);
+        }
+        // END ADDED
         // END ADDED
         // BEGIN ADDED: Inspect rendered seam pixels at integer scales and an odd-size centered viewport.
         static void CheckFrameCoverage(CheeseTownDemo demo)
@@ -453,6 +512,7 @@ namespace CheeseTownPhone.Editor
                 texture.Create(); camera.targetTexture = texture;
                 canvas.renderMode = RenderMode.ScreenSpaceCamera; canvas.worldCamera = camera; canvas.planeDistance = 1;
                 scaler.scaleFactor = CheeseTownDemo.PixelScaleFor(width, height); Canvas.ForceUpdateCanvases();
+                demo.View.PositionHud((RectTransform)canvas.transform); Canvas.ForceUpdateCanvases();
                 RenderPipeline.SubmitRenderRequest(camera, new UniversalRenderPipeline.SingleCameraRequest { destination = texture });
                 RenderTexture.active = texture; image.ReadPixels(new Rect(0, 0, width, height), 0, 0); image.Apply();
                 Directory.CreateDirectory("Logs"); File.WriteAllBytes("Logs/" + name, image.EncodeToPNG());
@@ -463,6 +523,7 @@ namespace CheeseTownPhone.Editor
                 RenderTexture.active = previousActive; camera.targetTexture = previousTarget;
                 canvas.renderMode = previousMode; canvas.worldCamera = previousCamera; canvas.planeDistance = previousDistance;
                 scaler.scaleFactor = previousScale; Canvas.ForceUpdateCanvases();
+                demo.View.PositionHud((RectTransform)canvas.transform);
                 UnityEngine.Object.DestroyImmediate(image); UnityEngine.Object.DestroyImmediate(texture);
             }
         }
@@ -477,7 +538,7 @@ namespace CheeseTownPhone.Editor
             Directory.CreateDirectory("Logs");
             string result = error == null
                 // BEGIN CHANGED: Include the new skin, wheel and state checks in the report.
-                ? "PASS: opaque frame seams at 720p/1080p/1440p/odd viewport and during transition; buy hover/press/release/exit tint; tint survives refresh; disabled artwork/click guard; editable tablet prefab; cropped wood frame; green shop background; intermediate footer/card animation; unscaled motion; rapid reversals; closing world-input lock; component identity across filtering; scroll preserved on refresh; description-only hover; effect-only tooltip; triangle glyph/preview cue; click-through popup/Buy pointer hits; immediate dismissal; long details scrolling; prefab; bitmap Point font; one-based levels; four-digit prices; data-only upgrades; player/tree purchase connections; 2x artwork; integer UI scale; pointer/wheel bounds; filters/disabled states; navigation; payout; buy/debit/max; wallet; mail; empty shop; ending. Unity " + Application.unityVersion
+                ? "PASS: supplied mail paper/buttons; full letter text fit; exclusive sliding footer faces; rapid mail reversals; mail button pointer/hover/press; gameplay HUD currency/unread data; envelope/Tab routing; retained tutorial hint; opaque frame seams at 720p/1080p/1440p/odd viewport and during transition; buy hover/press/release/exit tint; tint survives refresh; disabled artwork/click guard; editable tablet prefab; cropped wood frame; green shop background; intermediate footer/card animation; unscaled motion; rapid reversals; closing world-input lock; component identity across filtering; scroll preserved on refresh; description-only hover; effect-only tooltip; triangle glyph/preview cue; click-through popup/Buy pointer hits; immediate dismissal; long details scrolling; prefab; bitmap Point font; one-based levels; four-digit prices; data-only upgrades; player/tree purchase connections; 2x artwork; integer UI scale; pointer/wheel bounds; filters/disabled states; navigation; payout; buy/debit/max; wallet; mail; empty shop; ending. Unity " + Application.unityVersion
                 // END CHANGED
                 : "FAIL: " + error;
             File.WriteAllText("Logs/pixel-ui-checks.txt", result);

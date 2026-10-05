@@ -29,6 +29,23 @@ namespace CheeseTownPhone
         public Text wallet, stock, stats, production, notice, letter, reply, unread, closedUnread, shopWallet;
         public RectTransform tree;
         public GameObject treeCaption, unreadDot;
+        // BEGIN ADDED: Separate motion wrappers preserve editable footer and HUD placement.
+        [Header("Mail page and gameplay HUD")]
+        public CanvasGroup townFooter, mailFooter;
+        [Min(0)] public float footerTurnDistance = 40;
+        [Min(0)] public float mailSlide = 16;
+        public RectTransform worldHud;
+        public Text hudWallet;
+        public GameObject hudUnreadDot;
+        float footerMailAmount;
+        public void PositionHud(RectTransform canvas)
+        {
+            if (worldHud == null || !anchorLauncherToScreen) return;
+            worldHud.anchorMin = worldHud.anchorMax = new Vector2(.5f, .5f);
+            worldHud.anchoredPosition = new Vector2(Mathf.Round(-canvas.rect.width / 2 + launcherScreenInset.x),
+                Mathf.Round(canvas.rect.height / 2 - launcherScreenInset.y));
+        }
+        // END ADDED
 
         public bool IsOpen { get; private set; }
         public bool IsVisible => panel.gameObject.activeSelf;
@@ -40,7 +57,7 @@ namespace CheeseTownPhone
         bool PageMoving => expansion != (Page == 1 ? 1 : 0)
             || homeAmount != (Page == 0 ? 1 : 0)
             || shopAmount != (Page == 1 ? 1 : 0)
-            || mailAmount != (Page == 2 ? 1 : 0);
+            || mailAmount != (Page == 2 ? 1 : 0) || footerMailAmount != (Page == 2 ? 1 : 0);
 
         public void SetOpen(bool value, bool animate = true)
         {
@@ -75,12 +92,14 @@ namespace CheeseTownPhone
             homeAmount = Mathf.MoveTowards(homeAmount, Page == 0 ? 1 : 0, step);
             shopAmount = Mathf.MoveTowards(shopAmount, Page == 1 ? 1 : 0, step);
             mailAmount = Mathf.MoveTowards(mailAmount, Page == 2 ? 1 : 0, step);
+            footerMailAmount = Mathf.MoveTowards(footerMailAmount, Page == 2 ? 1 : 0, step);
             ApplyMotion();
         }
         void SnapPage()
         {
             expansion = shopAmount = Page == 1 ? 1 : 0;
             homeAmount = Page == 0 ? 1 : 0; mailAmount = Page == 2 ? 1 : 0;
+            footerMailAmount = mailAmount;
         }
         public void CompleteTransitions()
         {
@@ -101,14 +120,28 @@ namespace CheeseTownPhone
             // The panel keeps intercepting clicks until the close animation has finished.
             panelGroup.blocksRaycasts = IsVisible; panelGroup.interactable = IsOpen && openAmount == 1;
             bool ready = IsOpen && openAmount == 1 && !PageMoving;
+            notice.gameObject.SetActive(Page != 2);
             PageVisibility(homeGroup, homeAmount, ready && Page == 0);
             PageVisibility(shopGroup, shopAmount, ready && Page == 1);
             PageVisibility(mailGroup, mailAmount, ready && Page == 2);
             footerGroup.gameObject.SetActive(expansion < 1);
-            footerGroup.interactable = ready && Page == 0;
+            footerGroup.interactable = ready && Page != 1;
             footerGroup.blocksRaycasts = footerGroup.interactable;
             footerMotion.anchoredPosition = footerHomePosition + new Vector2(0, -Mathf.Round(footerTravel * Ease(expansion)));
             upgrades.revealMask.offsetMin = new Vector2(0, Mathf.Round(footerTravel * (1 - Ease(expansion))));
+            // BEGIN ADDED: Only one footer face exists visually at a time, including rapid reversals.
+            if (townFooter != null && mailFooter != null)
+            {
+                float town = Mathf.Clamp01(1 - footerMailAmount * 2);
+                float mail = Mathf.Clamp01(footerMailAmount * 2 - 1);
+                PageVisibility(townFooter, town, ready && Page == 0);
+                PageVisibility(mailFooter, mail, ready && Page == 2);
+                ((RectTransform)townFooter.transform).anchoredPosition = new Vector2(0, -Mathf.Round(footerTurnDistance * (1 - Ease(town))));
+                ((RectTransform)mailFooter.transform).anchoredPosition = new Vector2(0, Mathf.Round(footerTurnDistance * (1 - Ease(mail))));
+                ((RectTransform)mailGroup.transform).anchoredPosition = new Vector2(Mathf.Round(mailSlide * (1 - Ease(mailAmount))), 0);
+            }
+            if (worldHud != null) worldHud.gameObject.SetActive(!IsVisible && !ended);
+            // END ADDED
         }
         public void ShowEnding()
         {
@@ -118,6 +151,7 @@ namespace CheeseTownPhone
             homeGroup.gameObject.SetActive(false); shopGroup.gameObject.SetActive(false); mailGroup.gameObject.SetActive(false);
             footerGroup.gameObject.SetActive(false); frame.SetActive(false); header.SetActive(false);
             notice.gameObject.SetActive(false); launcher.gameObject.SetActive(false); closedUnread.gameObject.SetActive(false);
+            if (worldHud != null) worldHud.gameObject.SetActive(false);
             background.SetActive(true); ending.SetActive(true); upgrades.tooltip.Hide();
         }
     }

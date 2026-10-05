@@ -5,12 +5,12 @@ The existing town, upgrades and mail interfaces use `TabletView.prefab`, assigne
 ## Editing in Unity
 
 1. Choose **Cheese Town > Edit Tablet UI Prefab**, or open `Assets/CheeseTownPhone/CheeseTownPhone/Prefabs/TabletView.prefab`.
-2. Select the prefab root. Its inspector has **Town / Upgrades / Mail** preview buttons. These reveal the actual child UI objects in Prefab Mode.
+2. Select the prefab root. Its inspector has **Town / Upgrades / Mail / HUD** preview buttons. These reveal the actual child UI objects in Prefab Mode.
 3. Edit child RectTransforms, Images and Text components in the Scene view/Inspector. Keep the root at **640 x 360**. The supplied 2x PNGs display at half their exported dimensions.
 4. Edit `Header controls`, `Town page`, `Mayor mailbox`, `Footer clip/ Footer motion` children and `List placement` to change their layouts. The notification placement objects control feedback positions. Runtime controls the panel/footer motion offsets and list mask reveal; edit the placement objects and the graphics beneath them instead of animation offsets.
 5. Adjust opening duration, page duration, slide distance and footer travel on `TabletView`. Adjust card duration, stagger and slide on the `UpgradeShopView` component of `Upgrade shop panel`. Durations use unscaled time; motion snaps to logical pixels without scaling sprites.
 
-The world launcher has editable screen-edge insets and an unread-message gap on the root view. Disable `Anchor Launcher To Screen` to position it entirely through its RectTransform.
+The gameplay HUD uses the root view's screen-edge insets to stay at the upper left. It contains the cheese icon/count, envelope and unread dot. Disable `Anchor Launcher To Screen` to position `Gameplay HUD` entirely through its RectTransform. It hides while the tablet is visible.
 
 The root must retain its assigned component references. Moving children within the prefab does not break those references. Preview visibility is normalized at runtime. The font and colors are the serialized UI component values; the import menu does not rebuild an existing tablet or upgrade-row prefab.
 
@@ -39,6 +39,18 @@ The Buy button in `UpgradeRow.prefab` now uses the same immediate Color Tint hov
 The repository explicitly checks out C# and Markdown files in LF via `.gitattributes`, consistent with its Unity YAML rule. Edited source files use LF; unrelated working files were left in their existing format. No global Git configuration was changed.
 
 ## Verification
+
+### Mail page and gameplay HUD
+
+The supplied `UI_MASSAGE_back`, `UI_PREVIOUS`, `UI_NEXTY` and `UI_MARK AS READ` sprites use Point filtering, no compression/mipmaps, and half their exported dimensions. `Assets/Art/UI/References/UI_Massage_ref.png` is an authoring reference only. Button lettering comes from the artwork; dynamic letter text uses the existing native eight-pixel font.
+
+Edit the paper, heading, status and body under `Mayor mailbox/Letter clip/Letter placement`. The body clip stays inside the wooden uprights. Edit footer buttons under `Footer clip/Footer motion/Footer controls clip/Footer controls placement/Mail footer motion`; the sibling `Town footer motion` contains collection information and the Collect button. The mask and separate motion wrappers allow one footer face to slide out before the other enters. No two sets of footer controls are visible together, and their input is disabled during the turn. `Footer Turn Distance`, `Mail Slide` and `Page Duration` on the root control the animation. Positions are rounded to logical pixels, with unscaled time and reversible transitions.
+
+Tab and the HUD envelope now open messages directly; Tab still closes the tablet. The existing first-pickup tutorial gate remains: the envelope unlocks after actual pickup, followed by `Press TAB to open messages.` until the welcome letter is read. The HUD count and red dot always follow `TownProgress`; opening a letter does not mark it read. The supplied Mark As Read button keeps its artwork when acknowledging the final letter, which retains the existing ending behavior.
+
+`MailPrefabUpgrade` performs a one-time targeted migration during the artwork import only if the existing prefab has no HUD reference. It leaves existing upgrade rows and unrelated layout edits intact. Subsequent imports do not overwrite the authored mail layout.
+
+The mail/HUD update passed both suites in an isolated Unity 6000.6.2f1 project. Checks cover text fit for every current letter, footer non-overlap and reversal, read-button raycasts/tints, currency after purchases and real pickups, unread badge clearing, and tutorial gating. Welcome mail, an intermediate footer turn, and the HUD at 1080p and an odd-size viewport were rendered and inspected. Reports and captures are in `Logs/mail-ui-checks.txt`, `Logs/mail-world-checks.txt`, and `Logs/MailUI-*.png`.
 
 **Cheese Town > Run Pixel UI Checks** checks real Play-mode navigation, purchases and effects on player/tree components, category filtering, scroll limits, text fit, hover click-through, mail and ending behavior. It also checks intermediate animation poses, rapid reversals, closing input protection and component identity across category changes. Test output and rendered UI captures go to the ignored `Logs` directory.
 

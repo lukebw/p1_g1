@@ -22,6 +22,7 @@ namespace CheeseTownPhone.Editor
                 UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(host, scene);
                 var demo = host.AddComponent<CheeseTownDemo>();
                 var view = demo.CreateEditableTablet(settings);
+                if (settings.mailPaper != null) MailPrefabUpgrade.Apply(view, settings);
                 PrefabUtility.SaveAsPrefabAsset(view.gameObject, Path);
                 return AssetDatabase.LoadAssetAtPath<TabletView>(Path);
             }
@@ -74,6 +75,14 @@ namespace CheeseTownPhone.Editor
                     view.SetPage(page, false); view.SetOpen(true, false); SceneView.RepaintAll();
                 }
             }
+            // BEGIN ADDED: Reveal the serialized HUD for visual placement without entering Play mode.
+            if (GUILayout.Button("HUD"))
+            {
+                var view = (TabletView)target;
+                Undo.RegisterFullObjectHierarchyUndo(view.gameObject, "Preview gameplay HUD");
+                view.SetOpen(false, false); SceneView.RepaintAll();
+            }
+            // END ADDED
             EditorGUILayout.EndHorizontal();
         }
     }

@@ -45,11 +45,19 @@ public sealed class TutorialCheckRunner : MonoBehaviour
         Check(demo.Progress.TotalCollected > 0 && !demo.HarvestTutorialActive, "real pickup advances tutorial");
         Check(!overlay.gameObject.activeSelf, "shade clears after pickup");
         Check(launcher.interactable && launcher.GetComponent<Outline>().enabled && !demo.PhoneOpen, "Tab glows without forced popup");
+        // BEGIN ADDED: The icon HUD follows actual pickups and preserves the tutorial's Tab announcement.
+        Check(demo.View.hudWallet.text == demo.Progress.Cheeses.ToString() && demo.View.hudUnreadDot.activeSelf, "HUD shares pickup currency and unread state");
+        Check(demo.View.closedUnread.text == "Press TAB to open messages." && demo.View.closedUnread.gameObject.activeInHierarchy, "updated message tutorial hint");
+        var hudPosition = demo.View.worldHud.anchoredPosition;
+        Check(hudPosition.x < 0 && hudPosition.y > 0, "gameplay HUD is at the upper left");
+        // END ADDED
         launcher.onClick.Invoke();
         Check(demo.PhoneOpen && demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message" && t.text.Contains("Welcome to Cheese Town!")), "normal welcome letter opens");
         demo.ReplyToMayor();
         demo.TogglePhone();
         Check(!launcher.GetComponent<Outline>().enabled && !demo.HarvestTutorialActive, "reading completes guidance");
+        demo.CompleteUITransitions();
+        Check(!demo.View.closedUnread.gameObject.activeSelf && demo.View.hudUnreadDot.activeSelf == (demo.Progress.UnreadCount > 0), "hint clears while unread badge follows remaining letters");
         Debug.Log("TUTORIAL_CHECKS_PASS: nearest tree, English chop/pickup instructions, nonblocking overlay, actual drop/pickup, Tab highlight, welcome letter, completion.");
         Destroy(gameObject);
     }

@@ -60,7 +60,9 @@ namespace CheeseTownPhone
             if (open)
             {
                 if (WelcomeUnread) selectedLetter = 0;
-                page = WelcomeUnread ? 2 : 0;
+                // BEGIN CHANGED: Both Tab and the envelope enter messages after tutorial unlock.
+                page = 2;
+                // END CHANGED
                 tabletView.SetPage(page, false);
             }
             tabletView.SetOpen(open); EventSystem.current?.SetSelectedGameObject(null); Refresh();

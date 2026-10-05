@@ -38,6 +38,10 @@ MonoBehaviour:
   playerUnselected: {fileID: 21300000, guid: b9b42fd2d095de54495d82e09d2c8abb, type: 3}
   treeSelected: {fileID: 21300000, guid: a73a7881b00a3ae4b9fa0048be2a6a5e, type: 3}
   treeUnselected: {fileID: 21300000, guid: 43d238fec0e48cb4982fffca85535d97, type: 3}
+  mailPaper: {fileID: 21300000, guid: 2c7fd1ff00170a84d8535e374aa8545d, type: 3}
+  mailPrevious: {fileID: 21300000, guid: 6d87e65a0d6c5fb43ac8755dbce57499, type: 3}
+  mailNext: {fileID: 21300000, guid: a2ccaa5b51b387849bc76d921be704c9, type: 3}
+  mailRead: {fileID: 21300000, guid: 1c2c8c597fc6d0f44abed4a008a353ef, type: 3}
   upgradeRowPrefab: {fileID: 6028332655563684249, guid: 46d64beb442b8014ea4d0001c9267f45, type: 3}
   upgradePixelFont: {fileID: 12800000, guid: 0e2df659351337d41baa79f392c40fc7, type: 3}
   tabletPrefab: {fileID: 580031703993123101, guid: 7d754d6b6610f3a43b6db480024932da, type: 3}

@@ -64,6 +64,10 @@ namespace CheeseTownPhone
         public Sprite allSelected, allUnselected;
         public Sprite playerSelected, playerUnselected;
         public Sprite treeSelected, treeUnselected;
+        // BEGIN ADDED: Mail artwork uses the same native two-times export workflow.
+        [Header("Pixel mail page")]
+        public Sprite mailPaper, mailPrevious, mailNext, mailRead;
+        // END ADDED
         // END ADDED
         // BEGIN ADDED: Reusable views keep layout editing separate from upgrade data.
         [Header("Reusable upgrade UI")]

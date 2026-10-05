@@ -391,22 +391,34 @@ namespace CheeseTownPhone
             // BEGIN ADDED: The supplied dot reflects the existing unread count.
             UpdateUnreadDot();
             // END ADDED
-            closedUnread.text = HarvestTutorialActive ? "" : WelcomeUnread ? "YOU HAVE A WELCOME LETTER" : unread;
+            // BEGIN CHANGED: The compact HUD shares live session data and keeps the tutorial hint.
+            bool hasHud = tabletView != null && tabletView.worldHud != null;
+            closedUnread.text = hasHud ? "Press TAB to open messages." :
+                HarvestTutorialActive ? "" : WelcomeUnread ? "YOU HAVE A WELCOME LETTER" : unread;
             welcomeGlow.enabled = WelcomeUnread && !PhoneOpen && !HarvestTutorialActive;
             tabletLauncher.interactable = !HarvestTutorialActive;
-            tabletLauncher.GetComponentInChildren<Text>().text = WelcomeUnread && !HarvestTutorialActive
-                ? "NEW LETTER   [TAB]" : "TABLET   [TAB]";
-            closedUnread.gameObject.SetActive(!PhoneOpen);
+            if (hasHud)
+            {
+                tabletView.hudWallet.text = Progress.Cheeses.ToString();
+                tabletView.hudUnreadDot.SetActive(Progress.UnreadCount > 0);
+            }
+            else tabletLauncher.GetComponentInChildren<Text>().text = WelcomeUnread && !HarvestTutorialActive
+                    ? "NEW LETTER   [TAB]" : "TABLET   [TAB]";
+            closedUnread.gameObject.SetActive(!PhoneOpen && (!hasHud || WelcomeUnread && !HarvestTutorialActive));
+            // END CHANGED
             letter.text = count == 0 ? "No letters yet.\n\nCollect cheese to hear from Mayor Ellis." : Progress.Letters[selectedLetter].Body;
             reply.text = count == 0 ? "Collected: " + Progress.TotalCollected :
                 "LETTER " + (selectedLetter + 1) + " / " + count +
                 (Progress.Letters[selectedLetter].IsRead ? "  |  READ" : "  |  UNREAD");
-            if (Progress.MailStopped) reply.text += "\nOrdinary mail has ended. Your letter history remains available.";
+            if (Progress.MailStopped) reply.text += hasHud ? "  |  MAIL ENDED" : "\nOrdinary mail has ended. Your letter history remains available.";
             previousLetter.interactable = selectedLetter > 0;
             nextLetter.interactable = selectedLetter >= 0 && selectedLetter < count - 1;
             replyButton.interactable = count > 0 && !Progress.Letters[selectedLetter].IsRead;
-            replyButton.GetComponentInChildren<Text>().text = count > 0 && Progress.Letters[selectedLetter].Id == TownProgress.FinalLetterId
-                ? "FINISH READING" : "MARK AS READ";
+            // BEGIN CHANGED: Supplied mail buttons already contain their lettering.
+            var readLabel = replyButton.GetComponentInChildren<Text>();
+            if (readLabel != null) readLabel.text = count > 0 && Progress.Letters[selectedLetter].Id == TownProgress.FinalLetterId
+                    ? "FINISH READING" : "MARK AS READ";
+            // END CHANGED
         }
         string Current(UpgradeEffect effect)
         {

@@ -70,7 +70,9 @@ namespace CheeseTownPhone
         void LateUpdate()
         {
             // BEGIN CHANGED: Prefab controls may opt out of automatic screen-edge placement.
-            if (worldScene && tabletLauncher != null && (tabletView == null || tabletView.anchorLauncherToScreen))
+            if (tabletView != null && tabletView.worldHud != null)
+                tabletView.PositionHud((RectTransform)ScreenCanvas.transform);
+            else if (worldScene && tabletLauncher != null && (tabletView == null || tabletView.anchorLauncherToScreen))
             // END CHANGED
             {
                 // Anchor the entry to the actual screen, even when the pixel tablet is centered.

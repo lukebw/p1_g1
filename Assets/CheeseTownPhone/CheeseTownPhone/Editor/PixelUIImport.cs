@@ -16,7 +16,8 @@ namespace CheeseTownPhone.Editor
             "UI_Upgrade_frame.png", "UI_Upgrade_back.png", "UI_Upgrade_bar.png", "UI_UPGRADE_ICON_BOX.png",
             "UI_LEVEL.png", "UI_LEVEL_count.png", "UI_LEVEL_count_actived.png", "UI_UPGRADE_BUY.png", "UI_UPGRADE_BUY_disable.png",
             "UI_All_selected.png", "UI_All_unselect.png", "UI_Player_selected.png", "UI_Player_unselect.png",
-            "UI_Tree_selected.png", "UI_Treel_unselect.png"
+            "UI_Tree_selected.png", "UI_Treel_unselect.png",
+            "UI_MASSAGE_back.png", "UI_PREVIOUS.png", "UI_NEXTY.png", "UI_MARK AS READ.png"
         };
         // END CHANGED
 
@@ -65,6 +66,12 @@ namespace CheeseTownPhone.Editor
             settings.envelopeIcon = Sprite("UI_massage.png");
             settings.shopIcon = Sprite("UI_upgrade.png");
             settings.unreadDot = Sprite("UI_reddot.png");
+            // BEGIN ADDED: The reference is documentation; only separate artwork is bound to UI.
+            settings.mailPaper = Sprite("UI_MASSAGE_back.png");
+            settings.mailPrevious = Sprite("UI_PREVIOUS.png");
+            settings.mailNext = Sprite("UI_NEXTY.png");
+            settings.mailRead = Sprite("UI_MARK AS READ.png");
+            // END ADDED
             // BEGIN CHANGED: Bind the new font and each supplied shop state explicitly.
             settings.interfaceFont = AssetDatabase.LoadAssetAtPath<Font>(ArtPath + "Fonts/PressStart2P.ttf");
             settings.upgradeFrame = Sprite("UI_Upgrade_frame.png");
@@ -101,6 +108,7 @@ namespace CheeseTownPhone.Editor
             if (settings.cheeseTree == null) settings.cheeseTree = AssetDatabase.LoadAllAssetsAtPath("Assets/Art/Cheese_tree_01.png").OfType<Sprite>().FirstOrDefault();
             // BEGIN ADDED: Generate missing views once without overwriting edited prefab layouts.
             if (settings.tabletPrefab == null) settings.tabletPrefab = TabletPrefabBuilder.Ensure(settings);
+            MailPrefabUpgrade.Ensure(settings);
             // END ADDED
             settings.ValidateSettings();
             EditorUtility.SetDirty(settings);
