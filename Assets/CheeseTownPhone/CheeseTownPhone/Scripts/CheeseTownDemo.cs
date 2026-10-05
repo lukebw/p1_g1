@@ -399,7 +399,10 @@ namespace CheeseTownPhone
             tabletLauncher.interactable = !HarvestTutorialActive;
             if (hasHud)
             {
-                tabletView.hudWallet.text = Progress.Cheeses.ToString();
+                // BEGIN CHANGED: Pickups animate only the HUD display; shop balances remain immediate.
+                if (tabletView.pickupFeedback != null && tabletView.pickupFeedback.isActiveAndEnabled) tabletView.pickupFeedback.RefreshWallet();
+                else tabletView.hudWallet.text = Progress.Cheeses.ToString();
+                // END CHANGED
                 tabletView.hudUnreadDot.SetActive(Progress.UnreadCount > 0);
             }
             else tabletLauncher.GetComponentInChildren<Text>().text = WelcomeUnread && !HarvestTutorialActive

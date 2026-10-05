@@ -37,6 +37,9 @@ namespace CheeseTownPhone
         public RectTransform worldHud;
         public Text hudWallet;
         public GameObject hudUnreadDot;
+        // BEGIN ADDED: Editable pickup FX can settle immediately when the HUD is hidden.
+        public CheesePickupFeedback pickupFeedback;
+        // END ADDED
         float footerMailAmount;
         public void PositionHud(RectTransform canvas)
         {
@@ -63,6 +66,7 @@ namespace CheeseTownPhone
         {
             if (ended) return;
             IsOpen = value; upgrades.tooltip.Hide();
+            if (value && pickupFeedback != null) pickupFeedback.CancelAndSync();
             if (value) panel.gameObject.SetActive(true);
             if (!animate) openAmount = value ? 1 : 0;
             if (!value) upgrades.FinishEntrance();
@@ -145,6 +149,7 @@ namespace CheeseTownPhone
         }
         public void ShowEnding()
         {
+            if (pickupFeedback != null) pickupFeedback.CancelAndSync();
             CompleteTransitions(); ended = true; IsOpen = true;
             panel.gameObject.SetActive(true); panel.anchoredPosition = Vector2.zero; panelGroup.alpha = 1;
             panelGroup.blocksRaycasts = true; panelGroup.interactable = false;

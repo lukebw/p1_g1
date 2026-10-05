@@ -46,6 +46,10 @@ public sealed class TutorialCheckRunner : MonoBehaviour
         Check(!overlay.gameObject.activeSelf, "shade clears after pickup");
         Check(launcher.interactable && launcher.GetComponent<Outline>().enabled && !demo.PhoneOpen, "Tab glows without forced popup");
         // BEGIN ADDED: The icon HUD follows actual pickups and preserves the tutorial's Tab announcement.
+        // BEGIN CHANGED: The real pickup advances guidance immediately; the displayed wallet waits for its flight.
+        if (demo.View.pickupFeedback != null)
+            yield return new WaitForSecondsRealtime(demo.View.pickupFeedback.flightPrefab.duration + .1f);
+        // END CHANGED
         Check(demo.View.hudWallet.text == demo.Progress.Cheeses.ToString() && demo.View.hudUnreadDot.activeSelf, "HUD shares pickup currency and unread state");
         Check(demo.View.closedUnread.text == "Press TAB to open messages." && demo.View.closedUnread.gameObject.activeInHierarchy, "updated message tutorial hint");
         var hudPosition = demo.View.worldHud.anchoredPosition;

@@ -21,8 +21,16 @@ public class CollectionRadius : MonoBehaviour
             if (!collectible.gameObject.activeSelf) return;
             CheeseDropMotion drop = collectible.GetComponent<CheeseDropMotion>();
             if (drop != null && !drop.IsSettled) return;
+            // BEGIN ADDED: Reserve visual credit before Changed refreshes the HUD; real credit stays immediate.
+            var progress = CheeseTownPhone.TownSession.Instance.Progress;
+            var visual = collectible.GetComponentInChildren<SpriteRenderer>();
+            var feedback = FindAnyObjectByType<CheeseTownPhone.CheesePickupFeedback>();
+            int credit = progress.GameEnded ? 0 : Mathf.Min(progress.UnitPrice, 1000000000 - progress.Cheeses);
+            feedback?.BeginPickup(visual != null ? visual.bounds.center : collectible.transform.position,
+                visual != null ? visual.sprite : null, credit);
             collectible.gameObject.SetActive(false);
-            CheeseTownPhone.TownSession.Instance.Progress.CollectWorld(1);
+            progress.CollectWorld(1);
+            // END ADDED
             Destroy(collectible.gameObject);
         }
     }

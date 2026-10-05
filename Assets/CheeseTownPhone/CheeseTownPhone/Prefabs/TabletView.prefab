@@ -340,6 +340,7 @@ RectTransform:
   m_Children:
   - {fileID: 8157909538239342514}
   - {fileID: 3381611341770422446}
+  - {fileID: 7343940935800688568}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -411,6 +412,7 @@ MonoBehaviour:
   worldHud: {fileID: 3381611341770422446}
   hudWallet: {fileID: 2983970284485765007}
   hudUnreadDot: {fileID: 7416568512081086089}
+  pickupFeedback: {fileID: 7625007792418492157}
 --- !u!1 &409406539070766569
 GameObject:
   m_ObjectHideFlags: 0
@@ -5230,6 +5232,73 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &7432833951272638207
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7343940935800688568}
+  - component: {fileID: 6626206727548424198}
+  - component: {fileID: 7625007792418492157}
+  m_Layer: 0
+  m_Name: Pickup Feedback - nonblocking UI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7343940935800688568
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432833951272638207}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5376244410065825903}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &6626206727548424198
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432833951272638207}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
+--- !u!114 &7625007792418492157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7432833951272638207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0afd7b2d53d5698448acb66ecad4ced7, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::CheeseTownPhone.CheesePickupFeedback
+  flightPrefab: {fileID: 3590538385065077794, guid: 90fc9f4de5959db4cb1510ba0766d6bd, type: 3}
+  view: {fileID: 580031703993123101}
+  targetIcon: {fileID: 3062034047361017687}
+  poolSize: 12
+  pulseDuration: 0.18
+  pulseScale: 0.22
 --- !u!1 &7480253854218600755
 GameObject:
   m_ObjectHideFlags: 0
