@@ -6,18 +6,30 @@ public class PlayerCamera : MonoBehaviour
 
     public float cameraOffsetZ;
 
+    // BEGIN ADDED: Keep the camera inside the baked ground, including at corners.
+    public CheeseTown.World.WorldBoundary worldBoundary;
+    Camera view;
+    // END ADDED
+
     void Start()
     {
-        transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, cameraOffsetZ);
+        view = GetComponent<Camera>();
         cameraOffsetZ = playerTransform.position.z - 10;
+        FollowPlayer();
     }
 
-    void Update()
+    void LateUpdate()
     {
-        // Update camera position to match player position
-        transform.position = new Vector3(playerTransform.position.x, playerTransform.position.y, cameraOffsetZ);
-
-        // TODO: Add camera bounds to stay within level boundaries
-        // TODO: Add camera smoothing to make the camera movement less abrupt (i.e. player not always directly centered)
+        FollowPlayer();
     }
+
+    // BEGIN ADDED: Following after movement avoids a one-frame camera lag.
+    void FollowPlayer()
+    {
+        if (playerTransform == null) return;
+        Vector3 desired = new Vector3(playerTransform.position.x, playerTransform.position.y, cameraOffsetZ);
+        transform.position = worldBoundary != null && worldBoundary.isActiveAndEnabled && view != null && view.orthographic
+            ? worldBoundary.ConstrainCamera(desired, view.orthographicSize, view.aspect) : desired;
+    }
+    // END ADDED
 }

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d91d5bbda62ebb44acfe5b7b0855ac9, type: 3}
+  m_Name: MapBlockDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapBlockDatabase
+  entries:
+  - prefab: {fileID: 356694273361902608, guid: cf541bf5ef958ce4cb7e7b0d23a99637, type: 3}
+    weight: 1
+  - prefab: {fileID: 5243321846285162465, guid: 601df8dd573a49240abad475b863de80, type: 3}
+    weight: 1
+  - prefab: {fileID: 5025806761315487937, guid: c0a617209e5411f41b4742e2dae7015c, type: 3}
+    weight: 1
+  - prefab: {fileID: 2446558557602568705, guid: a4b8541837ee6c3418c8606dd857f6d5, type: 3}
+    weight: 1
+  - prefab: {fileID: 8125655609414914101, guid: 415d1419d0e12c748998287358a50ab5, type: 3}
+    weight: 1
+  - prefab: {fileID: 7012957213781467576, guid: 0f5f75a2e5d832240b39baac9452f2c9, type: 3}
+    weight: 1
+  - prefab: {fileID: 4685678588208490197, guid: 2844c31ce69dca74b9a26af89bfe8f3f, type: 3}
+    weight: 1

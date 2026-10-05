@@ -12,6 +12,15 @@ public class PlayerController : MonoBehaviour
     public Vector2 speed = new Vector2(4, 4);
     public float CollectRange { get; private set; }
     TownProgress progress;
+    // BEGIN ADDED: Transform movement must explicitly respect the map's invisible walls.
+    public CheeseTown.World.WorldBoundary worldBoundary;
+    public void MoveWithinWorld(Vector2 delta)
+    {
+        Vector3 desired = transform.position + new Vector3(delta.x, delta.y, 0);
+        transform.position = worldBoundary != null && worldBoundary.isActiveAndEnabled
+            ? worldBoundary.ConstrainPosition(desired) : desired;
+    }
+    // END ADDED
 
     // Position and rotation constants, to make the weapon appear strapped to the player's back.
     static Vector3 weaponIdlePosition = new Vector3(0.055f, 0f, 0f);
@@ -74,7 +83,7 @@ public class PlayerController : MonoBehaviour
         // Read player directional input, then calculate and apply the change in position
         Vector2 moveInput = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
         Vector2 positionDelta = MovementDelta(moveInput, Time.deltaTime);
-        transform.position += new Vector3(positionDelta.x, positionDelta.y, 0);
+        MoveWithinWorld(positionDelta);
 
         // Flip sprite horizontally based on movement direction
         if (playerSpriteRenderer != null && moveInput.x < 0)
