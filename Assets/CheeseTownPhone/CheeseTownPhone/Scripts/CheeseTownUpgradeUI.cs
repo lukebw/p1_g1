@@ -96,6 +96,7 @@ namespace CheeseTownPhone
             view.RefreshDisplay(level, max, Progress.CanBuy(row.option), PixelEffectName(row.option.effect),
                 PixelCurrentValue(row.option.effect), level < max ? PixelNextValue(row.option.effect, row.option.levels[level]) : "");
             // END CHANGED
+            view.buy.interactable = !Progress.GameEnded && row.option.available && level < max;
             return true;
         }
         string PixelEffectName(UpgradeEffect effect)

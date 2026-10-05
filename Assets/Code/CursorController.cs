@@ -6,6 +6,7 @@ public class CursorController : MonoBehaviour
 {
     public InputActionMap cursorActionMap;
     public ChopHitbox chopHitbox;
+    public UnityEngine.Events.UnityEvent onTreeHit = new UnityEngine.Events.UnityEvent();
 
     InputAction pointAction;
     InputAction clickAction;
@@ -63,11 +64,11 @@ public class CursorController : MonoBehaviour
             TreeHurtbox hurtbox = collider.GetComponent<TreeHurtbox>();
             if (hurtbox == null || !hurtbox.enabled) continue;
             Tree tree = hurtbox.tree != null ? hurtbox.tree : hurtbox.GetComponentInParent<Tree>();
-            if (tree != null) {
-                hitTrees.Add(tree);
+            if (tree != null && !tree.IsChopped && hitTrees.Add(tree)) {
                 hurtbox.RegisterHit(1);
             }
         }
+        if (hitTrees.Count > 0) onTreeHit.Invoke();
     }
 
     void OnChopCanceled(InputAction.CallbackContext context)

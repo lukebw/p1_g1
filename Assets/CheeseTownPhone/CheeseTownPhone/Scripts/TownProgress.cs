@@ -71,6 +71,8 @@ namespace CheeseTownPhone
         public int UnitPrice => Mathf.Clamp(Mathf.RoundToInt(config.baseCheesePrice * ValueMultiplier), 1, 1000000);
         public int Capacity => config.treeCapacity;
         public event Action Changed;
+        public event Action Collected, Purchased, PurchaseFailed, ShopOpened;
+        public void NotifyShopOpened() { ShopOpened?.Invoke(); }
 
         public TownProgress(TabletSettings settings)
         {
@@ -99,10 +101,10 @@ namespace CheeseTownPhone
         public bool CanBuy(UpgradeOption o) => !GameEnded && o != null && o.available && config.upgrades.Contains(o) && Level(o) < o.levels.Count && Cheeses >= o.levels[Level(o)].price;
         public bool Buy(UpgradeOption o)
         {
-            if (!CanBuy(o)) return false;
+            if (!CanBuy(o)) { if (!GameEnded && o != null && o.available && config.upgrades.Contains(o) && Level(o) < o.levels.Count && Cheeses < o.levels[Level(o)].price) PurchaseFailed?.Invoke(); return false; }
             int current = Level(o);
             Cheeses -= o.levels[current].price; purchases[o.id] = current + 1;
-            Recalculate(); CheckLetters(); Changed?.Invoke(); return true;
+            Recalculate(); CheckLetters(); Changed?.Invoke(); Purchased?.Invoke(); return true;
         }
         void Recalculate()
         {
@@ -155,6 +157,7 @@ namespace CheeseTownPhone
         {
             if (GameEnded || amount <= 0) return;
             TotalCollected += amount;
+            Collected?.Invoke();
             Cheeses = (int)Math.Min(1000000000L, (long)Cheeses + (long)amount * UnitPrice);
             CheckLetters(); Changed?.Invoke();
         }

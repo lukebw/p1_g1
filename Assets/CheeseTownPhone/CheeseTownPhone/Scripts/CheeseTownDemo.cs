@@ -119,6 +119,7 @@ namespace CheeseTownPhone
             var colors = b.colors; colors.highlightedColor = new Color(.85f,.93f,.95f);
             colors.pressedColor = new Color(.65f,.78f,.82f); colors.disabledColor = new Color(.5f,.5f,.5f,.65f); b.colors = colors;
             b.onClick.AddListener(click);
+            b.gameObject.AddComponent<UIButtonAudio>().shopButton = name == "Shop button";
             Label(r,"Label",text,8,0,w-16,h,17,gold ? ink : paper,true,TextAnchor.MiddleCenter);
             return b;
         }
@@ -288,6 +289,7 @@ namespace CheeseTownPhone
         public void ShowPage(int value)
         {
             if (EndingOpen) return;
+            if (value == 1 && page != 1) Progress.NotifyShopOpened();
             page = value;
             // BEGIN ADDED: The view animates page visibility without rebuilding gameplay bindings.
             if (tabletView != null) { tabletView.SetPage(page); Refresh(); return; }
@@ -379,7 +381,7 @@ namespace CheeseTownPhone
                 row.level.text = "LEVEL "+level+" / "+max;
                 row.current.text = Current(row.option.effect);
                 row.next.text = level < max ? "Next: "+Effect(row.option.effect,row.option.levels[level]) : max == 0 ? "No levels configured" : "Fully upgraded";
-                row.buy.interactable = Progress.CanBuy(row.option);
+                row.buy.interactable = !Progress.GameEnded && row.option.available && level < max;
                 row.cost.text = max == 0 ? "UNAVAILABLE" : level >= max ? "MAX LEVEL" :
                     Progress.Cheeses < row.option.levels[level].price ? "NEED "+(row.option.levels[level].price-Progress.Cheeses)+" CHEESES" :
                     row.option.levels[level].price+" CHEESES  /  BUY";

@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 5535934340204704913}
   - component: {fileID: 7942681507988459764}
   - component: {fileID: 505283866769256882}
+  - component: {fileID: 820000000}
   m_Layer: 0
   m_Name: Shop button
   m_TagString: Untagged
@@ -584,6 +585,7 @@ GameObject:
   - component: {fileID: 5129546982448539044}
   - component: {fileID: 4299368156894736452}
   - component: {fileID: 9205022168141331506}
+  - component: {fileID: 820000001}
   m_Layer: 0
   m_Name: Letters button
   m_TagString: Untagged
@@ -836,6 +838,7 @@ GameObject:
   - component: {fileID: 393357345553996331}
   - component: {fileID: 7430269264068286131}
   - component: {fileID: 7562577546426120962}
+  - component: {fileID: 820000002}
   m_Layer: 0
   m_Name: Player filter
   m_TagString: Untagged
@@ -1983,6 +1986,7 @@ GameObject:
   - component: {fileID: 7380105249090046006}
   - component: {fileID: 819337886707801311}
   - component: {fileID: 3845525261263888892}
+  - component: {fileID: 820000003}
   m_Layer: 0
   m_Name: Mail back
   m_TagString: Untagged
@@ -3073,6 +3077,7 @@ GameObject:
   - component: {fileID: 1265212201657430603}
   - component: {fileID: 2431894138611825562}
   - component: {fileID: 8167750778861576133}
+  - component: {fileID: 820000004}
   m_Layer: 0
   m_Name: Previous letter
   m_TagString: Untagged
@@ -3319,6 +3324,7 @@ GameObject:
   - component: {fileID: 1467609821426238401}
   - component: {fileID: 404056303330477261}
   - component: {fileID: 6240231075822658112}
+  - component: {fileID: 820000005}
   m_Layer: 0
   m_Name: Tree filter
   m_TagString: Untagged
@@ -3632,6 +3638,7 @@ GameObject:
   - component: {fileID: 6940541207697374189}
   - component: {fileID: 1912579941350975673}
   - component: {fileID: 2771695866275381700}
+  - component: {fileID: 820000006}
   m_Layer: 0
   m_Name: Next letter
   m_TagString: Untagged
@@ -4201,6 +4208,7 @@ GameObject:
   - component: {fileID: 571825069815903881}
   - component: {fileID: 7452960945541520267}
   - component: {fileID: 7563293443788237497}
+  - component: {fileID: 820000007}
   m_Layer: 0
   m_Name: Open tablet
   m_TagString: Untagged
@@ -4561,6 +4569,7 @@ GameObject:
   - component: {fileID: 1824056496479876827}
   - component: {fileID: 2384226339709385511}
   - component: {fileID: 5838906291574491459}
+  - component: {fileID: 820000008}
   m_Layer: 0
   m_Name: All filter
   m_TagString: Untagged
@@ -5386,6 +5395,7 @@ GameObject:
   - component: {fileID: 5287759488421792485}
   - component: {fileID: 4831937246239320808}
   - component: {fileID: 7321915911166482382}
+  - component: {fileID: 820000009}
   m_Layer: 0
   m_Name: Reply to mayor
   m_TagString: Untagged
@@ -5853,6 +5863,7 @@ GameObject:
   - component: {fileID: 347724097187114049}
   - component: {fileID: 5449046378378886221}
   - component: {fileID: 991427013260736512}
+  - component: {fileID: 820000010}
   m_Layer: 0
   m_Name: Collect cheese
   m_TagString: Untagged
@@ -5974,6 +5985,7 @@ GameObject:
   - component: {fileID: 3491752654348877118}
   - component: {fileID: 1296485944496098259}
   - component: {fileID: 7494708997887658540}
+  - component: {fileID: 820000011}
   m_Layer: 0
   m_Name: Close tablet
   m_TagString: Untagged
@@ -6545,3 +6557,159 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5514921006126594203, guid: 46d64beb442b8014ea4d0001c9267f45, type: 3}
   m_PrefabInstance: {fileID: 3652264431043259127}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &820000000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 351811611404585506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 1
+--- !u!114 &820000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600281240622238720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768739352387267666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2735088141459082344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4631402768367094435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4881946057138848208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5120415014157190438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927649418725641170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6506371761219035699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7502182394680899218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8393486927911105638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
+--- !u!114 &820000011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8450096913459459237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
