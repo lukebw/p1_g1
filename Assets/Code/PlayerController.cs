@@ -6,10 +6,15 @@ public class PlayerController : MonoBehaviour
 {
     public InputAction moveAction;
     public InputAction interactAction;
+    public Animator playerAnimator;
     public SpriteRenderer playerSpriteRenderer;
     public SpriteRenderer weaponSpriteRenderer;
     public ChopHitbox chopHitbox;
+
     public Vector2 speed = new Vector2(4, 4);
+    string isMovingParam = "isMoving";
+    string isFastParam = "isFast";
+
     public float CollectRange { get; private set; }
     TownProgress progress;
     // BEGIN ADDED: Transform movement must explicitly respect the map's invisible walls.
@@ -35,6 +40,8 @@ public class PlayerController : MonoBehaviour
         moveAction?.Enable();
         interactAction?.Enable();
         if (playerSpriteRenderer == null) playerSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        playerAnimator.SetBool(isFastParam, false);
     }
 
     void OnEnable()
@@ -52,6 +59,10 @@ public class PlayerController : MonoBehaviour
     void ApplyUpgrades()
     {
         speed = Vector2.one * progress.MoveSpeed;
+        if (progress.MoveSpeed >= 8) // 8 is the speed after two upgrades
+        {
+            playerAnimator.SetBool(isFastParam, true);
+        }
         CollectRange = progress.CollectRange;
     }
 
@@ -82,8 +93,19 @@ public class PlayerController : MonoBehaviour
 
         // Read player directional input, then calculate and apply the change in position
         Vector2 moveInput = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
+
         Vector2 positionDelta = MovementDelta(moveInput, Time.deltaTime);
         MoveWithinWorld(positionDelta);
+
+        // Configure animation parameters based on movement
+        if (moveInput.Equals(Vector2.zero))
+        {
+            playerAnimator.SetBool(isMovingParam, false);
+        }
+        else
+        {
+            playerAnimator.SetBool(isMovingParam, true);
+        }
 
         // Flip sprite horizontally based on movement direction
         if (playerSpriteRenderer != null && moveInput.x < 0)

@@ -1,46 +1,43 @@
 fileFormatVersion: 2
-guid: 06bdbaa3bd852f449b63a8932f6425aa
+guid: a09e40af614b30a41af7c5f7f2ca8234
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7002930526304434640
-    second: Character_move_fast-Sheet_0
+      213: 9194651967359169693
+    second: Character_idel-Sheet_0
   - first:
-      213: -3278154960863894171
-    second: Character_move_fast-Sheet_1
+      213: 5977606954980776880
+    second: Character_idel-Sheet_1
   - first:
-      213: 3332124817639896859
-    second: Character_move_fast-Sheet_2
+      213: -1423233229380367591
+    second: Character_idel-Sheet_2
   - first:
-      213: 6969206247547047311
-    second: Character_move_fast-Sheet_3
+      213: -5046692483662563809
+    second: Character_idel-Sheet_3
   - first:
-      213: -3176661898980631752
-    second: Character_move_fast-Sheet_4
+      213: 7762945469630651570
+    second: Character_idel-Sheet_4
   - first:
-      213: -6026132547633966266
-    second: Character_move_fast-Sheet_5
+      213: 8110171054241056455
+    second: Character_idel-Sheet_5
   - first:
-      213: 4351929569774902820
-    second: Character_move_fast-Sheet_6
+      213: 3939078993874684382
+    second: Character_idel-Sheet_6
   - first:
-      213: 5465563880953345262
-    second: Character_move_fast-Sheet_7
+      213: -2697520877843753299
+    second: Character_idel-Sheet_7
   - first:
-      213: 3884885597503599372
-    second: Character_move_fast-Sheet_8
+      213: 7346926172255049187
+    second: Character_idel-Sheet_8
   - first:
-      213: -3355752175447345428
-    second: Character_move_fast-Sheet_9
+      213: -202401446548689241
+    second: Character_idel-Sheet_9
   - first:
-      213: 2707523058383040259
-    second: Character_move_fast-Sheet_10
+      213: 8300628963961564527
+    second: Character_idel-Sheet_10
   - first:
-      213: -81518012399210914
-    second: Character_move_fast-Sheet_11
-  - first:
-      213: 9090063663462348520
-    second: Character_move_fast-Sheet_12
+      213: 2655957668582483618
+    second: Character_idel-Sheet_11
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -73,7 +70,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -113,7 +110,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -134,291 +131,282 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Character_move_fast-Sheet_0
+      name: Character_idel-Sheet_0
       rect:
         serializedVersion: 2
-        x: 3
-        y: 129
-        width: 52
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 03682e81ac790de90800000000000000
-      internalID: -7002930526304434640
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Character_move_fast-Sheet_1
-      rect:
-        serializedVersion: 2
-        x: 67
-        y: 129
-        width: 52
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 565e5077e67a182d0800000000000000
-      internalID: -3278154960863894171
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Character_move_fast-Sheet_2
-      rect:
-        serializedVersion: 2
-        x: 131
-        y: 129
-        width: 52
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b1770b60ed51e3e20800000000000000
-      internalID: 3332124817639896859
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Character_move_fast-Sheet_3
-      rect:
-        serializedVersion: 2
-        x: 135
-        y: 65
-        width: 48
+        x: 0
+        y: 128
+        width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f8d897f582897b060800000000000000
-      internalID: 6969206247547047311
+      spriteID: d943acbbf37f99f70800000000000000
+      internalID: 9194651967359169693
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character_move_fast-Sheet_4
+      name: Character_idel-Sheet_1
       rect:
         serializedVersion: 2
-        x: 195
-        y: 129
-        width: 52
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 83bddb365da3ae3d0800000000000000
-      internalID: -3176661898980631752
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Character_move_fast-Sheet_5
-      rect:
-        serializedVersion: 2
-        x: 199
-        y: 65
-        width: 48
+        x: 64
+        y: 128
+        width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6439bd03060ee5ca0800000000000000
-      internalID: -6026132547633966266
+      spriteID: 0bb9886dad9b4f250800000000000000
+      internalID: 5977606954980776880
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character_move_fast-Sheet_6
+      name: Character_idel-Sheet_2
       rect:
         serializedVersion: 2
-        x: 3
-        y: 65
-        width: 52
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 42e93fdd2e8256c30800000000000000
-      internalID: 4351929569774902820
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Character_move_fast-Sheet_7
-      rect:
-        serializedVersion: 2
-        x: 3
-        y: 1
-        width: 52
+        x: 128
+        y: 128
+        width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ee4fd65546599db40800000000000000
-      internalID: 5465563880953345262
+      spriteID: 91b40422be8af3ce0800000000000000
+      internalID: -1423233229380367591
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character_move_fast-Sheet_8
+      name: Character_idel-Sheet_3
       rect:
         serializedVersion: 2
-        x: 69
-        y: 65
-        width: 50
-        height: 62
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: c03bb303ed2e9e530800000000000000
-      internalID: 3884885597503599372
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Character_move_fast-Sheet_9
-      rect:
-        serializedVersion: 2
-        x: 69
-        y: 1
-        width: 50
+        x: 192
+        y: 128
+        width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ce6773c0d29fd61d0800000000000000
-      internalID: -3355752175447345428
+      spriteID: f16b8a4bceb86f9b0800000000000000
+      internalID: -5046692483662563809
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character_move_fast-Sheet_10
+      name: Character_idel-Sheet_4
       rect:
         serializedVersion: 2
-        x: 133
-        y: 1
-        width: 50
-        height: 62
+        x: 0
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 30fa91460ed039520800000000000000
-      internalID: 2707523058383040259
+      spriteID: 2bc101856c58bbb60800000000000000
+      internalID: 7762945469630651570
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character_move_fast-Sheet_11
+      name: Character_idel-Sheet_5
       rect:
         serializedVersion: 2
-        x: 197
-        y: 3
-        width: 10
-        height: 8
+        x: 64
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e5e2624bcc36edef0800000000000000
-      internalID: -81518012399210914
+      spriteID: 7c681b3ba9d1d8070800000000000000
+      internalID: 8110171054241056455
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Character_move_fast-Sheet_12
+      name: Character_idel-Sheet_6
       rect:
         serializedVersion: 2
-        x: 199
-        y: 1
-        width: 48
-        height: 62
+        x: 128
+        y: 64
+        width: 64
+        height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8e6fb5e9db4662e70800000000000000
-      internalID: 9090063663462348520
+      spriteID: ed98a1c897b6aa630800000000000000
+      internalID: 3939078993874684382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character_idel-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da65cedbd0b709ad0800000000000000
+      internalID: -2697520877843753299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character_idel-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e558409d6685f560800000000000000
+      internalID: 7346926172255049187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character_idel-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7aea07ce4fce03df0800000000000000
+      internalID: -202401446548689241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character_idel-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6d6f396012c13370800000000000000
+      internalID: 8300628963961564527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character_idel-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a6655e7d6bdbd420800000000000000
+      internalID: 2655957668582483618
       vertices: []
       indices: 
       edges: []
@@ -427,7 +415,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 3dc6d286130a0c34dbca8aa0f2064d92
     internalID: 0
     vertices: []
     indices: 
@@ -435,21 +423,22 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Character_move_fast-Sheet_0: -7002930526304434640
-      Character_move_fast-Sheet_1: -3278154960863894171
-      Character_move_fast-Sheet_10: 2707523058383040259
-      Character_move_fast-Sheet_11: -81518012399210914
-      Character_move_fast-Sheet_12: 9090063663462348520
-      Character_move_fast-Sheet_2: 3332124817639896859
-      Character_move_fast-Sheet_3: 6969206247547047311
-      Character_move_fast-Sheet_4: -3176661898980631752
-      Character_move_fast-Sheet_5: -6026132547633966266
-      Character_move_fast-Sheet_6: 4351929569774902820
-      Character_move_fast-Sheet_7: 5465563880953345262
-      Character_move_fast-Sheet_8: 3884885597503599372
-      Character_move_fast-Sheet_9: -3355752175447345428
+      Character_idel-Sheet_0: 9194651967359169693
+      Character_idel-Sheet_1: 5977606954980776880
+      Character_idel-Sheet_10: 8300628963961564527
+      Character_idel-Sheet_11: 2655957668582483618
+      Character_idel-Sheet_2: -1423233229380367591
+      Character_idel-Sheet_3: -5046692483662563809
+      Character_idel-Sheet_4: 7762945469630651570
+      Character_idel-Sheet_5: 8110171054241056455
+      Character_idel-Sheet_6: 3939078993874684382
+      Character_idel-Sheet_7: -2697520877843753299
+      Character_idel-Sheet_8: 7346926172255049187
+      Character_idel-Sheet_9: -202401446548689241
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
