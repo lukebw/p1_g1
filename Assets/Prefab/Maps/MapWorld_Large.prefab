@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -557,7 +557,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -608,7 +608,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -659,7 +659,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -710,7 +710,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -796,7 +796,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -847,7 +847,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -911,7 +911,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0}
@@ -973,7 +973,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1024,7 +1024,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1075,7 +1075,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1204,7 +1204,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1255,7 +1255,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1306,7 +1306,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1357,7 +1357,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1408,7 +1408,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1459,7 +1459,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1510,7 +1510,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1561,7 +1561,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1612,7 +1612,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1663,7 +1663,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1714,7 +1714,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1821,7 +1821,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1872,7 +1872,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1923,7 +1923,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -1974,7 +1974,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2025,7 +2025,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2076,7 +2076,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2127,7 +2127,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2185,7 +2185,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 235528f3bd5fc084087cf5f4e913d02b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.LargeMapAuthoring
   boundary: {fileID: 3618795193924042685}
   terrainBlocks: {fileID: 733837839866006799}
@@ -2217,7 +2217,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c8b0e6084bf4d945800585c75f338e2, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.WorldBoundary
   terrain:
     serializedVersion: 2
@@ -2279,7 +2279,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2330,7 +2330,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2381,7 +2381,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2510,7 +2510,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2561,7 +2561,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2673,7 +2673,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2724,7 +2724,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2775,7 +2775,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2826,7 +2826,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -2877,7 +2877,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -3006,7 +3006,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -3135,7 +3135,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -3180,7 +3180,6 @@ Transform:
   - {fileID: 6733493633552737358}
   - {fileID: 7130156939606204345}
   - {fileID: 5591230917246920051}
-  - {fileID: 2727439767285644974}
   - {fileID: 2113521638822270240}
   - {fileID: 8893222846283231741}
   - {fileID: 6220478483522239353}
@@ -3233,7 +3232,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -3284,7 +3283,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -4030,7 +4029,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -4081,7 +4080,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb249551193d314392192c9efa57c62, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CheeseTown.World.MapTreeArea
   kind: 1
   rectangle:
@@ -7324,7 +7323,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 8552090757374080669, guid: ac150c536c1be0640869f6a960a1faec, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -15541,7 +15540,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: 4a01520e1b1fc8548beab96aebe8453c, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -17062,7 +17061,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: b68b9713752c77741bc1e9436066f9c2, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -20942,7 +20941,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 8552090757374080669, guid: ac150c536c1be0640869f6a960a1faec, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -21285,7 +21284,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: a606b8aeeb80c60479fb3055bf9053eb, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -21431,7 +21430,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: a606b8aeeb80c60479fb3055bf9053eb, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -23127,7 +23126,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 8552090757374080669, guid: ac150c536c1be0640869f6a960a1faec, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -25702,7 +25701,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: d0c789c6e77989f4c9ab283e6976f510, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -26541,7 +26540,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: 8d0d42b626473f843a912271ed002092, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -28369,7 +28368,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: b68b9713752c77741bc1e9436066f9c2, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -32373,7 +32372,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: d0c789c6e77989f4c9ab283e6976f510, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -32654,7 +32653,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: 4a01520e1b1fc8548beab96aebe8453c, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -33307,7 +33306,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 8552090757374080669, guid: ac150c536c1be0640869f6a960a1faec, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -33588,7 +33587,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: b68b9713752c77741bc1e9436066f9c2, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -35101,68 +35100,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
   m_PrefabInstance: {fileID: 4637476384249658431}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &4659717720219846625
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 540425748649380440}
-    m_Modifications:
-    - target: {fileID: 1093047545035167316, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_Name
-      value: Tree (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 6.639287
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.712916
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
---- !u!4 &2727439767285644974 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7310314784125729103, guid: 7b880beb3821ea54c9e1dcc6e485aeae, type: 3}
-  m_PrefabInstance: {fileID: 4659717720219846625}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4700111851131714835
 PrefabInstance:
@@ -38361,7 +38298,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: b68b9713752c77741bc1e9436066f9c2, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -38707,7 +38644,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: d0c789c6e77989f4c9ab283e6976f510, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -46180,7 +46117,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: 8d0d42b626473f843a912271ed002092, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -49124,7 +49061,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: 8d0d42b626473f843a912271ed002092, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -49278,7 +49215,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: 4a01520e1b1fc8548beab96aebe8453c, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -54457,7 +54394,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: b68b9713752c77741bc1e9436066f9c2, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -57742,7 +57679,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: d0c789c6e77989f4c9ab283e6976f510, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
@@ -61210,7 +61147,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 479550607943495895, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Sprite
-      value:
+      value: 
       objectReference: {fileID: 21300000, guid: 8d0d42b626473f843a912271ed002092, type: 3}
     - target: {fileID: 1087573831138825214, guid: 9c2ff81b5e8080c4f9e4e664d46f4ff1, type: 3}
       propertyPath: m_Name
