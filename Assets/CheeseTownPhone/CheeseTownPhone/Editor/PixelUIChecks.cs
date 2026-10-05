@@ -145,9 +145,9 @@ namespace CheeseTownPhone.Editor
                 int before = demo.Progress.Cheeses;
                 Click(demo, "Collect cheese"); Check(demo.Progress.Cheeses > before, "collect art calls existing payout");
                 Check(demo.GetComponentsInChildren<Image>().Any(i => i.name == "Unread dot"), "new letter enables dot");
-                Click(demo, "Shop button"); Check(BuyCount(demo) == 5, "five upgrades retained");
+                Click(demo, "Shop button"); Check(BuyCount(demo) == 6, "six upgrades retained");
                 Click(demo, "Player filter"); Check(BuyCount(demo) == 3, "player filter");
-                Click(demo, "Tree filter"); Check(BuyCount(demo) == 2, "tree filter");
+                Click(demo, "Tree filter"); Check(BuyCount(demo) == 3, "tree filter");
                 Click(demo, "All filter"); Capture(demo, "PixelUI-Shop-1080p.png");
                 // BEGIN ADDED: Baking the hidden home layout must not leave the shop background disabled.
                 Check(demo.View.shopGroup.GetComponentsInChildren<Image>().Any(i => i.name == "Pixel shop background" && i.sprite == config.upgradeBackground), "shop retains its full-height green background");
@@ -283,8 +283,10 @@ namespace CheeseTownPhone.Editor
                 // END ADDED
                 // BEGIN ADDED: Tree listeners receive the same shared purchase event.
                 Click(demo, "Buy tree-growth");
+                Check(Mathf.Abs(testTreeRoot.transform.localScale.x - 1) < .001f, "town production leaves wild size unchanged");
+                Click(demo, "Buy wild-tree-growth");
                 Check(Mathf.Abs(testTreeRoot.transform.localScale.x - 1.2f) < .001f && demo.Progress.Production == 2,
-                    "world tree growth and production remain connected");
+                    "wild growth and town production apply independently");
                 UnityEngine.Object.DestroyImmediate(testPlayer.gameObject); UnityEngine.Object.DestroyImmediate(testTreeRoot);
                 // END ADDED
                 Press(keyboard, Key.Escape); Check(demo.PhoneOpen, "Escape returns from shop");
@@ -313,7 +315,7 @@ namespace CheeseTownPhone.Editor
                     levels = new List<UpgradeLevel> { new UpgradeLevel(9999, 22), new UpgradeLevel(20, 24),
                         new UpgradeLevel(20, 26), new UpgradeLevel(20, 28), new UpgradeLevel(20, 30) } };
                 edited.upgrades.Add(extra); demo.ApplyConfiguration();
-                Check(BuyCount(demo) == 6, "data-only addition creates another prefab row");
+                Check(BuyCount(demo) == 7, "data-only addition creates another prefab row");
                 var extraView = Button(demo, "Buy prefab-extra").GetComponentInParent<UpgradeRowView>();
                 Check(extraView.DisplayLevel == 1 && extraView.DisplayMaxLevel == 6 && extraView.Height > 55, "extra levels expand marker rows");
                 Check(extraView.price.text == "9999" && UpgradeRowView.Fits("9999", extraView.price), "four-digit price fits at sixteen pixels");

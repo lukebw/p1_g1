@@ -86,7 +86,7 @@ namespace CheeseTownPhone.Editor
             DrawPropertiesExcluding(serializedObject,"m_Script","upgrades");
             EditorGUILayout.Space();
             list.DoLayoutList();
-            EditorGUILayout.HelpBox("Effect 决定升级归属。MoveSpeed / CollectRange / AutoCollect 属于玩家；TreeGrowth / CheeseValue 属于树。AutoCollect 无视 Value，速率跟随树产量。CheeseValue 的 Value=2 表示单价翻倍，不增加产量。TreeGrowth 的 Value=每秒产量，Tree Scale=大小倍率。",MessageType.Info);
+            EditorGUILayout.HelpBox("Effect 决定升级归属。MoveSpeed / CollectRange / AutoCollect 属于玩家；TownTreeProduction / WildTreeGrowth / CheeseValue 同属 TREE 分类。AutoCollect 无视 Value，速率跟随树产量。CheeseValue 的 Value=2 表示单价翻倍，不增加产量。TownTreeProduction 的 Value=主树每秒产量；WildTreeGrowth 的 Value=野外掉落范围倍率，Tree Scale=野外树大小倍率。",MessageType.Info);
             serializedObject.ApplyModifiedProperties();
             var data = (TabletSettings)target;
             EditorGUILayout.LabelField("素材预览窗口 / Artwork previews",EditorStyles.boldLabel);

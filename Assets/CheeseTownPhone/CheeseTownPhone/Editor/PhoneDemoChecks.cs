@@ -26,11 +26,13 @@ namespace CheeseTownPhone.Editor
             try
             {
                 var p = new TownProgress(c);
-                Check(c.upgrades.SelectMany(o=>o.levels).Select(l=>l.price).SequenceEqual(new[]{20,50,30,60,60,120,240,150,260}),"reference prices");
+                Check(c.upgrades.SelectMany(o=>o.levels).Select(l=>l.price).SequenceEqual(new[]{20,50,30,60,60,120,240,150,260,60,120,240}),"reference prices");
                 Check(p.Level(c.upgrades[0])==0 && p.CollectRange==0,"zero-level defaults");
                 Check(p.Buy(c.upgrades[0]),"speed purchase"); Near(p.MoveSpeed,6,"player speed");
                 Check(p.Buy(c.upgrades[1]),"range purchase"); Near(p.CollectRange,2,"player range");
-                Check(p.Buy(c.upgrades[2]),"tree purchase"); Near(p.Production,2,"tree production"); Near(p.TreeScale,1.2f,"tree size");
+                Check(p.Buy(c.upgrades[2]),"tree purchase"); Near(p.Production,2,"tree production"); Near(p.WildTreeScale,1,"town production leaves wild size unchanged");
+                Check(c.upgrades[2].Target==UpgradeTarget.Tree && c.upgrades[5].Target==UpgradeTarget.Tree,"both share TREE filter");
+                Check(p.Buy(c.upgrades[5]),"wild purchase"); Near(p.WildTreeScale,1.2f,"wild size"); Near(p.WildTreeYieldMultiplier,1.25f,"wild drops"); Near(p.Production,2,"wild upgrade preserves town production");
                 Check(p.Buy(c.upgrades[3]),"auto purchase"); Near(p.AutoRate,p.Production,"auto follows production");
                 int before=p.Cheeses; p.Tick(1); Check(p.Cheeses==before+2,"auto transfer after one second"); Near(p.Stock,0,"auto removes stock");
                 Check(p.Buy(c.upgrades[2]),"tree second level"); Near(p.AutoRate,4,"auto updates with tree level");
@@ -40,6 +42,9 @@ namespace CheeseTownPhone.Editor
                 Near(p.Production,production,"double value does not change quantity"); Check(p.UnitPrice==2,"unit price doubles");
                 before=p.Cheeses; p.Tick(1); Check(p.Cheeses==before+8,"auto earns doubled price");
                 Check(!p.Buy(c.upgrades[4]),"max-level protection");
+                c.upgrades[5].available=false; p.Reconfigure(c); Near(p.WildTreeYieldMultiplier,1,"disabled wild resets drops"); Near(p.Production,4,"disabled wild preserves town production");
+                c.upgrades[5].available=true; Check(p.Buy(c.upgrades[5]),"wild repurchase"); c.upgrades[2].available=false; p.Reconfigure(c); Near(p.Production,1,"disabled town resets production"); Near(p.WildTreeYieldMultiplier,1.25f,"disabled town preserves wild drops");
+                c.upgrades[2].available=true; p.Buy(c.upgrades[2]); p.Buy(c.upgrades[2]);
                 c.upgrades[3].available=false; c.ValidateSettings(); p.Reconfigure(c);
                 p.Tick(1); before=p.Cheeses; Check(p.Collect()==4 && p.Cheeses==before+8,"manual pickup uses doubled price");
                 var speed=c.upgrades[0]; c.upgrades.Reverse(); c.ValidateSettings(); p.Reconfigure(c); Check(p.Level(speed)==1,"reorder preserves stable ID");
@@ -53,7 +58,7 @@ namespace CheeseTownPhone.Editor
                 Check(!q.Buy(poor.upgrades[0]) && q.Cheeses==0,"insufficient funds");
                 poor.upgrades.Add(poor.upgrades[0] == null ? null : new UpgradeOption{id=poor.upgrades[0].id});
                 poor.upgrades[0].levels[0].price=-3; poor.upgrades[0].levels[0].value=float.NaN;
-                poor.ValidateSettings(); Check(poor.upgrades[0].id!=poor.upgrades[5].id,"duplicate ID repair"); Check(poor.upgrades[0].levels[0].price==0 && poor.upgrades[0].levels[0].value==0,"invalid values sanitized");
+                poor.ValidateSettings(); Check(poor.upgrades[0].id!=poor.upgrades.Last().id,"duplicate ID repair"); Check(poor.upgrades[0].levels[0].price==0 && poor.upgrades[0].levels[0].value==0,"invalid values sanitized");
                 UnityEngine.Object.DestroyImmediate(poor);
                 var fractional=Config(); fractional.baseTreeProduction=.5f; var f=new TownProgress(fractional); f.Buy(fractional.upgrades[3]);
                 before=f.Cheeses; f.Tick(1); Check(f.Cheeses==before,"fractional cheese retained"); f.Tick(1); Check(f.Cheeses==before+1,"fractional rate accumulates");
@@ -160,11 +165,11 @@ namespace CheeseTownPhone.Editor
                 Press(kb,Key.Tab); Check(!demo.PhoneOpen,"Tab closes");
                 Click(demo,"Open tablet"); Check(demo.PhoneOpen,"launcher");
                 Click(demo,"Shop button");
-                Check(demo.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Buy "))==5,"five default shop rows");
+                Check(demo.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Buy "))==6,"six default shop rows");
                 Click(demo,"Player filter");
                 Check(demo.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Buy "))==3,"player category");
                 Click(demo,"Tree filter");
-                Check(demo.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Buy "))==2,"tree category");
+                Check(demo.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Buy "))==3,"tree category");
                 Click(demo,"All filter"); Click(demo,"Buy move-speed"); Check(demo.Progress.MoveSpeed==6,"buy button");
                 var original = demo.Settings;
                 var editable = UnityEngine.Object.Instantiate(original);
@@ -175,7 +180,7 @@ namespace CheeseTownPhone.Editor
                     demo.UseSettings(editable);
                     editable.upgrades.Add(new UpgradeOption { title="Extra option", levels=new System.Collections.Generic.List<UpgradeLevel>{new UpgradeLevel(1,9)} });
                     demo.ApplyConfiguration();
-                    Check(demo.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Buy "))==6,"added row renders and scrolls");
+                    Check(demo.GetComponentsInChildren<Button>().Count(b=>b.name.StartsWith("Buy "))==7,"added row renders and scrolls");
                     editable.townBackground=sprite; editable.cheeseTree=sprite; editable.envelopeIcon=sprite; editable.upgrades[0].icon=sprite;
                     demo.ApplyConfiguration();
                     Check(demo.GetComponentsInChildren<Image>(true).Any(i=>i.gameObject.activeInHierarchy && i.name=="Town Background Sprite Slot" && i.sprite==sprite),"background art replacement");
@@ -188,7 +193,7 @@ namespace CheeseTownPhone.Editor
                 demo.Progress.CollectWorld(10); Click(demo,"Letters button"); Click(demo,"Reply to mayor"); Check(demo.Progress.Letters[0].IsRead,"letter read");
                 Press(kb,Key.Escape); Press(kb,Key.Escape); Check(!demo.PhoneOpen,"Escape closes tablet from town");
                 Press(kb,Key.Tab); Click(demo,"Shop button");
-                File.WriteAllText(Output("Tablet-ui-checks.txt"),"PASS: scene load; Tab toggle; launcher; five shop rows; player/tree filters; buy button; mayor reply; Escape back/close. Unity "+Application.unityVersion+".\n");
+                File.WriteAllText(Output("Tablet-ui-checks.txt"),"PASS: scene load; Tab toggle; launcher; six shop rows; player/tree filters; buy button; mayor reply; Escape back/close. Unity "+Application.unityVersion+".\n");
                 Debug.Log("TABLET_UI_CHECKS_PASS");
             }
             finally { InputSystem.RemoveDevice(kb); }

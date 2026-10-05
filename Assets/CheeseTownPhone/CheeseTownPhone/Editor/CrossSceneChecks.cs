@@ -102,7 +102,7 @@ namespace CheeseTownPhone.Editor
             demo.TogglePhone(); demo.ShowPage(1);
             Buy(demo, "move-speed"); Near(player.MovementDelta(Vector2.right, 1).x, 6, "speed level one");
             Buy(demo, "move-speed"); Near(player.MovementDelta(Vector2.right, 1).x, 8, "speed level two");
-            var collider = tree.GetComponent<Collider>();
+            var collider = tree.GetComponent<Collider2D>();
             player.transform.position = new Vector3(collider.bounds.max.x+3, collider.bounds.center.y, 0);
             Check(!player.CanCollect(tree), "range zero excludes distant tree");
             Buy(demo, "collect-range"); Near(player.CollectRange, 2, "range level one");
@@ -115,7 +115,8 @@ namespace CheeseTownPhone.Editor
             int amount = player.CollectNearby();
             Check(amount>0 && progress.Cheeses==before+amount*progress.UnitPrice, "world harvest pays shared wallet");
             Vector3 original = tree.transform.parent.localScale;
-            Buy(demo, "tree-growth"); Near(tree.transform.parent.localScale.x, original.x*1.2f, "tree grows");
+            Buy(demo, "tree-growth"); Near(tree.transform.parent.localScale.x, original.x, "town preserves wild size");
+            Buy(demo, "wild-tree-growth"); Near(tree.transform.parent.localScale.x, original.x*1.2f, "wild tree grows");
             Near(progress.Production, 2, "production upgraded");
             progress.Grant(1000);
             Buy(demo, "auto-collect"); Buy(demo, "double-cheese");

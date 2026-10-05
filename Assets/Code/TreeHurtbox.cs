@@ -8,7 +8,7 @@ public class TreeHurtbox : MonoBehaviour
     TownProgress progress;
     Transform treeRoot;
     Vector3 originalScale;
-    Collider hurtbox;
+    Collider2D hurtbox;
 
     void Start()
     {
@@ -19,7 +19,10 @@ public class TreeHurtbox : MonoBehaviour
     {
         treeRoot = transform.parent != null && transform.parent.CompareTag("Tree") ? transform.parent : transform;
         originalScale = treeRoot.localScale;
-        hurtbox = GetComponent<Collider>();
+        // BEGIN CHANGED: The actual tree prefab uses a 2D collider, including its growth scale.
+        hurtbox = GetComponent<Collider2D>();
+        tree = GetComponentInParent<Tree>();
+        // END CHANGED
     }
 
     void OnEnable()
@@ -36,7 +39,10 @@ public class TreeHurtbox : MonoBehaviour
 
     void ApplyUpgrades()
     {
-        treeRoot.localScale = originalScale * progress.TreeScale;
+        Vector3 scale = originalScale * progress.WildTreeScale;
+        // BEGIN CHANGED: Currency refreshes must not dirty every tree's collider transform.
+        if (treeRoot.localScale != scale) treeRoot.localScale = scale;
+        // END CHANGED
     }
 
     public float DistanceFrom(Vector3 point)
@@ -44,7 +50,7 @@ public class TreeHurtbox : MonoBehaviour
         // BEGIN ADDED: Stumps must not block searches for nearby collectible trees.
         if (tree != null && tree.IsChopped) return float.PositiveInfinity;
         // END ADDED
-        Vector3 nearest = hurtbox != null ? hurtbox.ClosestPoint(point) : transform.position;
+        Vector3 nearest = hurtbox != null ? (Vector3)hurtbox.ClosestPoint(point) : transform.position;
         return Vector2.Distance(point, nearest);
     }
 

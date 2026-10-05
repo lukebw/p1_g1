@@ -63,8 +63,11 @@ namespace CheeseTownPhone
         public bool TaskReady => WelcomeClaimed && HarvestCount >= 3;
         public float MoveSpeed { get; private set; }
         public float CollectRange { get; private set; }
-        public float TreeScale { get; private set; }
+        public float WildTreeScale { get; private set; }
         public float Production { get; private set; }
+        // BEGIN ADDED: World drops and town production have independent purchased effects.
+        public float WildTreeYieldMultiplier { get; private set; }
+        // END ADDED
         public bool AutoEnabled { get; private set; }
         public float AutoRate => AutoEnabled ? Production : 0;
         public float ValueMultiplier { get; private set; }
@@ -109,7 +112,8 @@ namespace CheeseTownPhone
         void Recalculate()
         {
             MoveSpeed = config.baseMoveSpeed; CollectRange = config.baseCollectRange;
-            TreeScale = 1; Production = config.baseTreeProduction; AutoEnabled = false; ValueMultiplier = 1;
+            WildTreeScale = 1; WildTreeYieldMultiplier = 1;
+            Production = config.baseTreeProduction; AutoEnabled = false; ValueMultiplier = 1;
             foreach (var o in config.upgrades)
             {
                 if (o == null || !o.available || Level(o) == 0) continue;
@@ -119,7 +123,10 @@ namespace CheeseTownPhone
                 {
                     case UpgradeEffect.MoveSpeed: MoveSpeed = Mathf.Max(MoveSpeed, v.value); break;
                     case UpgradeEffect.CollectRange: CollectRange = Mathf.Max(CollectRange, v.value); break;
-                    case UpgradeEffect.TreeGrowth: Production = Mathf.Max(Production, v.value); TreeScale = Mathf.Max(TreeScale, v.treeScale); break;
+                    case UpgradeEffect.TownTreeProduction: Production = Mathf.Max(Production, v.value); break;
+                    case UpgradeEffect.WildTreeGrowth:
+                        WildTreeScale = Mathf.Max(WildTreeScale, v.treeScale);
+                        WildTreeYieldMultiplier = Mathf.Max(WildTreeYieldMultiplier, v.value); break;
                     case UpgradeEffect.AutoCollect: AutoEnabled = true; break;
                     case UpgradeEffect.CheeseValue: ValueMultiplier = Mathf.Max(ValueMultiplier, v.value); break;
                 }

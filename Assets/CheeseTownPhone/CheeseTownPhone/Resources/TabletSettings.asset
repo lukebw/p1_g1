@@ -72,7 +72,7 @@ MonoBehaviour:
   - id: collect-range
     available: 1
     title: Collect Range
-    description: No range at level 1. Unlock and expand collection radius.
+    description: Expand ground cheese pickup range and the reach of manual tree collection.
     effect: 1
     icon: {fileID: 0}
     levels:
@@ -84,24 +84,24 @@ MonoBehaviour:
       treeScale: 1
   - id: tree-growth
     available: 1
-    title: Upgrades for Tree
-    description: Increase tree size and cheese production.
+    title: Town Main Tree
+    description: Increase the town main tree's production per second. Auto collection keeps pace with its production.
     effect: 2
     icon: {fileID: 0}
     levels:
     - price: 60
       value: 2
-      treeScale: 1.2
+      treeScale: 1
     - price: 120
       value: 4
-      treeScale: 1.45
+      treeScale: 1
     - price: 240
       value: 8
-      treeScale: 1.7
+      treeScale: 1
   - id: auto-collect
     available: 1
     title: Auto Collect
-    description: Collect automatically each second, matching the tree production rate.
+    description: Automatically collect shared tree stock each second at its production rate, wherever you are.
     effect: 3
     icon: {fileID: 0}
     levels:
@@ -118,3 +118,19 @@ MonoBehaviour:
     - price: 260
       value: 2
       treeScale: 1
+  - id: wild-tree-growth
+    available: 1
+    title: Wild Trees
+    description: Increase wild cheese tree size and the minimum and maximum cheese dropped when chopped. Ordinary and high-value trees keep their own base drop ranges.
+    effect: 5
+    icon: {fileID: 0}
+    levels:
+    - price: 60
+      value: 1.25
+      treeScale: 1.2
+    - price: 120
+      value: 1.5
+      treeScale: 1.45
+    - price: 240
+      value: 2
+      treeScale: 1.7

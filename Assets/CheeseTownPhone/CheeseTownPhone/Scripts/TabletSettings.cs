@@ -4,16 +4,18 @@ using UnityEngine;
 
 namespace CheeseTownPhone
 {
-    public enum UpgradeEffect { MoveSpeed, CollectRange, TreeGrowth, AutoCollect, CheeseValue }
+    // BEGIN CHANGED: Preserve serialized values; append wild growth without moving existing effects.
+    public enum UpgradeEffect { MoveSpeed = 0, CollectRange = 1, TownTreeProduction = 2, AutoCollect = 3, CheeseValue = 4, WildTreeGrowth = 5 }
+    // END CHANGED
     public enum UpgradeTarget { Player, Tree }
 
     [Serializable]
     public sealed class UpgradeLevel
     {
         [Min(0)] public int price;
-        [Tooltip("Absolute speed, radius, production/sec, or value multiplier. AutoCollect ignores this field: it always matches production.")]
+        [Tooltip("Absolute speed/radius; TownTreeProduction = stock per second; WildTreeGrowth = drop-range multiplier; CheeseValue = unit value multiplier. AutoCollect follows town production.")]
         [Min(0)] public float value;
-        [Tooltip("TreeGrowth only: visual scale of the tree.")]
+        [Tooltip("WildTreeGrowth only: size multiplier for harvestable world trees. Town main tree upgrades only change efficiency.")]
         [Min(.1f)] public float treeScale = 1;
         public UpgradeLevel(int price, float value, float scale = 1)
         { this.price = price; this.value = value; treeScale = scale; }
@@ -29,7 +31,7 @@ namespace CheeseTownPhone
         public UpgradeEffect effect;
         public Sprite icon;
         public List<UpgradeLevel> levels = new List<UpgradeLevel>();
-        public UpgradeTarget Target => effect == UpgradeEffect.TreeGrowth || effect == UpgradeEffect.CheeseValue ? UpgradeTarget.Tree : UpgradeTarget.Player;
+        public UpgradeTarget Target => effect == UpgradeEffect.TownTreeProduction || effect == UpgradeEffect.WildTreeGrowth || effect == UpgradeEffect.CheeseValue ? UpgradeTarget.Tree : UpgradeTarget.Player;
     }
 
     [CreateAssetMenu(menuName = "Cheese Town/Tablet Settings", fileName = "TabletSettings")]
@@ -100,15 +102,17 @@ namespace CheeseTownPhone
             new UpgradeOption { id = "move-speed", title = "Move Speed", description = "Increase player movement speed.", effect = UpgradeEffect.MoveSpeed,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(20, 6), new UpgradeLevel(50, 8) } },
             // BEGIN CHANGED: The base state is displayed as level one.
-            new UpgradeOption { id = "collect-range", title = "Collect Range", description = "No range at level 1. Unlock and expand collection radius.", effect = UpgradeEffect.CollectRange,
+            new UpgradeOption { id = "collect-range", title = "Collect Range", description = "Expand ground cheese pickup range and the reach of manual tree collection.", effect = UpgradeEffect.CollectRange,
             // END CHANGED
                 levels = new List<UpgradeLevel> { new UpgradeLevel(30, 2), new UpgradeLevel(60, 4) } },
-            new UpgradeOption { id = "tree-growth", title = "Upgrades for Tree", description = "Increase tree size and cheese production.", effect = UpgradeEffect.TreeGrowth,
-                levels = new List<UpgradeLevel> { new UpgradeLevel(60, 2, 1.2f), new UpgradeLevel(120, 4, 1.45f), new UpgradeLevel(240, 8, 1.7f) } },
-            new UpgradeOption { id = "auto-collect", title = "Auto Collect", description = "Collect automatically each second, matching the tree production rate.", effect = UpgradeEffect.AutoCollect,
+            new UpgradeOption { id = "tree-growth", title = "Town Main Tree", description = "Increase the town main tree's production per second. Auto collection keeps pace with its production.", effect = UpgradeEffect.TownTreeProduction,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(60, 2), new UpgradeLevel(120, 4), new UpgradeLevel(240, 8) } },
+            new UpgradeOption { id = "auto-collect", title = "Auto Collect", description = "Automatically collect shared tree stock each second at its production rate, wherever you are.", effect = UpgradeEffect.AutoCollect,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(150, 1) } },
             new UpgradeOption { id = "double-cheese", title = "Double Cheese Value", description = "Double each cheese's cheese yield, not the number produced.", effect = UpgradeEffect.CheeseValue,
-                levels = new List<UpgradeLevel> { new UpgradeLevel(260, 2) } }
+                levels = new List<UpgradeLevel> { new UpgradeLevel(260, 2) } },
+            new UpgradeOption { id = "wild-tree-growth", title = "Wild Trees", description = "Increase wild cheese tree size and the minimum and maximum cheese dropped when chopped. Ordinary and high-value trees keep their own base drop ranges.", effect = UpgradeEffect.WildTreeGrowth,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(60, 1.25f, 1.2f), new UpgradeLevel(120, 1.5f, 1.45f), new UpgradeLevel(240, 2, 1.7f) } }
         };
 
         public void ValidateSettings()

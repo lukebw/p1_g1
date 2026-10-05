@@ -40,7 +40,10 @@ public class PlayerController : MonoBehaviour
         interactAction?.Enable();
         if (playerSpriteRenderer == null) playerSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
-        playerAnimator.SetBool(isFastParam, false);
+        // BEGIN CHANGED: A reloaded player must keep the purchased movement animation tier.
+        if (playerAnimator == null) playerAnimator = GetComponentInChildren<Animator>();
+        ApplyUpgrades();
+        // END CHANGED
     }
 
     void OnEnable()
@@ -58,10 +61,9 @@ public class PlayerController : MonoBehaviour
     void ApplyUpgrades()
     {
         speed = Vector2.one * progress.MoveSpeed;
-        if (progress.MoveSpeed >= 8) // 8 is the speed after two upgrades
-        {
-            playerAnimator.SetBool(isFastParam, true);
-        }
+        // BEGIN CHANGED: Also reset when settings remove an upgrade; tolerate missing animator bindings.
+        if (playerAnimator != null) playerAnimator.SetBool(isFastParam, progress.MoveSpeed >= 8);
+        // END CHANGED
         CollectRange = progress.CollectRange;
     }
 
@@ -97,14 +99,7 @@ public class PlayerController : MonoBehaviour
         MoveWithinWorld(positionDelta);
 
         // Configure animation parameters based on movement
-        if (moveInput.Equals(Vector2.zero))
-        {
-            playerAnimator.SetBool(isMovingParam, false);
-        }
-        else
-        {
-            playerAnimator.SetBool(isMovingParam, true);
-        }
+        if (playerAnimator != null) playerAnimator.SetBool(isMovingParam, moveInput != Vector2.zero);
 
         // Flip sprite horizontally based on movement direction
         if (playerSpriteRenderer != null && moveInput.x < 0)

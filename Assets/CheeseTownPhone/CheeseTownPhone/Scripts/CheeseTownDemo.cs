@@ -363,12 +363,14 @@ namespace CheeseTownPhone
             stats.text = "PLAYER PARAMETERS\nSpeed "+Progress.MoveSpeed.ToString("0.##")+"   |   Range "+Progress.CollectRange.ToString("0.##")+
                 "   |   Auto "+(Progress.AutoEnabled ? Progress.AutoRate.ToString("0.##")+"/s" : "OFF");
             priceLabel.text = "TREE PARAMETERS\nProduction "+Progress.Production.ToString("0.##")+"/s   |   Value "+Progress.UnitPrice+" cheeses / harvest";
-            // BEGIN CHANGED: Keep growing UI trees inside the new content area.
+            // BEGIN CHANGED: Fit the town tree artwork inside the content area.
             float treeFit = HasPixelSkin
-                ? Mathf.Min(1, 194 / (tree.sizeDelta.y * Progress.TreeScale), 240 / (tree.sizeDelta.x * Progress.TreeScale))
-                : Mathf.Min(1, 340 / (settings.treeSize.y * Progress.TreeScale), 600 / (settings.treeSize.x * Progress.TreeScale));
+                ? Mathf.Min(1, 194 / tree.sizeDelta.y, 240 / tree.sizeDelta.x)
+                : Mathf.Min(1, 340 / settings.treeSize.y, 600 / settings.treeSize.x);
             // END CHANGED
-            tree.localScale = Vector3.one * Progress.TreeScale * treeFit;
+            // BEGIN CHANGED: Town upgrades affect efficiency only; wild size never changes this illustration.
+            tree.localScale = Vector3.one * treeFit;
+            // END CHANGED
             // BEGIN CHANGED: Collection is only actionable on the town page.
             collectButton.interactable = Progress.Stock >= 1 && (!HasPixelSkin || page == 0);
             // END CHANGED
@@ -431,7 +433,8 @@ namespace CheeseTownPhone
             {
                 case UpgradeEffect.MoveSpeed: return "Speed: "+Progress.MoveSpeed.ToString("0.##");
                 case UpgradeEffect.CollectRange: return "Radius: "+Progress.CollectRange.ToString("0.##");
-                case UpgradeEffect.TreeGrowth: return Progress.Production.ToString("0.##")+" cheese/s  |  Size "+Progress.TreeScale.ToString("0.##")+"x";
+                case UpgradeEffect.TownTreeProduction: return Progress.Production.ToString("0.##")+" cheese/s";
+                case UpgradeEffect.WildTreeGrowth: return "Drops "+Progress.WildTreeYieldMultiplier.ToString("0.##")+"x | Size "+Progress.WildTreeScale.ToString("0.##")+"x";
                 case UpgradeEffect.AutoCollect: return Progress.AutoEnabled ? "Auto: "+Progress.AutoRate.ToString("0.##")+" cheese/s" : "Auto collection: OFF";
                 default: return "Value: "+Progress.UnitPrice+" cheeses / harvest";
             }
@@ -442,7 +445,8 @@ namespace CheeseTownPhone
             {
                 case UpgradeEffect.MoveSpeed: return "speed "+level.value.ToString("0.##");
                 case UpgradeEffect.CollectRange: return "radius "+level.value.ToString("0.##");
-                case UpgradeEffect.TreeGrowth: return level.value.ToString("0.##")+" cheese/s, size "+level.treeScale.ToString("0.##")+"x";
+                case UpgradeEffect.TownTreeProduction: return level.value.ToString("0.##")+" cheese/s";
+                case UpgradeEffect.WildTreeGrowth: return "Drops "+level.value.ToString("0.##")+"x, size "+level.treeScale.ToString("0.##")+"x";
                 case UpgradeEffect.AutoCollect: return "match tree production / second";
                 default: return level.value.ToString("0.##")+"x cheese yield (quantity unchanged)";
             }

@@ -106,7 +106,8 @@ namespace CheeseTownPhone
                 case UpgradeEffect.MoveSpeed: return "SPEED";
                 case UpgradeEffect.CollectRange: return "RADIUS";
                 // BEGIN CHANGED: Short labels leave room for full-size pixel glyphs.
-                case UpgradeEffect.TreeGrowth: return "PER SEC";
+                case UpgradeEffect.TownTreeProduction: return "PER SEC";
+                case UpgradeEffect.WildTreeGrowth: return "DROPS x";
                 case UpgradeEffect.AutoCollect: return "AUTO";
                 // END CHANGED
                 default: return "VALUE";
@@ -118,7 +119,8 @@ namespace CheeseTownPhone
             {
                 case UpgradeEffect.MoveSpeed: return Progress.MoveSpeed.ToString("0.##");
                 case UpgradeEffect.CollectRange: return Progress.CollectRange.ToString("0.##");
-                case UpgradeEffect.TreeGrowth: return Progress.Production.ToString("0.##");
+                case UpgradeEffect.TownTreeProduction: return Progress.Production.ToString("0.##");
+                case UpgradeEffect.WildTreeGrowth: return Progress.WildTreeYieldMultiplier.ToString("0.##");
                 case UpgradeEffect.AutoCollect: return Progress.AutoEnabled ? "ON" : "OFF";
                 default: return Progress.UnitPrice.ToString();
             }
@@ -129,6 +131,7 @@ namespace CheeseTownPhone
             switch (effect)
             {
                 case UpgradeEffect.AutoCollect: return "ON";
+                case UpgradeEffect.WildTreeGrowth: return Mathf.Max(Progress.WildTreeYieldMultiplier, next.value).ToString("0.##");
                 case UpgradeEffect.CheeseValue:
                     return Mathf.Clamp(Mathf.RoundToInt(settings.baseCheesePrice * Mathf.Max(Progress.ValueMultiplier, next.value)), 1, 1000000).ToString();
                 case UpgradeEffect.MoveSpeed: return Mathf.Max(Progress.MoveSpeed, next.value).ToString("0.##");

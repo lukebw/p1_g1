@@ -70,7 +70,12 @@ public class Tree : MonoBehaviour
             IsChopped = true;
             int minimum = Mathf.Clamp(minCheeseCount, 0, int.MaxValue - 1);
             int maximum = Mathf.Clamp(maxCheeseCount, minimum, int.MaxValue - 1);
+            // BEGIN CHANGED: Wild growth scales both ends of this prefab's drop range independently of town production.
+            float multiplier = CheeseTownPhone.TownSession.Instance.Progress.WildTreeYieldMultiplier;
+            minimum = Mathf.CeilToInt(minimum * multiplier);
+            maximum = Mathf.Max(minimum, Mathf.CeilToInt(maximum * multiplier));
             SpawnCheese(Random.Range(minimum, maximum + 1));
+            // END CHANGED
             StartCoroutine(LeaveStump());
         }
     }
