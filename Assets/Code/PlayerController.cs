@@ -30,7 +30,6 @@ public class PlayerController : MonoBehaviour
     // Position and rotation constants, to make the weapon appear strapped to the player's back.
     static Vector3 weaponIdlePosition = new Vector3(0.055f, 0f, 0f);
     static float weaponIdleRotation = -45f;
-    // static Vector3 weaponIdlePositionFlipped = new Vector3(0f, 0.3f, 0f);
     static float weaponIdleRotationFlipped = -135f;
 
     void Start()

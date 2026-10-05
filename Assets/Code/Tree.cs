@@ -60,7 +60,6 @@ public class Tree : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (IsChopped || damage <= 0) return;
-        Debug.Log("Tree took " + damage + " damage!");
 
         EmitLeaves();
         ResetShake();
