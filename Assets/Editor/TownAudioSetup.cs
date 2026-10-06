@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using UnityEditor;
-using UnityEditor.Events;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,8 +44,6 @@ public static class TownAudioSetup
             audio.treeDrop=sources[0]; audio.shop=sources[1]; audio.uiClick=sources[2]; audio.upgrade=sources[3]; audio.failed=sources[4];
             audio.mainMusic=sources[5]; audio.endingMusic=sources[6]; audio.axe=sources[7]; audio.footsteps=sources[8];
             audio.groundPickup=sources[9];
-            foreach(var cursor in UnityEngine.Object.FindObjectsByType<CursorController>(FindObjectsSortMode.None))
-                if (cursor.GetComponent<TreeHitAudio>() == null) cursor.gameObject.AddComponent<TreeHitAudio>();
             foreach(var button in UnityEngine.Object.FindObjectsByType<Button>(FindObjectsInactive.Include,FindObjectsSortMode.None)) AddButton(button);
             EditorSceneManager.SaveScene(scene);
         }

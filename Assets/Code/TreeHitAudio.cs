@@ -3,10 +3,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class TreeHitAudio : MonoBehaviour
 {
-    CursorController cursor;
-    ChopHitbox chopHitbox;
-    void Awake() { chopHitbox = GetComponent<ChopHitbox>(); }
-    void OnEnable() { chopHitbox.onTreeHit.AddListener(Play); }
-    void OnDisable() { chopHitbox.onTreeHit.RemoveListener(Play); }
-    void Play() { TownAudio.Instance?.PlayAxe(); }
+    public void Play() { 
+        Debug.Log("TreeHitAudio.Play() called");
+        TownAudio.Instance?.PlayAxe();
+    }
 }

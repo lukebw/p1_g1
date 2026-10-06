@@ -1,9 +1,13 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class ChopHitbox : MonoBehaviour
 {
-    public UnityEngine.Events.UnityEvent onTreeHit = new UnityEngine.Events.UnityEvent();
+    public TreeHitAudio treeHitAudio;
+
+    void Awake()
+    {
+        treeHitAudio = this.gameObject.AddComponent<TreeHitAudio>();
+    }
 
     void OnTriggerEnter2D(Collider2D hurtbox)
     {
@@ -12,7 +16,7 @@ public class ChopHitbox : MonoBehaviour
             TreeHurtbox treeHurtbox = hurtbox.GetComponent<TreeHurtbox>();
             if (treeHurtbox != null && treeHurtbox.enabled)
             {
-                onTreeHit.Invoke();
+                treeHitAudio?.Play();
                 treeHurtbox.RegisterHit(1);
             }
         }
