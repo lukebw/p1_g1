@@ -45,6 +45,7 @@ MonoBehaviour:
   upgradeRowPrefab: {fileID: 6028332655563684249, guid: 46d64beb442b8014ea4d0001c9267f45, type: 3}
   upgradePixelFont: {fileID: 12800000, guid: 0e2df659351337d41baa79f392c40fc7, type: 3}
   tabletPrefab: {fileID: 580031703993123101, guid: 7d754d6b6610f3a43b6db480024932da, type: 3}
+  tutorialCoachPrefab: {fileID: 104, guid: 1dec939cba964fad9f8ee11759afef96, type: 3}
   backgroundColor: {r: 0.2, g: 0.3, b: 0.34, a: 1}
   treeColor: {r: 0.9, g: 0.73, b: 0.31, a: 1}
   treeSize: {x: 150, y: 200}

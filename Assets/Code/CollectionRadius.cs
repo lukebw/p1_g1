@@ -54,6 +54,9 @@ public class CollectionRadius : MonoBehaviour
                 visual != null ? visual.sprite : null, credit);
             collectible.gameObject.SetActive(false);
             progress.CollectWorld(1);
+            // BEGIN ADDED: Play only for an actual settled ground item consumed by this collector.
+            TownAudio.Instance?.PlayGroundPickup();
+            // END ADDED
             // END ADDED
             Destroy(collectible.gameObject);
         }

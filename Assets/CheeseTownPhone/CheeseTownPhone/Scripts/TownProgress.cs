@@ -22,6 +22,21 @@ namespace CheeseTownPhone
         public const string FinalLetterId = "all-max";
         public bool GameEnded { get; private set; }
         public int UnreadCount => letters.FindAll(l => !l.IsRead).Count;
+        // BEGIN ADDED: Choose on mailbox entry only; incoming mail must not interrupt active reading.
+        public int MailboxEntryIndex
+        {
+            get
+            {
+                for (int i = letters.Count - 1; i >= 0; i--) if (!letters[i].IsRead) return i;
+                return letters.Count - 1;
+            }
+        }
+        // Guidance belongs to the session so closing the tablet or reloading a scene never restarts it.
+        public int InteractionGuideStep { get; private set; }
+        public const int InteractionGuideCount = 8;
+        public void AdvanceInteractionGuide() { InteractionGuideStep = Math.Min(InteractionGuideStep + 1, InteractionGuideCount); }
+        public void SkipInteractionGuide() { InteractionGuideStep = InteractionGuideCount; }
+        // END ADDED
         public void ReadLetter(int index)
         {
             if (index < 0 || index >= letters.Count || letters[index].IsRead) return;

@@ -8,8 +8,8 @@ using UnityEngine.UI;
 using CheeseTownPhone;
 public static class TownAudioSetup
 {
-    static readonly string[] files = { "“Item Pickup.mp3", "Shop Open.mp3", "UI Button Click.mp3", "upgrads sound(shopping) (1).mp3", "Purchase Failed.mp3", "main music (1).mp3", "fade out music (1).mp3", "giant axe strike hitting solid wood.mp3", "moving on grass (1).mp3" };
-    static readonly string[] labels = { "Cheese pickup", "Shop open", "UI click", "Upgrade successful", "Purchase failed", "Main music", "Ending music", "Axe on tree", "Grass movement" };
+    static readonly string[] files = { "“Item Pickup.mp3", "Shop Open.mp3", "UI Button Click.mp3", "upgrads sound(shopping) (1).mp3", "Purchase Failed.mp3", "main music (1).mp3", "fade out music (1).mp3", "giant axe strike hitting solid wood.mp3", "moving on grass (1).mp3", "freesound_community-pick-92276.mp3" };
+    static readonly string[] labels = { "Tree cheese drop", "Shop open", "UI click", "Upgrade successful", "Purchase failed", "Main music", "Ending music", "Axe on tree", "Grass movement", "Ground cheese pickup" };
     [MenuItem("Cheese Town/Audio/Configure audio components")]
     public static void Configure()
     {
@@ -42,8 +42,9 @@ public static class TownAudioSetup
                 sources[i]=source;
                 report.AppendLine(path+" | "+labels[i]+" | volume="+source.volume.ToString("F3")+" | loop="+source.loop);
             }
-            audio.pickup=sources[0]; audio.shop=sources[1]; audio.uiClick=sources[2]; audio.upgrade=sources[3]; audio.failed=sources[4];
+            audio.treeDrop=sources[0]; audio.shop=sources[1]; audio.uiClick=sources[2]; audio.upgrade=sources[3]; audio.failed=sources[4];
             audio.mainMusic=sources[5]; audio.endingMusic=sources[6]; audio.axe=sources[7]; audio.footsteps=sources[8];
+            audio.groundPickup=sources[9];
             foreach(var cursor in UnityEngine.Object.FindObjectsByType<CursorController>(FindObjectsSortMode.None))
                 if (cursor.GetComponent<TreeHitAudio>() == null) cursor.gameObject.AddComponent<TreeHitAudio>();
             foreach(var button in UnityEngine.Object.FindObjectsByType<Button>(FindObjectsInactive.Include,FindObjectsSortMode.None)) AddButton(button);

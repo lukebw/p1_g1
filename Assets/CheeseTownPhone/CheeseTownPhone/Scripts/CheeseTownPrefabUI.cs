@@ -8,7 +8,7 @@ namespace CheeseTownPhone
     {
         TabletView tabletView;
         public TabletView View => tabletView;
-        public bool BlocksWorldInput => EndingOpen || (tabletView != null ? tabletView.IsVisible : PhoneOpen);
+        public bool BlocksWorldInput => EndingOpen || InteractionGuideVisible || (tabletView != null ? tabletView.IsVisible : PhoneOpen);
         public void CompleteUITransitions() { if (tabletView != null) tabletView.CompleteTransitions(); }
 
         void RenderPrefab(bool open)
@@ -59,7 +59,7 @@ namespace CheeseTownPhone
             bool open = !tabletView.IsOpen;
             if (open)
             {
-                if (WelcomeUnread) selectedLetter = 0;
+                selectedLetter = Progress.MailboxEntryIndex;
                 // BEGIN CHANGED: Both Tab and the envelope enter messages after tutorial unlock.
                 page = 2;
                 // END CHANGED

@@ -79,7 +79,7 @@ namespace CheeseTownPhone
             controls = new InputActionMap("Cheese Town Tablet");
             controls.AddAction("Tablet", InputActionType.Button, "<Keyboard>/tab").performed += _ => TogglePhone();
             controls.AddAction("Back", InputActionType.Button, "<Keyboard>/escape").performed += _ =>
-            { if (EndingOpen) return; if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
+            { if (EndingOpen) return; if (InteractionGuideVisible) { DismissInteractionGuide(); return; } if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
             controls.AddAction("Collect", InputActionType.Button, "<Keyboard>/e").performed += _ => TryHarvest();
             controls.Enable();
         }
@@ -269,26 +269,30 @@ namespace CheeseTownPhone
         {
             if (filter == value) return;
             filter = value;
+            // BEGIN ADDED: Category changes deal a new card list and share the shop reveal sound.
+            Progress.NotifyShopOpened();
+            // END ADDED
             if (tabletView != null) RebuildPrefabRows(true); else Render(PhoneOpen);
         }
         // END CHANGED
         public void TogglePhone()
         {
             if (EndingOpen || HarvestTutorialActive) return;
+            if (InteractionGuideVisible) { DismissInteractionGuide(); return; }
             // BEGIN ADDED: Reverse an in-flight transition from its current position.
             if (tabletView != null) { TogglePrefab(); return; }
             // END ADDED
             tablet.SetActive(!tablet.activeSelf);
             if (PhoneOpen)
             {
-                if (WelcomeUnread) selectedLetter = 0;
-                ShowPage(WelcomeUnread ? 2 : 0);
+                ShowPage(2);
             }
             Refresh();
         }
         public void ShowPage(int value)
         {
             if (EndingOpen) return;
+            if (value == 2) selectedLetter = Progress.MailboxEntryIndex;
             if (value == 1 && page != 1) Progress.NotifyShopOpened();
             page = value;
             // BEGIN ADDED: The view animates page visibility without rebuilding gameplay bindings.
@@ -336,7 +340,10 @@ namespace CheeseTownPhone
         public void Buy(UpgradeOption option)
         {
             if (EndingOpen) return;
-            if (Progress.Buy(option)) Notify(option.title+" upgraded.");
+            if (Progress.Buy(option))
+            {
+                Notify(option.title+" upgraded.");
+            }
             Refresh();
         }
         public void ReplyToMayor()
@@ -389,7 +396,7 @@ namespace CheeseTownPhone
                     row.option.levels[level].price+" CHEESES  /  BUY";
             }
             int count = Progress.Letters.Count;
-            if (selectedLetter < 0 && count > 0) selectedLetter = 0;
+            if (selectedLetter < 0 || selectedLetter >= count) selectedLetter = Progress.MailboxEntryIndex;
             string unread = Progress.UnreadCount > 0 ? Progress.UnreadCount + " UNREAD LETTERS" : "";
             unreadBadge.text = unread;
             // BEGIN ADDED: The supplied dot reflects the existing unread count.
@@ -453,6 +460,6 @@ namespace CheeseTownPhone
         }
         void OnEnable() { controls?.Enable(); }
         void OnDisable() { controls?.Disable(); }
-        void OnDestroy() { controls?.Dispose(); if (tutorialFont != null) Release(tutorialFont); }
+        void OnDestroy() { controls?.Dispose(); }
     }
 }

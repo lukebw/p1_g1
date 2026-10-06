@@ -84,7 +84,10 @@ public class Tree : MonoBehaviour
     // BEGIN MODIFIED: Start drops in the canopy and choose landing points on the ground.
     void SpawnCheese(int amount)
     {
-        if (cheesePrefab == null || treeVisual == null) return;
+        if (amount <= 0 || cheesePrefab == null || treeVisual == null) return;
+        // BEGIN ADDED: One sound per chopped tree, independent of drop count and later collection.
+        TownAudio.Instance?.PlayTreeDrop();
+        // END ADDED
         Bounds bounds = treeVisual.bounds;
         Vector3 ground = treeVisual.transform.TransformPoint(
             new Vector3(treeVisual.sprite.bounds.center.x, treeVisual.sprite.bounds.min.y, 0));

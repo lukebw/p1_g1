@@ -11,10 +11,9 @@ namespace CheeseTownPhone
         Text tutorialPrompt;
         Tree tutorialTree;
         Tree[] tutorialTrees;
-        const string ChopInstruction = "Use WASD to move toward a cheese tree,\nthen chop it with your axe to get cheese.";
+        const string ChopInstruction = "WASD: MOVE TO A CHEESE TREE\nAIM AT THE TREE + LEFT CLICK TO CHOP";
         const string PickupInstruction = "Move closer to pick up the cheese.";
         PlayerController tutorialPlayer;
-        Font tutorialFont;
         public bool HarvestTutorialActive => worldScene && Progress != null &&
             Progress.TotalCollected == 0 && !EndingOpen && tutorialTree != null;
         public Tree TutorialTree => tutorialTree;
@@ -36,9 +35,18 @@ namespace CheeseTownPhone
             for (int i = 0; i < 4; i++)
                 tutorialBorder[i] = Box(tutorialRoot, "Tree highlight " + i, 0, 0, 1, 1, new Color(1, .83f, .22f));
             tutorialPrompt = Label(tutorialRoot, "Tutorial instruction", ChopInstruction, 0, 0, 1, 1,
-                24, Color.white, true, TextAnchor.MiddleCenter);
-            tutorialFont = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "SimHei", "Noto Sans CJK SC", "Arial Unicode MS" }, 24);
-            tutorialPrompt.font = tutorialFont;
+                8, Color.white, false, TextAnchor.MiddleCenter);
+            // BEGIN CHANGED: Use the same baked pixel font and integer sizing as the upgrade UI.
+            tutorialPrompt.font = settings.upgradePixelFont != null ? settings.upgradePixelFont : font;
+            tutorialPrompt.lineSpacing = 1.5f;
+            UpgradeRowView.Sharpen(tutorialPrompt.font);
+            if (HasPixelSkin && closedUnread != null)
+            {
+                closedUnread.font = tutorialPrompt.font;
+                closedUnread.fontStyle = FontStyle.Normal; closedUnread.fontSize = 8;
+            }
+            BuildInteractionGuide();
+            // END CHANGED
             var shadow = tutorialPrompt.gameObject.AddComponent<Shadow>();
             shadow.effectColor = Color.black;
             shadow.effectDistance = new Vector2(1, -1);
@@ -49,7 +57,7 @@ namespace CheeseTownPhone
         {
             if (tutorialPlayer == null) return;
             float nearest = float.PositiveInfinity;
-            tutorialTrees = FindObjectsByType<Tree>(FindObjectsSortMode.None);
+            tutorialTrees = FindObjectsByType<Tree>();
             foreach (var candidate in tutorialTrees)
             {
                 if (candidate.IsChopped) continue;
@@ -90,6 +98,7 @@ namespace CheeseTownPhone
                 // END CHANGED
             }
             if (tutorialRoot == null) return;
+            UpdateInteractionGuide();
             if (Progress.TotalCollected == 0 && tutorialTree == null) FindTutorialTree();
             bool active = HarvestTutorialActive && !PhoneOpen;
             tutorialRoot.gameObject.SetActive(active);
@@ -128,8 +137,8 @@ namespace CheeseTownPhone
             TutorialRect(tutorialBorder[3], left, top - thickness, right - left, thickness);
             float alpha = .75f + .25f * Mathf.Sin(Time.unscaledTime * 3);
             foreach (var edge in tutorialBorder) edge.GetComponent<Image>().color = new Color(1, .83f, .22f, alpha);
-            tutorialPrompt.fontSize = Mathf.Max(12, Mathf.RoundToInt(24 / scale));
-            TutorialRect(tutorialPrompt.rectTransform, width * .1f, height - 120 / scale, width * .8f, 64 / scale);
+            tutorialPrompt.fontSize = HasPixelSkin ? 8 : 16;
+            TutorialRect(tutorialPrompt.rectTransform, Mathf.Round(width * .05f), height - 62, Mathf.Round(width * .9f), 44);
         }
     }
 }

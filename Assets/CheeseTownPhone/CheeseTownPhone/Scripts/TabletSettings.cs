@@ -78,6 +78,8 @@ namespace CheeseTownPhone
         // BEGIN ADDED: Artists edit the saved tablet hierarchy instead of generated layout code.
         [Header("Editable tablet UI")]
         public TabletView tabletPrefab;
+        [Header("First-session interaction guide")]
+        public TutorialCoachView tutorialCoachPrefab;
         // END ADDED
         // END ADDED
         [Header("Placeholder colors and layout")]

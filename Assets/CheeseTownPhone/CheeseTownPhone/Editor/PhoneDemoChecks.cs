@@ -76,6 +76,7 @@ namespace CheeseTownPhone.Editor
                 c.initialTreeStock = 9;
                 var p = new TownProgress(c);
                 Check(p.Letters.Count == 1 && p.Letters[0].Id == "welcome" && p.UnreadCount == 1, "new session receives welcome");
+                Check(p.MailboxEntryIndex == 0, "first letter is mailbox entry");
                 p.ReadLetter(0);
                 Check(!p.GameEnded, "welcome is not ending");
                 p.Grant(1000);
@@ -84,12 +85,19 @@ namespace CheeseTownPhone.Editor
                 Check(p.Collect() == 0 && p.TotalCollected == 9, "empty collection");
                 p.Tick(1); p.Collect();
                 Check(p.TotalCollected == 10 && p.Letters[1].Id == "shop", "10 introduces shop");
+                Check(p.MailboxEntryIndex == 1 && !p.Letters[1].IsRead, "newest unread chosen without marking it read");
                 p.ReadLetter(1); p.Reconfigure(c);
                 Check(p.UnreadCount == 0 && p.Letters.Count == 2, "read and dedup survive reconfigure");
+                Check(p.MailboxEntryIndex == 1, "all-read mailbox falls back to newest letter");
                 p.CollectWorld(89); Check(p.Letters.Count == 2, "99 boundary");
                 p.CollectWorld(1); Check(p.Letters.Count == 3, "100 reserve");
                 p.CollectWorld(249); Check(p.Letters.Count == 3, "349 boundary");
                 p.CollectWorld(1); Check(p.Letters.Count == 4, "350 stop request");
+                Check(p.MailboxEntryIndex == 3, "multiple unread choose newest");
+                p.AdvanceInteractionGuide(); p.Reconfigure(c);
+                Check(p.InteractionGuideStep == 1, "guide survives reconfigure");
+                p.SkipInteractionGuide(); p.AdvanceInteractionGuide();
+                Check(p.InteractionGuideStep == TownProgress.InteractionGuideCount, "skip is terminal and bounded");
                 p.CollectWorld(149); Check(!p.MailStopped, "499 boundary");
                 p.CollectWorld(1); Check(p.MailStopped && p.Letters.Count == 4, "500 stops ordinary mail");
                 p.CollectWorld(100); Check(p.Letters.Count == 4 && p.UnreadCount == 2, "history retained after cutoff");

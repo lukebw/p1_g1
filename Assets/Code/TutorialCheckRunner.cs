@@ -28,7 +28,8 @@ public sealed class TutorialCheckRunner : MonoBehaviour
         var overlay = demo.ScreenCanvas.transform.Find("First cheese tutorial");
         Check(overlay.GetComponentsInChildren<Graphic>().All(g => !g.raycastTarget), "overlay does not block input");
         var prompt = overlay.GetComponentInChildren<Text>();
-        Check(prompt.text == "Use WASD to move toward a cheese tree,\nthen chop it with your axe to get cheese.", "English movement and chopping instruction");
+        Check(prompt.text.Contains("WASD") && prompt.text.Contains("LEFT CLICK"), "explicit movement and chopping inputs");
+        Check(prompt.font == demo.Settings.upgradePixelFont && prompt.fontStyle == FontStyle.Normal, "tutorial shares the sharp UI font");
         var launcher = demo.GetComponentsInChildren<Button>().Single(b => b.name == "Open tablet");
         Check(!launcher.interactable && !launcher.GetComponent<Outline>().enabled, "mail waits for first pickup");
         demo.TogglePhone();
@@ -55,14 +56,34 @@ public sealed class TutorialCheckRunner : MonoBehaviour
         var hudPosition = demo.View.worldHud.anchoredPosition;
         Check(hudPosition.x < 0 && hudPosition.y > 0, "gameplay HUD is at the upper left");
         // END ADDED
-        launcher.onClick.Invoke();
-        Check(demo.PhoneOpen && demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message" && t.text.Contains("Welcome to Cheese Town!")), "normal welcome letter opens");
-        demo.ReplyToMayor();
-        demo.TogglePhone();
-        Check(!launcher.GetComponent<Outline>().enabled && !demo.HarvestTutorialActive, "reading completes guidance");
-        demo.CompleteUITransitions();
-        Check(!demo.View.closedUnread.gameObject.activeSelf && demo.View.hudUnreadDot.activeSelf == (demo.Progress.UnreadCount > 0), "hint clears while unread badge follows remaining letters");
-        Debug.Log("TUTORIAL_CHECKS_PASS: nearest tree, English chop/pickup instructions, nonblocking overlay, actual drop/pickup, Tab highlight, welcome letter, completion.");
+        // BEGIN CHANGED: Each overlay click introduces one feature without invoking its real action.
+        var coach = demo.GetComponentInChildren<TutorialCoachView>(true);
+        Check(coach != null && coach.shades.Length == 4, "spotlight overlay exists");
+        int balance = demo.Progress.Cheeses, unread = demo.Progress.UnreadCount;
+        int[] expectedPages = { -1, 2, 2, 2, 1, 1, 0, 0 };
+        for (int step = 0; step < TownProgress.InteractionGuideCount; step++)
+        {
+            demo.CompleteUITransitions(); yield return null;
+            Check(demo.Progress.InteractionGuideStep == step && coach.gameObject.activeSelf, "one click per spotlight");
+            Check(demo.BlocksWorldInput, "tour clicks cannot move or chop behind overlay");
+            if (step > 0) Check(demo.View.Page == expectedPages[step] && demo.PhoneOpen, "tour previews the right page");
+            Check(coach.body.font == demo.Settings.upgradePixelFont && UpgradeRowView.Fits(coach.body.text, coach.body), "short pixel caption fits");
+            coach.next.onClick.Invoke(); yield return null;
+        }
+        demo.CompleteUITransitions(); yield return null;
+        Check(!coach.gameObject.activeSelf && !demo.PhoneOpen && !demo.BlocksWorldInput, "tour returns to free exploration");
+        Check(demo.Progress.Cheeses == balance && demo.Progress.UnreadCount == unread, "tour never buys, collects or marks mail read");
+        demo.Progress.CollectWorld(10);
+        demo.TogglePhone(); demo.CompleteUITransitions(); yield return null;
+        Check(demo.View.letter.text == demo.Progress.Letters[demo.Progress.MailboxEntryIndex].Body, "mail entry selects latest unread");
+        string reading = demo.View.letter.text;
+        demo.Progress.CollectWorld(100); demo.Refresh();
+        Check(demo.View.letter.text == reading, "incoming mail does not interrupt reading");
+        demo.TogglePhone(); demo.CompleteUITransitions(); demo.TogglePhone(); demo.CompleteUITransitions(); yield return null;
+        Check(demo.View.letter.text == demo.Progress.Letters[demo.Progress.MailboxEntryIndex].Body, "reopen selects new mail");
+        Check(!coach.gameObject.activeSelf, "completed tour stays dismissed");
+        // END CHANGED
+        Debug.Log("TUTORIAL_CHECKS_PASS: nearest tree, English chop/pickup instructions, nonblocking overlay, actual drop/pickup, Tab highlight, click-through spotlights, page previews, no unintended actions, latest unread mail, completion.");
         Destroy(gameObject);
     }
 }

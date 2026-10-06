@@ -53,7 +53,7 @@ public class CursorController : MonoBehaviour
     {
         var tablet = FindAnyObjectByType<CheeseTownPhone.CheeseTownDemo>();
         // BEGIN CHANGED: Prevent world chops through a tablet that is still closing.
-        if (tablet != null && tablet.BlocksWorldInput) return;
+        if (tablet != null && (tablet.BlocksWorldInput || tablet.IsPointerOverInteractionGuide(pointAction.ReadValue<Vector2>()))) return;
         // END CHANGED
         transform.rotation = Quaternion.Euler(0, 0, 45);
         if (chopHitbox == null) return;
