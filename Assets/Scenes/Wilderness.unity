@@ -289,6 +289,7 @@ MonoBehaviour:
     m_Actions: []
     m_Bindings: []
   chopHitbox: {fileID: 1856851850}
+  weaponAnimator: {fileID: 1856851849}
 --- !u!1 &1027689467
 GameObject:
   m_ObjectHideFlags: 0

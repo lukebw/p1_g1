@@ -6,11 +6,13 @@ public class CursorController : MonoBehaviour
 {
     public InputActionMap cursorActionMap;
     public ChopHitbox chopHitbox;
+    public Animator weaponAnimator;
 
     InputAction pointAction;
     InputAction clickAction;
 
     float cursorZ = 1f;
+    string onChopActionParam = "onChopAction";
 
     // BEGIN MODIFIED: Subscribe once per enable so clicks do not accumulate each frame.
     void OnEnable()
@@ -56,6 +58,7 @@ public class CursorController : MonoBehaviour
         // END CHANGED
         transform.rotation = Quaternion.Euler(0, 0, 45);
         if (chopHitbox == null) return;
+        weaponAnimator.SetTrigger(onChopActionParam); // Trigger weapon swing animation
         HashSet<Tree> hitTrees = new HashSet<Tree>();
         foreach (Collider2D collider in chopHitbox.GetActiveCollisions())
         {
