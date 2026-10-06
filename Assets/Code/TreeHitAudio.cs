@@ -3,8 +3,7 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class TreeHitAudio : MonoBehaviour
 {
-    public void Play() { 
-        Debug.Log("TreeHitAudio.Play() called");
+    public void Play() {
         TownAudio.Instance?.PlayAxe();
     }
 }

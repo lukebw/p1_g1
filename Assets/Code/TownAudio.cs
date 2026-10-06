@@ -59,11 +59,24 @@ public sealed class TownAudio : MonoBehaviour
     public void PlayUI() { Play(uiClick); }
     public void PlayUpgrade() { Play(upgrade); }
     public void PlayFailed() { Play(failed); }
-    public void PlayAxe() { Play(axe); }
-    static void Play(AudioSource source)
-    {
-        if (source != null && source.clip != null) source.PlayOneShot(source.clip);
+    public void PlayAxe() { Play(axe, true); }
+
+    // By default, play the audio without random pitch adjustment.
+    static void Play(AudioSource source) {
+        Play(source, false);
     }
+    static void Play(AudioSource source, bool randomPitch)
+    {
+        if (source != null && source.clip != null)
+        {
+            if (randomPitch)
+            {
+                source.pitch = Random.Range(.8f, 1.2f);
+            }
+            source.PlayOneShot(source.clip);
+        }
+    }
+
     void UpdateMusic()
     {
         if (progress.GameEnded) { mainMusic.Stop(); endingMusic.Stop(); return; }
