@@ -82,7 +82,7 @@ namespace CheeseTownPhone
         void BackFromPixelPage()
         {
             if (EndingOpen) return;
-            if (page != 0) ShowPage(0); else TogglePhone();
+            CloseTablet();
         }
         void UpdateUnreadDot()
         {
@@ -209,8 +209,9 @@ namespace CheeseTownPhone
             ending = Box(frame, "Game ending", 0, 0, 640, 360, Color.clear).gameObject;
             ending.GetComponent<Image>().raycastTarget = true;
             var banner = Box(ending.transform, "Ending banner", 31, 235, 578, 105, new Color(.04f, .06f, .08f, .88f));
-            PixelLabel(banner, "Game over title", "GAME OVER", 10, 15, 558, 42, 28, TextAnchor.MiddleCenter, true);
-            PixelLabel(banner, "Game over caption", "CHEESE TOWN", 10, 66, 558, 20, 12, TextAnchor.MiddleCenter, true);
+            PixelLabel(banner, "Continue question", "You can keep gathering cheese.\nThough no mouse needs it anymore.\nKeep going?", 10, 10, 558, 45, 10, TextAnchor.MiddleCenter, true);
+            PixelAction(banner, "Continue gathering", "YES", 170, 65, 96, 28, ContinueAfterEnding, true);
+            PixelAction(banner, "Leave Mousetown", "NO", 312, 65, 96, 28, QuitAfterEnding);
             ending.SetActive(false);
         }
         // END ADDED

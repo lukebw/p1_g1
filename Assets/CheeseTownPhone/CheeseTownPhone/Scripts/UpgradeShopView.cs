@@ -44,7 +44,7 @@ namespace CheeseTownPhone
             });
             if (preview != null) preview.gameObject.SetActive(false);
         }
-        public void Rebuild(TabletSettings settings, int filter, Action<UpgradeOption> purchase, bool animate)
+        public void Rebuild(TabletSettings settings, TownProgress progress, int filter, Action<UpgradeOption> purchase, bool animate)
         {
             FinishEntrance(); tooltip.Hide();
             foreach (var slot in slots) { slot.gameObject.SetActive(false); if (Application.isPlaying) Destroy(slot.gameObject); else DestroyImmediate(slot.gameObject); }
@@ -54,7 +54,7 @@ namespace CheeseTownPhone
             foreach (var option in settings.upgrades)
             {
                 if (settings.upgradeRowPrefab == null) break;
-                if (option == null || !option.available || filter == 1 && option.Target != UpgradeTarget.Player || filter == 2 && option.Target != UpgradeTarget.Tree) continue;
+                if (!progress.IsUpgradeVisible(option) || filter == 1 && option.Target != UpgradeTarget.Player || filter == 2 && option.Target != UpgradeTarget.Tree) continue;
                 var slot = new GameObject("Card slot - " + option.id, typeof(RectTransform)).GetComponent<RectTransform>();
                 slot.SetParent(content, false); slot.anchorMin = slot.anchorMax = slot.pivot = new Vector2(0, 1);
                 slot.anchoredPosition = new Vector2(0, -cursor);

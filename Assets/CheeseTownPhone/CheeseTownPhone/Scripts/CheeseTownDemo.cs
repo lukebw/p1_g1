@@ -37,8 +37,11 @@ namespace CheeseTownPhone
         int selectedLetter = -1;
         readonly List<Row> rows = new List<Row>();
         int revision, page, filter;
+        int displayedUnlockState = -1;
+        int ShopUnlockState => (Progress.ForestCharmCharged ? 1 : 0) | (Progress.MainTreeStarted ? 2 : 0);
         float noticeUntil, nextRefresh;
         bool built; bool worldScene;
+        TownSession boundSession;
         sealed class Row { public UpgradeOption option; public Text level, current, next, cost; public Button buy; }
 
         void Awake() { Build(); }
@@ -76,10 +79,13 @@ namespace CheeseTownPhone
             }
             Render(false);
             BuildTutorial();
+            boundSession = TownSession.Instance;
+            boundSession.NarrativeChanged += SyncNarrativeVisibility;
+            SyncNarrativeVisibility();
             controls = new InputActionMap("Cheese Town Tablet");
-            controls.AddAction("Tablet", InputActionType.Button, "<Keyboard>/tab").performed += _ => TogglePhone();
+            controls.AddAction("Tablet", InputActionType.Button, "<Keyboard>/tab").performed += _ => ToggleDetails();
             controls.AddAction("Back", InputActionType.Button, "<Keyboard>/escape").performed += _ =>
-            { if (EndingOpen || TownSession.Instance.PrologueActive) return; if (InteractionGuideVisible) { DismissInteractionGuide(); return; } if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
+            { if (EndingOpen || TownSession.Instance.PrologueActive) return; if (InteractionGuideVisible) { DismissInteractionGuide(); return; } if (PhoneOpen) CloseTablet(); };
             controls.AddAction("Collect", InputActionType.Button, "<Keyboard>/e").performed += _ => TryHarvest();
             controls.Enable();
         }
@@ -130,6 +136,7 @@ namespace CheeseTownPhone
         }
         void Render(bool open)
         {
+            displayedUnlockState = ShopUnlockState;
             // BEGIN ADDED: Route configured artwork through the native pixel layout.
             ConfigurePixelLayout();
             // BEGIN ADDED: Saved layout references replace runtime construction for configured projects.
@@ -180,17 +187,43 @@ namespace CheeseTownPhone
             BuildEnding(frame);
             if (EndingOpen) ShowEnding();
         }
+        public void CloseTablet()
+        {
+            if (EndingOpen || !PhoneOpen || TownSession.Instance.PrologueActive) return;
+            if (InteractionGuideVisible) { DismissInteractionGuide(); return; }
+            if (tabletView != null) tabletView.SetOpen(false); else tablet.SetActive(false);
+            EventSystem.current?.SetSelectedGameObject(null); Refresh();
+        }
+        public void ContinueAfterEnding()
+        {
+            if (!TownSession.Instance.ResolveEndingChoice(true)) return;
+            page = 0;
+            if (tabletView != null) { tabletView.ResumeAfterEnding(); Refresh(); }
+            else Render(false);
+            EventSystem.current?.SetSelectedGameObject(null);
+        }
+        public void QuitAfterEnding()
+        {
+            if (!TownSession.Instance.ResolveEndingChoice(false)) return;
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
         void BuildEnding(Transform frame)
         {
             ending = Box(frame,"Game ending",0,0,1460,790,Color.clear).gameObject;
             ending.GetComponent<Image>().raycastTarget = true;
             var banner = Box(ending.transform,"Ending banner",0,565,1460,225,new Color(.04f,.06f,.08f,.88f));
-            Label(banner,"Game over title","GAME OVER",50,28,1360,92,64,paper,true,TextAnchor.MiddleCenter);
-            Label(banner,"Game over caption","CHEESE TOWN",50,133,1360,40,22,accent,true,TextAnchor.MiddleCenter);
+            Label(banner,"Continue question","You can keep gathering cheese.\nThough no mouse needs it anymore.\nKeep going?",50,15,1360,110,26,paper,true,TextAnchor.MiddleCenter);
+            Action(banner,"Continue gathering","YES",430,140,250,60,ContinueAfterEnding);
+            Action(banner,"Leave Mousetown","NO",780,140,250,60,QuitAfterEnding);
             ending.SetActive(false);
         }
         void ShowEnding()
         {
+            if (!TownSession.Instance.EndingReady) return;
             page = 0;
             // BEGIN ADDED: Nested prefab pages need an explicit ending state instead of hierarchy assumptions.
             if (tabletView != null) { tabletView.ShowEnding(); EventSystem.current?.SetSelectedGameObject(null); return; }
@@ -230,7 +263,7 @@ namespace CheeseTownPhone
             int index = 0;
             foreach (var option in settings.upgrades)
             {
-                if (option == null || !option.available || filter == 1 && option.Target != UpgradeTarget.Player || filter == 2 && option.Target != UpgradeTarget.Tree) continue;
+                if (!Progress.IsUpgradeVisible(option) || filter == 1 && option.Target != UpgradeTarget.Player || filter == 2 && option.Target != UpgradeTarget.Tree) continue;
                 var item = Box(content,"Upgrade "+option.id,0,index*90,1348,84,new Color(.14f,.21f,.25f));
                 Artwork(item,"Upgrade Icon Sprite Slot",option.icon,"ICON",10,10,64,64,new Color(.22f,.31f,.35f));
                 var title = Label(item,"Title",option.title,91,9,399,27,19,paper,true);
@@ -275,17 +308,20 @@ namespace CheeseTownPhone
             if (tabletView != null) RebuildPrefabRows(true); else Render(PhoneOpen);
         }
         // END CHANGED
-        public void TogglePhone()
+        public void TogglePhone() { TogglePhoneToPage(2); }
+        public void ToggleDetails() { TogglePhoneToPage(0); }
+        public void ToggleSupplies() { TogglePhoneToPage(1); }
+        void TogglePhoneToPage(int openingPage)
         {
             if (EndingOpen || HarvestTutorialActive || TownSession.Instance.PrologueActive) return;
             if (InteractionGuideVisible) { DismissInteractionGuide(); return; }
             // BEGIN ADDED: Reverse an in-flight transition from its current position.
-            if (tabletView != null) { TogglePrefab(); return; }
+            if (tabletView != null) { TogglePrefab(openingPage); return; }
             // END ADDED
             tablet.SetActive(!tablet.activeSelf);
             if (PhoneOpen)
             {
-                ShowPage(2);
+                ShowPage(openingPage);
             }
             Refresh();
         }
@@ -321,7 +357,7 @@ namespace CheeseTownPhone
             if (!built) return;
             // Hide the entire gameplay canvas during the opening, including nested HUD canvases.
             // This controller stays active outside it so the UI is restored after skip or completion.
-            ScreenCanvas.gameObject.SetActive(!TownSession.Instance.PrologueActive);
+            SyncNarrativeVisibility();
             // BEGIN ADDED: Window changes must retain integer UI enlargement.
             UpdatePixelScale();
             // END ADDED
@@ -336,9 +372,13 @@ namespace CheeseTownPhone
         public void TryHarvest()
         {
             if (EndingOpen || TownSession.Instance.PrologueActive || !PhoneOpen || page != 0) return;
+            int before = Progress.Cheeses;
             int amount = Progress.Collect();
+            // Currency settles immediately; only the header display waits for the UI flights.
+            if (tabletView != null && tabletView.harvestFeedback != null)
+                tabletView.harvestFeedback.PlayHarvest(Progress.Cheeses - before);
             Notify(Progress.UsesBatchProduction
-                ? !Progress.MainTreeStarted ? "Find Spring Tonic in SUPPLIES to revive the Great Tree." : amount == 0 ? "The next harvest is ripening." : "+" + amount + " CHEESE"
+                ? !Progress.MainTreeStarted ? Progress.ForestCharmCharged ? "Find Spring Tonic in SUPPLIES to revive the Great Tree." : "The old Forest Charm still needs cheese energy." : amount == 0 ? "The next harvest is ripening." : "+" + amount + " CHEESE"
                 : amount == 0 ? "The tree is growing more cheese." : amount+" cheese  =  +"+((long)amount*Progress.UnitPrice)+" cheeses");
             Refresh();
         }
@@ -349,7 +389,8 @@ namespace CheeseTownPhone
             {
                 Notify(option.effect == UpgradeEffect.TownTreeStart ? "The Great Tree stirs back to life!" : option.title + " acquired!");
             }
-            else if (Progress.IsUpgradeLocked(option)) Notify("Revive the Great Tree with Spring Tonic first.");
+            else if (Progress.IsUpgradeLocked(option)) Notify(Progress.ForestCharmCharged
+                ? "Revive the Great Tree with Spring Tonic first." : "The old Forest Charm still needs cheese energy.");
             Refresh();
         }
         public void ReplyToMayor()
@@ -368,8 +409,17 @@ namespace CheeseTownPhone
         public void Refresh()
         {
             if (wallet == null || letter == null) return;
+            // Reveal newly unlocked rows immediately, retaining the current page and category.
+            if (displayedUnlockState != ShopUnlockState)
+            {
+                displayedUnlockState = ShopUnlockState;
+                if (tabletView != null) RebuildPrefabRows(page == 1 && PhoneOpen); else Render(PhoneOpen);
+                return;
+            }
             // BEGIN CHANGED: The cheese icon identifies currency in the new header.
             wallet.text = HasPixelSkin ? Progress.Cheeses.ToString() : Progress.Cheeses+"  CHEESES";
+            if (tabletView != null && tabletView.harvestFeedback != null)
+                tabletView.harvestFeedback.RefreshWallet();
             shopWallet.text = "WALLET   "+Progress.Cheeses+" CHEESES";
             // END CHANGED
             stock.text = "Stored: "+Mathf.FloorToInt(Progress.Stock)+" / "+Progress.Capacity+" cheese";
@@ -380,8 +430,11 @@ namespace CheeseTownPhone
             if (Progress.UsesBatchProduction)
             {
                 stock.text = Progress.MainTreeStarted ? "STORED " + Mathf.FloorToInt(Progress.Stock) + " / " + Progress.Capacity + " CHEESE" : "REVIVE OUR GREAT TREE";
-                stats.text = "WINTER STORES " + Progress.Cheeses + "/" + Progress.CollectionGoal + "\nMOVE " + Progress.MoveSpeed.ToString("0.##") + "  RANGE " + Progress.CollectRange.ToString("0.##");
-                priceLabel.text = !Progress.MainTreeStarted ? "THE GREAT TREE SLUMBERS\nFIND SPRING TONIC IN SUPPLIES" :
+                // The excess-cheese ending threshold is hidden, not a collection objective.
+                stats.text = "MOVE " + Progress.MoveSpeed.ToString("0.##") + "  RANGE " + Progress.CollectRange.ToString("0.##");
+                priceLabel.text = !Progress.MainTreeStarted ? Progress.ForestCharmCharged
+                    ? "THE ROOTS ARE STIRRING\nFIND SPRING TONIC IN SUPPLIES"
+                    : "THE GREAT TREE SLUMBERS\nNOURISH THE OLD FOREST CHARM" :
                     Progress.BatchSize + " EVERY " + Progress.ProductionInterval.ToString("0.#") + "s  (" + Progress.Production.ToString("0.#") + "/s)\n" +
                     (Progress.Stock >= Progress.Capacity ? "FULL - COLLECT TO RESUME" : "NEXT " + Progress.NextBatchIn.ToString("0.0") + "s  COLLECT +" + Mathf.FloorToInt(Progress.Stock));
             }
@@ -420,10 +473,15 @@ namespace CheeseTownPhone
             // END ADDED
             // BEGIN CHANGED: The compact HUD shares live session data and keeps the tutorial hint.
             bool hasHud = tabletView != null && tabletView.worldHud != null;
-            closedUnread.text = hasHud ? "Press TAB to open messages." :
+            if (tabletView != null) tabletView.RefreshTreeStockIndicator(Progress.TreeStockFull);
+            closedUnread.text = hasHud ? "Press TAB to view the Great Tree." :
                 HarvestTutorialActive ? "" : WelcomeUnread ? "YOU HAVE A WELCOME LETTER" : unread;
             welcomeGlow.enabled = WelcomeUnread && !PhoneOpen && !HarvestTutorialActive;
             tabletLauncher.interactable = !HarvestTutorialActive;
+            if (tabletView != null && tabletView.treeLauncher != null)
+                tabletView.treeLauncher.interactable = !HarvestTutorialActive;
+            if (tabletView != null && tabletView.shopLauncher != null)
+                tabletView.shopLauncher.interactable = !HarvestTutorialActive;
             if (hasHud)
             {
                 // BEGIN CHANGED: Pickups animate only the HUD display; shop balances remain immediate.
@@ -444,6 +502,7 @@ namespace CheeseTownPhone
             previousLetter.interactable = selectedLetter > 0;
             nextLetter.interactable = selectedLetter >= 0 && selectedLetter < count - 1;
             replyButton.interactable = count > 0 && !Progress.Letters[selectedLetter].IsRead;
+            if (tabletView != null) tabletView.RefreshReadAttention(Time.unscaledTime);
             // BEGIN CHANGED: Supplied mail buttons already contain their lettering.
             var readLabel = replyButton.GetComponentInChildren<Text>();
             if (readLabel != null) readLabel.text = count > 0 && (Progress.Letters[selectedLetter].Id == TownProgress.FinalLetterId || Progress.Letters[selectedLetter].Id == TownProgress.GoalLetterId)
@@ -484,6 +543,18 @@ namespace CheeseTownPhone
         }
         void OnEnable() { controls?.Enable(); }
         void OnDisable() { controls?.Disable(); }
-        void OnDestroy() { controls?.Dispose(); }
+        void SyncNarrativeVisibility()
+        {
+            if (ScreenCanvas == null) return;
+            bool visible = !TownSession.Instance.NarrativeActive;
+            // Prepare the final page while hidden so the old gameplay HUD cannot flash after the last chapter.
+            if (visible && EndingOpen && ending != null && !ending.activeSelf) ShowEnding();
+            ScreenCanvas.gameObject.SetActive(visible);
+        }
+        void OnDestroy()
+        {
+            if (boundSession != null) boundSession.NarrativeChanged -= SyncNarrativeVisibility;
+            controls?.Dispose();
+        }
     }
 }

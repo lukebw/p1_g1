@@ -6,7 +6,9 @@ public class ChopHitbox : MonoBehaviour
 
     void Awake()
     {
-        treeHitAudio = this.gameObject.AddComponent<TreeHitAudio>();
+        // Reuse the authored component; support hitboxes created without editor setup.
+        treeHitAudio = GetComponent<TreeHitAudio>();
+        if (treeHitAudio == null) treeHitAudio = gameObject.AddComponent<TreeHitAudio>();
     }
 
     void OnTriggerEnter2D(Collider2D hurtbox)

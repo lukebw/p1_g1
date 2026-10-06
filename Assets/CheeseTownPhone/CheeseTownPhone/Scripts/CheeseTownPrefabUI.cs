@@ -18,6 +18,8 @@ namespace CheeseTownPhone
                 foreach (Transform child in stage) { child.gameObject.SetActive(false); Release(child.gameObject); }
                 tabletView = Instantiate(settings.tabletPrefab, stage);
                 tabletView.name = "Tablet View";
+                if (tabletView.harvestFeedback != null)
+                    tabletView.harvestFeedback.Bind(Progress, tabletView, tabletView.townWalletIcon);
                 var layout = (RectTransform)tabletView.transform;
                 layout.anchorMin = layout.anchorMax = layout.pivot = new Vector2(.5f, .5f);
                 layout.anchoredPosition = Vector2.zero;
@@ -30,7 +32,12 @@ namespace CheeseTownPhone
                 collectButton = tabletView.collect; replyButton = tabletView.read;
                 previousLetter = tabletView.previous; nextLetter = tabletView.next;
                 unreadDotImage = tabletView.unreadDot; pixelTreeCaption = tabletView.treeCaption;
-                tabletView.launcher.onClick.AddListener(TogglePhone); tabletView.back.onClick.AddListener(BackFromPixelPage);
+                tabletView.launcher.onClick.AddListener(TogglePhone); tabletView.back.onClick.AddListener(CloseTablet);
+                if (tabletView.treeLauncher != null) tabletView.treeLauncher.onClick.AddListener(ToggleDetails);
+                if (tabletView.shopLauncher != null) tabletView.shopLauncher.onClick.AddListener(ToggleSupplies);
+                if (tabletView.treePageButton != null) tabletView.treePageButton.onClick.AddListener(() => ShowPage(0));
+                if (tabletView.continueEnding != null) tabletView.continueEnding.onClick.AddListener(ContinueAfterEnding);
+                if (tabletView.quitEnding != null) tabletView.quitEnding.onClick.AddListener(QuitAfterEnding);
                 tabletView.shopButton.onClick.AddListener(() => ShowPage(1)); tabletView.mailButton.onClick.AddListener(() => ShowPage(2));
                 tabletView.collect.onClick.AddListener(TryHarvest); tabletView.mailBack.onClick.AddListener(() => ShowPage(0));
                 tabletView.previous.onClick.AddListener(() => SelectLetter(selectedLetter - 1));
@@ -46,7 +53,8 @@ namespace CheeseTownPhone
         void RebuildPrefabRows(bool animate)
         {
             rows.Clear(); pixelUpgradeRows.Clear();
-            tabletView.upgrades.Rebuild(settings, filter, Buy, animate);
+            displayedUnlockState = ShopUnlockState;
+            tabletView.upgrades.Rebuild(settings, Progress, filter, Buy, animate);
             foreach (var view in tabletView.upgrades.Rows)
             {
                 var row = new Row { option = view.Option };
@@ -54,18 +62,21 @@ namespace CheeseTownPhone
             }
             Refresh();
         }
-        void TogglePrefab()
+        void TogglePrefab(int openingPage)
         {
             bool open = !tabletView.IsOpen;
             if (open)
             {
-                selectedLetter = Progress.MailboxEntryIndex;
-                // BEGIN CHANGED: Both Tab and the envelope enter messages after tutorial unlock.
-                page = 2;
+                if (openingPage == 2) selectedLetter = Progress.MailboxEntryIndex;
+                if (openingPage == 1) Progress.NotifyShopOpened();
+                // BEGIN CHANGED: Tab opens tree details; the envelope retains latest-unread mail routing.
+                page = openingPage;
                 // END CHANGED
                 tabletView.SetPage(page, false);
             }
-            tabletView.SetOpen(open); EventSystem.current?.SetSelectedGameObject(null); Refresh();
+            tabletView.SetOpen(open);
+            if (open && openingPage == 1) tabletView.upgrades.PlayEntrance();
+            EventSystem.current?.SetSelectedGameObject(null); Refresh();
         }
     }
 }

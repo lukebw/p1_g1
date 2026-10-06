@@ -72,10 +72,10 @@ namespace CheeseTownPhone
                     case 4: targets = new[] { (RectTransform)tabletView.upgrades.categories[0].transform, tabletView.upgrades.scroll.viewport }; break;
                     case 5:
                         if (tabletView.upgrades.Rows.Count > 0) targets = new[] { (RectTransform)tabletView.upgrades.Rows[0].buy.transform };
-                        // BEGIN ADDED: Highlight main-tree startup first without purchasing on the player's behalf.
+                        // BEGIN ADDED: Introduce the visible heirloom without revealing locked town upgrades.
                         if (Progress.UsesBatchProduction)
                             foreach (var row in tabletView.upgrades.Rows)
-                                if (row.Option.effect == UpgradeEffect.TownTreeStart) { targets = new[] { (RectTransform)row.buy.transform }; break; }
+                                if (row.Option.id == "wild-tree-growth") { targets = new[] { (RectTransform)row.buy.transform }; break; }
                         // END ADDED
                         break;
                     case 6: targets = new[] { (RectTransform)tabletView.collect.transform }; break;

@@ -20,7 +20,7 @@ MonoBehaviour:
   upgradeButtonArtwork: {fileID: 21300000, guid: 48bc6b2c777e28549a185018dfd1b1f7, type: 3}
   interfaceFont: {fileID: 12800000, guid: cf2f6a1dbd2e2104f9f3b708a25c1591, type: 3}
   mainFrame: {fileID: 21300000, guid: d7be2e7e1dd84c4428113e44714f1eea, type: 3}
-  backButtonArtwork: {fileID: 21300000, guid: f0ed895e0537d3f4c86d0e1bdbc897d1, type: 3}
+  backButtonArtwork: {fileID: 21300000, guid: de2e2502a53c4128942ee0c1430b58fd, type: 3}
   collectButtonArtwork: {fileID: 21300000, guid: f1d25a81494c8f448b7cb3cab5dff747, type: 3}
   unreadDot: {fileID: 21300000, guid: cf54dc24d00b9e64cba0c7eb70e13391, type: 3}
   walletIcon: {fileID: -3106762493133011889, guid: beeec93932302e44897ce6273e9b3b09, type: 3}
@@ -47,6 +47,7 @@ MonoBehaviour:
   tabletPrefab: {fileID: 580031703993123101, guid: 7d754d6b6610f3a43b6db480024932da, type: 3}
   tutorialCoachPrefab: {fileID: 104, guid: 1dec939cba964fad9f8ee11759afef96, type: 3}
   prologuePrefab: {fileID: 78919783142101582, guid: 3676f9f3e82093a459c8e5d35243b82b, type: 3}
+  epiloguePrefab: {fileID: 5873242272664128238, guid: 610d95745bd36ce4a8436deec3834b7e, type: 3}
   backgroundColor: {r: 0.2, g: 0.3, b: 0.34, a: 1}
   treeColor: {r: 0.9, g: 0.73, b: 0.31, a: 1}
   treeSize: {x: 186, y: 175}
@@ -92,7 +93,7 @@ MonoBehaviour:
   - id: tree-start
     available: 1
     title: Spring Tonic
-    description: Revive the Great Cheese Tree, guardian of Mousetown. Its branches will bear cheese again. Return to gather the harvest.
+    description: Carry the fully charged Forest Charm's energy into the Great Tree with this tonic. Awaken our guardian and return to gather its harvest.
     effect: 6
     icon: {fileID: 21300000, guid: 8a406876db4ac6149aefc9ec949e32dd, type: 3}
     levels:
@@ -162,7 +163,7 @@ MonoBehaviour:
   - id: wild-tree-growth
     available: 1
     title: Forest Charm
-    description: A little woodland magic. Wild cheese trees grow larger and drop more cheese when felled. Each kind keeps its natural bounty.
+    description: A charm passed down through generations. Feed it cheese energy to strengthen wild trees and their harvests. Who knows what might stir when its light is full?
     effect: 5
     icon: {fileID: 21300000, guid: d03383644da7d0146848bf12ce64280f, type: 3}
     levels:

@@ -151,14 +151,14 @@ namespace CheeseTownPhone.Editor
                 demo.GetComponentsInChildren<Button>().Single(b => b.name == "Next letter").onClick.Invoke();
             demo.GetComponentsInChildren<Button>().Single(b => b.name == "Reply to mayor").onClick.Invoke();
             Check(demo.EndingOpen && demo.PhoneOpen, "reading final letter opens town ending");
-            Check(demo.GetComponentsInChildren<Text>().Any(t => t.text == "GAME OVER"), "ending title visible");
-            Check(!demo.GetComponentsInChildren<Button>().Any(), "ending hides gameplay controls");
+            Check(demo.GetComponentsInChildren<Text>().Any(t => t.text.Contains("Keep going?")), "ending choice visible");
+            Check(demo.GetComponentsInChildren<Button>().Count() == 2, "ending exposes only Yes and No");
             demo.TogglePhone(); demo.ShowPage(1);
-            Check(demo.PhoneOpen && !demo.GetComponentsInChildren<Button>().Any(), "ending cannot reopen gameplay");
+            Check(demo.PhoneOpen && demo.GetComponentsInChildren<Button>().Count() == 2, "ending cannot reopen gameplay before a choice");
             yield return SceneManager.LoadSceneAsync("CheeseTownPhone");
             yield return null;
             demo = FindAnyObjectByType<CheeseTownDemo>();
-            Check(demo.EndingOpen && demo.PhoneOpen && demo.GetComponentsInChildren<Text>().Any(t => t.text == "GAME OVER"),
+            Check(demo.EndingOpen && demo.PhoneOpen && demo.GetComponentsInChildren<Text>().Any(t => t.text.Contains("Keep going?")),
                 "ending survives scene reload");
             Time.timeScale = 1;
         }

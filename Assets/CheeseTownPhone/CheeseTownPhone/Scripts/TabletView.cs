@@ -25,6 +25,12 @@ namespace CheeseTownPhone
         public UpgradeShopView upgrades;
         [Header("Controller bindings")]
         public Button launcher, back, shopButton, mailButton, collect, mailBack, previous, next, read;
+        public Button treeLauncher, shopLauncher, treePageButton, continueEnding, quitEnding;
+        [Header("Unread mail attention")]
+        public CanvasGroup readAttention;
+        [Min(.2f)] public float readBlinkPeriod = 1.2f;
+        [Range(.2f, 1)] public float readBlinkMinAlpha = .55f;
+        public GameObject hudTreeFullDot, pageTreeFullDot;
         public Outline welcomeGlow;
         public Text wallet, stock, stats, production, notice, letter, reply, unread, closedUnread, shopWallet;
         public RectTransform tree;
@@ -39,12 +45,25 @@ namespace CheeseTownPhone
         public GameObject hudUnreadDot;
         // BEGIN ADDED: Editable pickup FX can settle immediately when the HUD is hidden.
         public CheesePickupFeedback pickupFeedback;
+        [Header("Town harvest presentation")]
+        public TownTreeHarvestFeedback harvestFeedback;
+        public RectTransform townWalletIcon;
         // END ADDED
         float footerMailAmount;
         public void PositionHud(RectTransform canvas)
         {
+            // The ending shade is a sibling of the tablet so it covers the entire viewport.
+            if (ending != null)
+            {
+                var overlay = (RectTransform)ending.transform;
+                overlay.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Round(canvas.rect.width));
+                overlay.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Round(canvas.rect.height));
+            }
             if (worldHud == null || !anchorLauncherToScreen) return;
             worldHud.anchorMin = worldHud.anchorMax = new Vector2(.5f, .5f);
+            // Span the viewport so authored left/right anchors follow both screen edges.
+            worldHud.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
+                Mathf.Max(0, Mathf.Round(canvas.rect.width - launcherScreenInset.x * 2)));
             worldHud.anchoredPosition = new Vector2(Mathf.Round(-canvas.rect.width / 2 + launcherScreenInset.x),
                 Mathf.Round(canvas.rect.height / 2 - launcherScreenInset.y));
         }
@@ -66,6 +85,7 @@ namespace CheeseTownPhone
         {
             if (ended) return;
             IsOpen = value; upgrades.tooltip.Hide();
+            if (!value && harvestFeedback != null) harvestFeedback.CancelAndSync();
             if (value && pickupFeedback != null) pickupFeedback.CancelAndSync();
             if (value) panel.gameObject.SetActive(true);
             if (!animate) openAmount = value ? 1 : 0;
@@ -77,6 +97,7 @@ namespace CheeseTownPhone
             if (ended) return;
             bool changed = Page != value;
             Page = Mathf.Clamp(value, 0, 2); upgrades.tooltip.Hide();
+            if (Page != 0 && harvestFeedback != null) harvestFeedback.CancelAndSync();
             notice.transform.SetParent(Page == 1 ? shopNoticePlacement : townNoticePlacement, false);
             notice.rectTransform.anchorMin = Vector2.zero; notice.rectTransform.anchorMax = Vector2.one;
             notice.rectTransform.offsetMin = notice.rectTransform.offsetMax = Vector2.zero;
@@ -86,7 +107,16 @@ namespace CheeseTownPhone
             if (changed && Page == 1 && IsOpen && animate) { shopGroup.gameObject.SetActive(true); upgrades.PlayEntrance(); }
             else if (Page != 1) upgrades.FinishEntrance();
         }
-        void Update() { Advance(Time.unscaledDeltaTime); }
+        void Update() { Advance(Time.unscaledDeltaTime); RefreshReadAttention(Time.unscaledTime); }
+        public void RefreshReadAttention(float time)
+        {
+            if (readAttention == null) return;
+            // CanvasGroup alpha leaves the Button's hover and pressed color transitions intact.
+            bool active = !ended && IsOpen && Page == 2 && !IsTransitioning && read != null
+                && read.gameObject.activeInHierarchy && read.IsInteractable();
+            readAttention.alpha = active ? Mathf.Lerp(readBlinkMinAlpha, 1,
+                .5f + .5f * Mathf.Sin(time * Mathf.PI * 2 / Mathf.Max(.2f, readBlinkPeriod))) : 1;
+        }
         public void Advance(float delta)
         {
             if (ended || !IsTransitioning) return;
@@ -147,17 +177,32 @@ namespace CheeseTownPhone
             if (worldHud != null) worldHud.gameObject.SetActive(!IsVisible && !ended);
             // END ADDED
         }
+        public void ResumeAfterEnding()
+        {
+            ended = false; ending.SetActive(false); frame.SetActive(true); header.SetActive(true); background.SetActive(true);
+            launcher.gameObject.SetActive(true);
+            SetPage(0, false); SetOpen(false, false);
+        }
+        public void RefreshTreeStockIndicator(bool full)
+        {
+            if (hudTreeFullDot != null) hudTreeFullDot.SetActive(full);
+            if (pageTreeFullDot != null) pageTreeFullDot.SetActive(full);
+        }
         public void ShowEnding()
         {
+            if (harvestFeedback != null) harvestFeedback.CancelAndSync();
             if (pickupFeedback != null) pickupFeedback.CancelAndSync();
             CompleteTransitions(); ended = true; IsOpen = true;
             panel.gameObject.SetActive(true); panel.anchoredPosition = Vector2.zero; panelGroup.alpha = 1;
-            panelGroup.blocksRaycasts = true; panelGroup.interactable = false;
+            panelGroup.blocksRaycasts = true; panelGroup.interactable = true;
             homeGroup.gameObject.SetActive(false); shopGroup.gameObject.SetActive(false); mailGroup.gameObject.SetActive(false);
             footerGroup.gameObject.SetActive(false); frame.SetActive(false); header.SetActive(false);
             notice.gameObject.SetActive(false); launcher.gameObject.SetActive(false); closedUnread.gameObject.SetActive(false);
             if (worldHud != null) worldHud.gameObject.SetActive(false);
-            background.SetActive(true); ending.SetActive(true); upgrades.tooltip.Hide();
+            background.SetActive(false); ending.SetActive(true); upgrades.tooltip.Hide();
+            // The choice is a sibling overlay; hide every legacy panel backing beneath it.
+            panel.gameObject.SetActive(false);
+            RefreshReadAttention(0);
         }
     }
 }

@@ -118,11 +118,13 @@ namespace CheeseTownPhone.Editor
             var keyboard = InputSystem.AddDevice<Keyboard>("PixelUICheckKeyboard");
             try
             {
-                Press(keyboard, Key.Tab); Check(demo.PhoneOpen, "Tab opens welcome mailbox");
+                Press(keyboard, Key.Tab); Check(demo.PhoneOpen && demo.View.Page == 0, "Tab opens tree details even with unread mail");
+                Click(demo, "Letters button");
                 Check(demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "welcome mailbox retained");
                 CheckMailPresentation(demo);
                 Click(demo, "Reply to mayor"); Click(demo, "Close tablet");
-                Check(demo.PhoneOpen && !demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "Back returns to main");
+                Check(!demo.PhoneOpen, "Exit closes the tablet directly from mail");
+                demo.ToggleDetails(); demo.CompleteUITransitions();
                 // BEGIN CHANGED: Native frame slices allow the footer to move independently.
                 Check(config.tabletPrefab != null && PrefabUtility.IsPartOfPrefabAsset(config.tabletPrefab), "editable tablet prefab assigned");
                 Check(demo.View.frame.GetComponent<RectTransform>().sizeDelta == new Vector2(640, 360), "2x PNG maps to native size");
@@ -296,7 +298,7 @@ namespace CheeseTownPhone.Editor
                 Check(!demo.GetComponentsInChildren<Image>().Any(i => i.name == "Unread dot"), "read mail clears dot");
                 Check(!demo.View.hudUnreadDot.activeSelf, "reading all mail clears the gameplay badge too");
                 Press(keyboard, Key.Escape); Press(keyboard, Key.Escape); Check(!demo.PhoneOpen, "Escape back and close");
-                Press(keyboard, Key.Tab); Check(demo.PhoneOpen && demo.View.Page == 2, "Tab reopens messages after welcome is read");
+                Press(keyboard, Key.Tab); Check(demo.PhoneOpen && demo.View.Page == 0, "Tab reopens tree details after welcome is read");
                 var originalConfig = demo.Settings;
                 var edited = UnityEngine.Object.Instantiate(originalConfig);
                 demo.UseSettings(edited);
@@ -421,7 +423,7 @@ namespace CheeseTownPhone.Editor
             demo.TogglePhone(); demo.CompleteUITransitions();
             Check(view.worldHud.gameObject.activeInHierarchy && view.hudWallet.text == demo.Progress.Cheeses.ToString()
                 && view.hudUnreadDot.activeSelf, "closed HUD shows live cheese count and unread badge");
-            Check(view.closedUnread.text == "Press TAB to open messages." && view.closedUnread.gameObject.activeInHierarchy, "tutorial retains the new Tab hint");
+            Check(view.closedUnread.text == "Press TAB to view the Great Tree." && view.closedUnread.gameObject.activeInHierarchy, "tutorial retains the new Tab hint");
             Capture(demo, "MailUI-Gameplay-HUD.png");
             Capture(demo, "MailUI-Gameplay-HUD-OddViewport.png", 1601, 901);
             view.launcher.onClick.Invoke(); demo.CompleteUITransitions();

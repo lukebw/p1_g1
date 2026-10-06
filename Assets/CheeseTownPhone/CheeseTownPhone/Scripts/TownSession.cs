@@ -24,6 +24,13 @@ namespace CheeseTownPhone
         int releaseInputFrame = -1;
         public bool PrologueActive => (prologue != null && prologue.gameObject.activeSelf) || Time.frameCount <= releaseInputFrame;
         public PrologueView Prologue => prologue;
+        PrologueView epilogue;
+        bool epilogueStarted, epilogueCompleted;
+        public PrologueView Epilogue => epilogue;
+        public bool EpilogueActive => epilogue != null && epilogue.gameObject.activeSelf;
+        public bool NarrativeActive => PrologueActive || EpilogueActive;
+        public bool EndingReady => Progress.GameEnded && !Progress.EndingResolved && epilogueCompleted && !NarrativeActive;
+        public event System.Action NarrativeChanged;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatics() { instance = null; }
@@ -37,19 +44,53 @@ namespace CheeseTownPhone
             Settings = Resources.Load<TabletSettings>("TabletSettings");
             if (Settings == null) { Settings = ScriptableObject.CreateInstance<TabletSettings>(); ownsSettings = true; }
             Progress = new TownProgress(Settings);
+            Progress.Changed += BeginEndingIfNeeded;
             revision = Settings.Revision;
             SceneManager.sceneLoaded += SceneLoaded;
         }
         void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
             // Keep the opening across scene changes and show it once per new play session.
-            if (!prologueCompleted && prologue == null && Settings.prologuePrefab != null && FindAnyObjectByType<PlayerController>() != null)
+            if (!Progress.GameEnded && !prologueCompleted && prologue == null && Settings.prologuePrefab != null && FindAnyObjectByType<PlayerController>() != null)
             {
                 prologue = Instantiate(Settings.prologuePrefab, transform);
                 prologue.Begin(() => { prologueCompleted = true; releaseInputFrame = Time.frameCount + 1; });
             }
             if (FindAnyObjectByType<CheeseTownDemo>() == null)
                 new GameObject("Town tablet").AddComponent<CheeseTownDemo>();
+            BeginEndingIfNeeded();
+        }
+        void BeginEndingIfNeeded()
+        {
+            if (!Progress.GameEnded || epilogueStarted) return;
+            // Economy has already stopped; this session-owned overlay survives scene reloads and plays once.
+            epilogueStarted = true;
+            if (prologue != null && prologue.gameObject.activeSelf) { prologue.Skip(); prologue.Step(10); }
+            if (Settings.epiloguePrefab == null) { epilogueCompleted = true; return; }
+            epilogue = Instantiate(Settings.epiloguePrefab, transform);
+            epilogue.Begin(() => {
+                epilogueCompleted = true;
+                releaseInputFrame = Time.frameCount;
+                NarrativeChanged?.Invoke();
+            });
+            NarrativeChanged?.Invoke();
+        }
+        void LateUpdate()
+        {
+            if (!Progress.EndingLetterPending || NarrativeActive) return;
+            var demo = FindAnyObjectByType<CheeseTownDemo>();
+            var view = demo != null ? demo.View : null;
+            if (view != null && ((view.pickupFeedback != null && view.pickupFeedback.IsAnimating)
+                || (view.harvestFeedback != null && view.harvestFeedback.IsAnimating))) return;
+            Progress.PublishEndingLetter();
+        }
+        public bool ResolveEndingChoice(bool keepCollecting)
+        {
+            if (!EndingReady) return false;
+            Progress.ResolveEnding(keepCollecting);
+            releaseInputFrame = Time.frameCount;
+            NarrativeChanged?.Invoke();
+            return true;
         }
         public void Configure(TabletSettings settings)
         {
@@ -68,12 +109,13 @@ namespace CheeseTownPhone
                 revision = Settings.Revision;
             }
             // Production and automatic collection continue while walking or changing scenes.
-            if (!PrologueActive) Progress.Tick(Time.deltaTime);
+            if (!NarrativeActive) Progress.Tick(Time.deltaTime);
         }
         void OnDestroy()
         {
             SceneManager.sceneLoaded -= SceneLoaded;
             if (instance != this) return;
+            Progress.Changed -= BeginEndingIfNeeded;
             if (ownsSettings) Destroy(Settings);
             instance = null;
         }

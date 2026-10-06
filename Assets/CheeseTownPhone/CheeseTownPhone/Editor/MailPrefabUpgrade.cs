@@ -68,7 +68,7 @@ namespace CheeseTownPhone.Editor
             view.closedUnread.transform.SetParent(view.worldHud, false);
             Place(view.closedUnread.rectTransform, 0, 78, 244, 26);
             Style(view.closedUnread, settings); view.closedUnread.color = new Color(1, .94f, .73f, 1);
-            view.closedUnread.text = "Press TAB to open messages.";
+            view.closedUnread.text = "Press TAB to view the Great Tree.";
             view.worldHud.pivot = new Vector2(0, 1);
             view.SetPage(0, false); view.SetOpen(true, false);
         }

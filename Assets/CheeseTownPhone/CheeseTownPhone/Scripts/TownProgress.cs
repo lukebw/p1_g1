@@ -18,10 +18,30 @@ namespace CheeseTownPhone
         readonly HashSet<string> sentLetters = new HashSet<string>();
         public IReadOnlyList<Letter> Letters => letters.AsReadOnly();
         public long TotalCollected { get; private set; }
-        public bool MailStopped => config.useBatchProduction ? GameEnded : TotalCollected >= 500;
+        public bool MailStopped => config.useBatchProduction ? EndingLetterSent : TotalCollected >= 500;
         public const string FinalLetterId = "all-max";
         public const string GoalLetterId = "collection-goal";
         public bool GameEnded { get; private set; }
+        public bool EndingLetterPending { get; private set; }
+        public bool EndingResolved { get; private set; }
+        public bool EndingLetterSent => sentLetters.Contains(GoalLetterId);
+        public bool TreeStockFull => MainTreeStarted && Capacity > 0 && Stock >= Capacity;
+        // A threshold queues the letter; presentation releases it after the final pickup settles.
+        public void PublishEndingLetter()
+        {
+            if (!EndingLetterPending || EndingResolved) return;
+            EndingLetterPending = false;
+            SendLetter(GoalLetterId, "The last letter from Mousetown.\n\nLeo, the roads are buried. We have left before the cheese reaches the last rooftops.\n\nYou gave us enough to survive the winter. Then more than we could ever need. There is no one left to bring it home to.\n\nPlease, put down your basket.\n\nMayor Ellis");
+            Changed?.Invoke();
+        }
+        public void ResolveEnding(bool keepCollecting)
+        {
+            if (!GameEnded || EndingResolved) return;
+            EndingResolved = true;
+            EndingLetterPending = false;
+            GameEnded = !keepCollecting;
+            Changed?.Invoke();
+        }
         public int UnreadCount => letters.FindAll(l => !l.IsRead).Count;
         // BEGIN ADDED: Choose on mailbox entry only; incoming mail must not interrupt active reading.
         public int MailboxEntryIndex
@@ -42,7 +62,7 @@ namespace CheeseTownPhone
         {
             if (index < 0 || index >= letters.Count || letters[index].IsRead) return;
             letters[index].IsRead = true;
-            if (letters[index].Id == FinalLetterId || letters[index].Id == GoalLetterId) GameEnded = true;
+            if (!EndingResolved && (letters[index].Id == FinalLetterId || letters[index].Id == GoalLetterId)) GameEnded = true;
             Changed?.Invoke();
         }
         void SendLetter(string id, string body)
@@ -54,8 +74,13 @@ namespace CheeseTownPhone
             // BEGIN CHANGED: Narrative milestones use the current wallet; sent letters remain permanent.
             if (config.useBatchProduction)
             {
+                if (EndingResolved || EndingLetterSent) return;
                 if (Cheeses >= 10)
-                    SendLetter("shop", "A promising start, Leo!\n\nThe outfitter has saved a Spring Tonic for our Great Tree. Bring 30 cheeses and we can wake its roots. Boots and charms will help you gather supplies in the wilds.\n\nMayor Ellis");
+                    SendLetter("shop", "An old family keepsake.\n\nOur Forest Charm has passed from paw to paw for generations. It drinks in the energy of cheese, growing stronger with each offering. The outfitter can help you nourish it.\n\nNo one remembers what happens when its light is full. Perhaps you will find out, Leo.\n\nMayor Ellis");
+                if (ForestCharmCharged)
+                    SendLetter("charm-charged", "A light beneath the bark.\n\nThe old charm is glowing again. Last night, a warm light answered from the Great Tree's roots.\n\nThe outfitter has prepared a Spring Tonic to carry the charm's energy into those roots. Find it in SUPPLIES when you are ready to wake our guardian.\n\nMayor Ellis");
+                if (MainTreeStarted)
+                    SendLetter("tree-awakened", "Our guardian wakes.\n\nThe charm's light has reached the highest branches. For the first time in so long, the Great Tree is bearing cheese again.\n\nGather its harvest when you visit. The outfitter now has potions and a roomier cellar to help you care for it.\n\nMayor Ellis");
                 if (Cheeses >= 100)
                     SendLetter("reserve", "The first shelves are filling.\n\nA welcome start, Leo. The little ones asked for seconds tonight. There is still a long winter ahead, but Mousetown has something to hope for again.\n\nKeep our old guardian in your care.\n\nMayor Ellis");
                 if (Cheeses >= 350)
@@ -66,8 +91,8 @@ namespace CheeseTownPhone
                     SendLetter("spoiling", "Please leave some room.\n\nThe children cannot play in the square anymore. The cheese outside is beginning to spoil, and the neighbors keep their windows shut.\n\nCould we let the next harvest wait, Leo?\n\nMayor Ellis");
                 if (Cheeses >= 6000)
                     SendLetter("leaving", "Before the road closes.\n\nFamilies have been asking whether the north road is still clear. Some are packing before nightfall.\n\nIt is quiet without them. We have more food than ever, but fewer people at the table.\n\nMayor Ellis");
-                // The flowchart ends in silence, without another letter or acknowledgement gate.
-                if (Cheeses >= config.collectionGoal) GameEnded = true;
+                // Latch the milestone even if the player spends cheese before the letter arrives.
+                if (Cheeses >= config.collectionGoal) EndingLetterPending = true;
                 return;
             }
             // END CHANGED
@@ -116,10 +141,25 @@ namespace CheeseTownPhone
         public float ProductionInterval { get; private set; }
         public float NextBatchIn => MainTreeStarted && Stock < Capacity ? Mathf.Max(0, ProductionInterval - (float)batchElapsed) : 0;
         public int CollectionGoal => config.collectionGoal;
-        public bool IsUpgradeLocked(UpgradeOption option) => config.useBatchProduction && option != null && option.RequiresTreeStart && !MainTreeStarted;
+        // Resolve the prerequisite by stable ID and the authored tier count, not title or list order.
+        public bool ForestCharmCharged
+        {
+            get
+            {
+                foreach (var option in config.upgrades)
+                    if (option != null && option.available && option.id == "wild-tree-growth" && option.levels.Count > 0)
+                        return Level(option) >= option.levels.Count;
+                return false;
+            }
+        }
+        public bool IsUpgradeLocked(UpgradeOption option) => config.useBatchProduction && option != null &&
+            (option.effect == UpgradeEffect.TownTreeStart ? !MainTreeStarted && !ForestCharmCharged : option.RequiresTreeStart && !MainTreeStarted);
+        public bool IsUpgradeVisible(UpgradeOption option) => option != null && option.available && !IsUpgradeLocked(option);
         public int ScaleWildDropCount(int rolledCount) => (int)Math.Min(int.MaxValue - 1L,
             (long)Mathf.Max(0, rolledCount) * (config.useBatchProduction ? config.wildDropCountMultiplier : 1));
         public event Action Changed;
+        // Actual stored output, capped by capacity; views may coalesce it into bounded visual bursts.
+        public event Action<int> BatchProduced;
         public event Action Collected, Purchased, PurchaseFailed, ShopOpened;
         public void NotifyShopOpened() { ShopOpened?.Invoke(); }
 
@@ -130,7 +170,7 @@ namespace CheeseTownPhone
             Cheeses = config.startingCheeses;
             Stock = config.useBatchProduction ? 0 : config.initialTreeStock;
             SendLetter("welcome", config.useBatchProduction
-                ? "Leo, our Great Cheese Tree is fading.\n\nIt has sheltered Mousetown for generations. Now winter is near and our storerooms are bare.\n\nGather cheese from the wild groves. The outfitter may have a remedy for our guardian. Help us bring it back to life.\n\nWrite soon,\n\nMayor Ellis"
+                ? "Leo, our Great Cheese Tree is fading.\n\nIt has sheltered Mousetown for generations. Now winter is near and our storerooms are bare.\n\nGather cheese from the wild groves. Take our family's Forest Charm with you; there may still be a little life in that old keepsake.\n\nWrite soon,\n\nMayor Ellis"
                 : "Welcome to Cheese Town! I'm Mayor Ellis.\n\nWe're happy to have you here. Use your axe on a cheese tree, then walk over the dropped cheese to collect it. Gather 10 cheeses, and I'll write again.\n\nUse your tablet to read letters and visit UPGRADES. Enjoy your first day!\n\nMayor Ellis");
             Reconfigure(settings);
         }
@@ -228,9 +268,12 @@ namespace CheeseTownPhone
             batchElapsed += delta;
             double batches = Math.Floor((batchElapsed + 1e-7) / ProductionInterval);
             if (batches < 1) return;
+            float previousStock = Stock;
             Stock = (float)Math.Min(Capacity, Stock + batches * BatchSize);
             batchElapsed = Stock >= Capacity ? 0 : Math.Max(0, batchElapsed - batches * ProductionInterval);
             Changed?.Invoke();
+            int produced = Mathf.FloorToInt(Stock - previousStock);
+            if (produced > 0) BatchProduced?.Invoke(produced);
         }
         // END ADDED
         void Transfer(int amount)

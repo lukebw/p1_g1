@@ -66,7 +66,7 @@ namespace CheeseTownPhone
             int index = 0; float cursor = 0, lastSpacing = 0;
             foreach (var option in settings.upgrades)
             {
-                if (option == null || !option.available || filter == 1 && option.Target != UpgradeTarget.Player
+                if (!Progress.IsUpgradeVisible(option) || filter == 1 && option.Target != UpgradeTarget.Player
                     || filter == 2 && option.Target != UpgradeTarget.Tree) continue;
                 if (settings.upgradeRowPrefab == null) break;
                 var view = Instantiate(settings.upgradeRowPrefab, content);

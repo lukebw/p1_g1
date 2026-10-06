@@ -10,7 +10,7 @@ public sealed class TownAudio : MonoBehaviour
     // BEGIN CHANGED: Reuse the existing clip when a tree releases cheese, not when income is credited.
     [FormerlySerializedAs("pickup")]
     public AudioSource treeDrop;
-    // BEGIN ADDED: Ground pickup is triggered by the physical collector, never by passive income.
+    // BEGIN ADDED: Pickup plays for ground collection or a manual town-harvest arrival, never passive production.
     public AudioSource groundPickup;
     [Min(0)] public float pickupSoundInterval = .06f;
     float nextPickupSoundTime;
@@ -75,6 +75,7 @@ public sealed class TownAudio : MonoBehaviour
             mainMusic.Stop();
             endingMusic.Play();
         }
+        else if (hasReserve && !endingMusic.isPlaying) endingMusic.Play();
         else if (!hasReserve && !mainMusic.isPlaying) mainMusic.Play();
     }
     void LateUpdate()

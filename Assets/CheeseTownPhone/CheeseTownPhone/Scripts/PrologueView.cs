@@ -19,6 +19,7 @@ namespace CheeseTownPhone
         public Text title, body, counter, hint;
         public CanvasGroup page;
         public Button advance, skip;
+        public string finalHint = "CLICK / SPACE TO SET OUT";
         [Min(.05f)] public float fadeSeconds = .45f;
         [Min(0)] public float minimumReadSeconds = .6f;
         public int ChapterIndex { get; private set; }
@@ -40,10 +41,10 @@ namespace CheeseTownPhone
             var chapter = chapters[ChapterIndex];
             background.sprite = chapter.background;
             title.text = chapter.title; body.text = chapter.body;
-            // Let the story read as a continuous opening, without numbered slides.
+            // Opening and ending stories read continuously, without numbered slides.
             title.gameObject.SetActive(!string.IsNullOrWhiteSpace(chapter.title));
             counter.text = ""; counter.gameObject.SetActive(false);
-            hint.text = ChapterIndex == chapters.Length - 1 ? "CLICK / SPACE TO SET OUT" : "CLICK / SPACE TO CONTINUE";
+            hint.text = ChapterIndex == chapters.Length - 1 ? finalHint : "CLICK / SPACE TO CONTINUE";
             readable = 0;
         }
         public void Advance()

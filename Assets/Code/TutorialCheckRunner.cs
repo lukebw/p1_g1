@@ -52,7 +52,7 @@ public sealed class TutorialCheckRunner : MonoBehaviour
             yield return new WaitForSecondsRealtime(demo.View.pickupFeedback.flightPrefab.duration + .1f);
         // END CHANGED
         Check(demo.View.hudWallet.text == demo.Progress.Cheeses.ToString() && demo.View.hudUnreadDot.activeSelf, "HUD shares pickup currency and unread state");
-        Check(demo.View.closedUnread.text == "Press TAB to open messages." && demo.View.closedUnread.gameObject.activeInHierarchy, "updated message tutorial hint");
+        Check(demo.View.closedUnread.text == "Press TAB to view the Great Tree." && demo.View.closedUnread.gameObject.activeInHierarchy, "updated message tutorial hint");
         var hudPosition = demo.View.worldHud.anchoredPosition;
         Check(hudPosition.x < 0 && hudPosition.y > 0, "gameplay HUD is at the upper left");
         // END ADDED

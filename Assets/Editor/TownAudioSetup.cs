@@ -44,6 +44,7 @@ public static class TownAudioSetup
             audio.treeDrop=sources[0]; audio.shop=sources[1]; audio.uiClick=sources[2]; audio.upgrade=sources[3]; audio.failed=sources[4];
             audio.mainMusic=sources[5]; audio.endingMusic=sources[6]; audio.axe=sources[7]; audio.footsteps=sources[8];
             audio.groundPickup=sources[9];
+            ConfigureTreeHits();
             foreach(var button in UnityEngine.Object.FindObjectsByType<Button>(FindObjectsInactive.Include,FindObjectsSortMode.None)) AddButton(button);
             EditorSceneManager.SaveScene(scene);
         }
@@ -52,13 +53,31 @@ public static class TownAudioSetup
             var root=PrefabUtility.LoadPrefabContents(path); var view=root.GetComponent<TabletView>();
             foreach(var button in root.GetComponentsInChildren<Button>(true))
             {
-                var sound=AddButton(button); sound.shopButton=view!=null&&button==view.shopButton;
+                var sound=AddButton(button); sound.shopButton=view!=null&&(button==view.shopButton||button==view.shopLauncher);
             }
             PrefabUtility.SaveAsPrefabAsset(root,path); PrefabUtility.UnloadPrefabContents(root);
         }
         AssetDatabase.SaveAssets();
         File.WriteAllText(Path.GetFullPath(Path.Combine(Application.dataPath,"../Audio-configuration.txt")),report.ToString());
         Debug.Log("TOWN_AUDIO_SETUP_PASS");
+    }
+    // Editor-only wiring: bind to the weapon hitbox referenced by the cursor.
+    // A legacy ChopHitbox on the cursor itself never receives the weapon's contacts.
+    public static void ConfigureTreeHits()
+    {
+        foreach (var cursor in UnityEngine.Object.FindObjectsByType<CursorController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            var hitbox = cursor.chopHitbox;
+            if (hitbox == null)
+                throw new InvalidOperationException("Assign CursorController.chopHitbox before configuring tree-hit audio: " + cursor.name);
+            var legacy = cursor.GetComponent<TreeHitAudio>();
+            if (legacy != null && legacy.gameObject != hitbox.gameObject)
+                UnityEngine.Object.DestroyImmediate(legacy);
+            if (hitbox.GetComponent<TreeHitAudio>() == null)
+                hitbox.gameObject.AddComponent<TreeHitAudio>();
+            hitbox.treeHitAudio = hitbox.GetComponent<TreeHitAudio>();
+            EditorUtility.SetDirty(hitbox);
+        }
     }
     static UIButtonAudio AddButton(Button button)
     {

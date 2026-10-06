@@ -147,7 +147,8 @@ namespace CheeseTownPhone.Editor
             try
             {
                 Press(kb, Key.Tab); Check(!demo.PhoneOpen, "unread letter can be dismissed");
-                Press(kb, Key.Tab); Check(demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "Tab reopens unread welcome");
+                Press(kb, Key.Tab); Check(demo.PhoneOpen && !demo.GetComponentsInChildren<Text>().Any(t => t.name == "Mayor message"), "Tab opens tree details with unread welcome");
+                Click(demo, "Letters button");
                 Click(demo, "Reply to mayor");
                 Check(demo.Progress.Letters[0].IsRead && !demo.EndingOpen, "reading welcome does not end game");
                 Press(kb, Key.Tab);
@@ -159,7 +160,7 @@ namespace CheeseTownPhone.Editor
                 Press(kb, Key.Tab);
             }
             finally { InputSystem.RemoveDevice(kb); }
-            Debug.Log("WELCOME_CHECKS_PASS: visible startup, gold launcher, click and Tab mailbox, dismiss unread, read clears highlight, normal home and retained letter.");
+            Debug.Log("WELCOME_CHECKS_PASS: visible startup, gold launcher, envelope mailbox, Tab tree details, dismiss unread, read clears highlight, retained letter.");
         }
         [MenuItem("Cheese Town/Run Demo Checks (Play Mode)")]
         public static void Run()

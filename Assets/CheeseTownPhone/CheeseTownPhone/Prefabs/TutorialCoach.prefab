@@ -119,18 +119,18 @@ MonoBehaviour:
   - MAIL CONTROLS
   - SUPPLIES
   - SUPPLY SHOP
-  - SPRING TONIC
+  - FOREST CHARM
   - COLLECT
-  - BACK
+  - CLOSE
   instructions:
-  - "Open messages with this button or TAB."
+  - "Click here for mail. TAB opens the Great Tree."
   - "Read messages from the town here."
   - "Browse letters and mark them as read here."
   - "Find equipment and potions in the supply shop."
   - "Choose supplies here. ALL / PLAYER / TREE filter the shelves."
-  - "Get Spring Tonic here to revive the Great Tree."
-  - "Gather the Great Tree's harvest here."
-  - "Go back or close the tablet with this arrow."
+  - "Offer cheese to strengthen your Forest Charm here."
+  - "Once the Great Tree wakes, gather its harvest here."
+  - "Close the tablet here. Use the tree icon to visit the Great Tree."
 --- !u!114 &105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,7 +326,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.25
-  m_Text: Open messages with this button or TAB.
+  m_Text: Click here for mail. TAB opens the Great Tree.
 --- !u!1 &700
 GameObject:
   m_ObjectHideFlags: 0

@@ -21,6 +21,11 @@ namespace CheeseTownPhone.Editor
         static void Check(bool value, string message) { if (!value) throw new Exception("Upgrade curve: " + message); }
         static void Near(float a, float b, string message) { Check(Mathf.Abs(a - b) < .002f, message + " (" + a + " vs " + b + ")"); }
         static UpgradeOption Option(TabletSettings c, string id) => c.upgrades.Single(o => o.id == id);
+        public static void ChargeCharm(TownProgress p, TabletSettings c)
+        {
+            var charm = Option(c, "wild-tree-growth");
+            while (p.Level(charm) < charm.levels.Count) Buy(p, c, charm.id);
+        }
         static void Buy(TownProgress p, TabletSettings c, string id)
         {
             var o = Option(c, id); int cost = o.levels[p.Level(o)].price, wallet = p.Cheeses;
@@ -59,15 +64,28 @@ namespace CheeseTownPhone.Editor
                 Check(p.Cheeses == 0 && p.Stock == 0 && p.TotalCollected == 0 && p.Production == 0, "locked tree never generates");
                 Check(!p.Buy(Option(c, "tree-start")), "cannot start without 30 cheese");
                 p.Grant(6000);
+                var charm = Option(c, "wild-tree-growth"); var start = Option(c, "tree-start");
+                Check(!p.Buy(start) && p.Cheeses == 6000 && !p.IsUpgradeVisible(start), "wealth cannot bypass the charm gate");
+                for (int tier = 0; tier < charm.levels.Count; tier++)
+                {
+                    Buy(p,c,charm.id); p.Tick(1000);
+                    bool charged = tier == charm.levels.Count - 1;
+                    Check(p.ForestCharmCharged == charged && p.IsUpgradeVisible(start) == charged, "startup revealed only at final charm tier");
+                    Check(!p.MainTreeStarted && p.Production == 0 && p.Stock == 0, "charm never awakens or produces automatically");
+                }
+                Check(p.Letters.Count(l => l.Id == "charm-charged") == 1, "full charm sends one narrative cue");
                 Check(!p.Buy(Option(c, "tree-batch")) && !p.Buy(Option(c, "tree-interval")) && !p.Buy(Option(c, "tree-capacity")), "three tracks require start");
+                Check(c.upgrades.Where(o=>o.RequiresTreeStart).All(o=>!p.IsUpgradeVisible(o)), "town tracks are hidden until manual revival");
                 Buy(p,c,"tree-start"); Check(p.MainTreeStarted && p.Stock == 0, "startup has no free inventory");
+                Check(c.upgrades.Where(o=>o.RequiresTreeStart).All(p.IsUpgradeVisible), "manual revival reveals all three tracks");
+                Check(p.Letters.Count(l=>l.Id=="tree-awakened")==1, "manual revival sends one narrative cue");
                 Check(!p.Buy(Option(c,"tree-start")), "startup charged once");
                 p.Tick(4.9f); Near(p.Stock,0,"no partial batch"); p.Tick(.1f); Near(p.Stock,5,"first batch after five seconds");
                 int wallet = p.Cheeses; Check(p.TotalCollected == 0 && !p.AutoEnabled, "stock is not income");
                 Check(p.Collect() == 5 && p.Cheeses == wallet + 5 && p.TotalCollected == 5, "one stock equals one cheese");
                 Check(p.Collect() == 0, "no duplicate collection");
 
-                var timer = new TownProgress(c); timer.Grant(6000); Buy(timer,c,"tree-start");
+                var timer = new TownProgress(c); timer.Grant(6000); ChargeCharm(timer,c); Buy(timer,c,"tree-start");
                 timer.Tick(2.5f); Buy(timer,c,"tree-interval"); Near(timer.NextBatchIn,2,"interval edit preserves half cycle");
                 timer.Tick(1.99f); Near(timer.Stock,0,"not mature early"); timer.Tick(.01f); Near(timer.Stock,5,"shortened cycle completes");
                 timer.Tick(10000); Near(timer.Stock,200,"capacity clamps stock"); timer.Collect();
@@ -80,14 +98,15 @@ namespace CheeseTownPhone.Editor
                     new[]{"tree-batch","tree-interval","tree-capacity"}, new[]{"tree-batch","tree-interval","tree-capacity"},
                     new[]{"tree-batch","tree-capacity"}, new[]{"tree-batch","tree-interval"}
                 };
-                int[] costs={30,130,380,1070,2170,4570}, batches={5,8,12,20,60,180}, caps={200,500,1200,3000,8000,8000}, harvests={30,56,120,300,900,5400};
+                int[] costs={140,240,490,1180,2280,4680}, batches={5,8,12,20,60,180}, caps={200,500,1200,3000,8000,8000}, harvests={30,56,120,300,900,5400};
                 float[] intervals={5,4,3,2,2,1}, rates={1,2,4,10,30,180};
                 var one = new TownProgress(c); var split = new TownProgress(c); one.Grant(6000); split.Grant(6000);
                 int spend=0;
                 for (int stage=0;stage<purchases.Length;stage++)
                 {
                     // Isolate each stage from the previous harvest's wallet, goal, and timer changes.
-                    one = new TownProgress(c); split = new TownProgress(c); one.Grant(6000); split.Grant(6000); spend=0;
+                    one = new TownProgress(c); split = new TownProgress(c); one.Grant(6000); split.Grant(6000);
+                    ChargeCharm(one,c); ChargeCharm(split,c); spend=charm.levels.Sum(l=>l.price);
                     for(int j=0;j<=stage;j++) foreach(var id in purchases[j])
                     { var o=Option(c,id); spend+=o.levels[one.Level(o)].price; Buy(one,c,id); Buy(split,c,id); }
                     Check(spend==costs[stage] && one.BatchSize==batches[stage] && one.Capacity==caps[stage],"stage amounts " + stage);
@@ -97,8 +116,17 @@ namespace CheeseTownPhone.Editor
                     Check(one.TotalCollected==0 && one.Cheeses==6000-spend,"no automatic payout " + stage);
                 }
                 for(int i=2;i<=10;i++) Check(p.ScaleWildDropCount(i)==i,"halved wild drop quantity");
-                Buy(p,c,"wild-tree-growth"); Near(p.WildTreeYieldMultiplier,1.25f,"wild growth"); Near(p.Production,1,"wild does not change town output");
+                Near(p.WildTreeYieldMultiplier,2,"fully charged charm retains wild growth"); Near(p.Production,1,"charm does not multiply town output");
                 c.upgrades.Reverse(); p.Reconfigure(c); Check(p.MainTreeStarted,"stable purchase IDs survive reorder");
+                Check(p.Letters.Count(l=>l.Id=="charm-charged")==1 && p.Letters.Count(l=>l.Id=="tree-awakened")==1,"reconfigure cannot repeat unlock letters");
+                var manual = new TownProgress(c); manual.Grant(110); ChargeCharm(manual,c);
+                Check(manual.Cheeses==0 && !manual.Buy(start) && !manual.MainTreeStarted,"charged charm still requires manual paid startup");
+                manual.Grant(30); Buy(manual,c,start.id); Check(manual.MainTreeStarted && manual.Cheeses==0,"startup price remains 30");
+                charm.available=false; var missing = new TownProgress(c); missing.Grant(6000);
+                Check(!missing.ForestCharmCharged && !missing.CanBuy(start),"disabled prerequisite cannot unlock startup"); charm.available=true;
+                var savedLevels=charm.levels; charm.levels=new System.Collections.Generic.List<UpgradeLevel>();
+                var emptyCharm=new TownProgress(c); emptyCharm.Grant(6000);
+                Check(!emptyCharm.ForestCharmCharged && !emptyCharm.CanBuy(start),"empty prerequisite is not maxed"); charm.levels=savedLevels;
 
                 // Spending delays unsent milestones even when lifetime collection is already higher.
                 var story = new TownProgress(c); story.CollectWorld(99);
@@ -119,17 +147,19 @@ namespace CheeseTownPhone.Editor
                 Check(jump.Letters.Select(l=>l.Id).SequenceEqual(new[]{"welcome","shop","reserve","winter-feast","overflow","spoiling","leaving"}),"large harvest preserves ordered mail history");
 
                 var goal = new TownProgress(c); goal.Grant(4840);
-                Buy(goal,c,"tree-start"); foreach(var o in c.upgrades) while(goal.CanBuy(o)) goal.Buy(o);
+                ChargeCharm(goal,c); Buy(goal,c,"tree-start"); foreach(var o in c.upgrades) while(goal.CanBuy(o)) goal.Buy(o);
                 Check(goal.Cheeses==0 && !goal.GameEnded,"max upgrades do not end session");
                 goal.Tick(100000); Check(goal.TotalCollected==0 && !goal.GameEnded,"full stock does not reach wallet goal"); goal.Collect();
                 goal.CollectWorld(1999); Check(!goal.GameEnded,"9999 wallet boundary");
-                goal.CollectWorld(1); Check(goal.GameEnded && !goal.Letters.Any(l=>l.Id==TownProgress.GoalLetterId),"10000 wallet ends without final dialogue");
+                goal.CollectWorld(1); Check(!goal.GameEnded && goal.EndingLetterPending && !goal.EndingLetterSent,"10000 queues final mail without interrupting play");
+                goal.PublishEndingLetter(); Check(!goal.GameEnded && goal.EndingLetterSent,"final mail waits for acknowledgement");
+                goal.ReadLetter(goal.MailboxEntryIndex); Check(goal.GameEnded,"reading final letter begins the ending");
                 wallet=goal.Cheeses; float stock=goal.Stock; goal.Tick(99); goal.CollectWorld(10); goal.Collect(); goal.Grant(1);
                 Check(goal.Cheeses==wallet && goal.Stock==stock,"silent ending freezes economy");
             }
             finally { Object.DestroyImmediate(c); }
             Directory.CreateDirectory("Logs");
-            File.WriteAllText("Logs/upgrade-curve-data-checks.txt","PASS: serialized prices/effects; zero start; startup gate; discrete batches; proportional timer upgrades; storage cap/pause; no auto/value; six reviewed stages; frame independence; halved wild rolls; purchase/reorder; wallet milestones, spending, mail deduplication, and silent 10k ending.\n");
+            File.WriteAllText("Logs/upgrade-curve-data-checks.txt","PASS: serialized prices/effects; zero start; startup gate; discrete batches; proportional timer upgrades; storage cap/pause; no auto/value; six reviewed stages; frame independence; halved wild rolls; purchase/reorder; wallet milestones, spending, mail deduplication, and mail-gated 10k ending.\n");
             Debug.Log("UPGRADE_CURVE_DATA_PASS");
         }
 
@@ -190,13 +220,19 @@ namespace CheeseTownPhone.Editor
                     Check(p.Cheeses==0 && p.Stock==0 && !p.MainTreeStarted,"real scene starts at zero and locked");
                     p.CollectWorld(1); p.SkipInteractionGuide(); p.Grant(6000); demo.Refresh();
                     demo.TogglePhone(); demo.ShowPage(1); demo.CompleteUITransitions();
-                    Check(demo.View.upgrades.Rows.Count==7,"seven rows");
-                    Check(!demo.View.upgrades.Rows.Single(r=>r.Option.id=="tree-batch").buy.interactable,"locked buy disabled");
+                    Check(demo.View.upgrades.Rows.Count==3,"only three wild-stage rows initially");
+                    Check(!demo.View.upgrades.Rows.Any(r=>r.Option.id=="tree-start" || r.Option.RequiresTreeStart),"locked town rows are absent");
                     demo.View.upgrades.categories[1].onClick.Invoke(); Check(demo.View.upgrades.Rows.Count==2,"two PLAYER rows");
-                    demo.View.upgrades.categories[2].onClick.Invoke(); Check(demo.View.upgrades.Rows.Count==5,"five TREE rows");
-                    demo.View.upgrades.categories[0].onClick.Invoke(); demo.CompleteUITransitions();
+                    demo.View.upgrades.categories[2].onClick.Invoke(); Check(demo.View.upgrades.Rows.Count==1,"only Forest Charm in initial TREE category");
+                    demo.CompleteUITransitions();
                     Drops("Assets/Prefab/Tree.prefab",2,4); Drops("Assets/Prefab/Tree_02.prefab",8,10);
-                    ClickBuy("tree-start"); ClickBuy("move-speed"); ClickBuy("collect-range");
+                    ClickBuy("wild-tree-growth"); ClickBuy("wild-tree-growth"); ClickBuy("wild-tree-growth");
+                    Check(demo.View.upgrades.Rows.Count==2 && !p.MainTreeStarted,"full charm reveals tonic immediately while retaining TREE filter");
+                    p.Tick(1000); Check(p.Stock==0,"charged charm has no passive income");
+                    ClickBuy("tree-start"); Check(demo.View.upgrades.Rows.Count==5,"manual tonic reveals all town tracks immediately in TREE");
+                    demo.View.upgrades.categories[0].onClick.Invoke(); demo.CompleteUITransitions();
+                    Check(demo.View.upgrades.Rows.Count==7,"all seven rows available after manual revival");
+                    ClickBuy("move-speed"); ClickBuy("collect-range");
                     var player=Object.FindAnyObjectByType<PlayerController>(); Near(player.speed.x,6,"world speed wiring"); Near(player.CollectRange,2,"world pickup range wiring");
                     var circle=player.GetComponentInChildren<CollectionRadius>().GetComponent<CircleCollider2D>();
                     Near(circle.radius*Mathf.Abs(circle.transform.lossyScale.x),2,"actual pickup collider radius");

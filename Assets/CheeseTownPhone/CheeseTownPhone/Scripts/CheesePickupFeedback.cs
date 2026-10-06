@@ -20,6 +20,7 @@ namespace CheeseTownPhone
         int pending, sequence;
         float pulse;
         public int PendingCredit => pending;
+        public bool IsAnimating => pending > 0 || ActiveFlights > 0 || pulse > 0;
         public int ActiveFlights { get { int n = 0; if (pool != null) foreach (var f in pool) if (f.Flying) n++; return n; } }
 
         void Awake()

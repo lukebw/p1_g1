@@ -1612,7 +1612,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1023281160}
+  m_GameObject: {fileID: 1856851845}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 188a333943eb4724af6222c5c429bbfb, type: 3}
@@ -1630,7 +1630,6 @@ GameObject:
   - component: {fileID: 1023281163}
   - component: {fileID: 1023281164}
   - component: {fileID: 1023281165}
-  - component: {fileID: 830000001}
   - component: {fileID: 1023281166}
   m_Layer: 7
   m_Name: Cursor
@@ -2308,6 +2307,7 @@ GameObject:
   - component: {fileID: 1856851849}
   - component: {fileID: 1856851851}
   - component: {fileID: 1856851850}
+  - component: {fileID: 830000001}
   m_Layer: 7
   m_Name: WeaponSprite
   m_TagString: Weapon

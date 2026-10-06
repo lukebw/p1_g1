@@ -87,6 +87,8 @@ namespace CheeseTownPhone
         public TutorialCoachView tutorialCoachPrefab;
         [Header("Opening narrative")]
         public PrologueView prologuePrefab;
+        [Header("Ending narrative")]
+        public PrologueView epiloguePrefab;
         // END ADDED
         // END ADDED
         [Header("Placeholder colors and layout")]
@@ -122,7 +124,7 @@ namespace CheeseTownPhone
                 levels = new List<UpgradeLevel> { new UpgradeLevel(20, 6), new UpgradeLevel(50, 8) } },
             new UpgradeOption { id = "collect-range", title = "Cheese Magnet", description = "No morsel left behind. Draw in cheese from farther away while roaming the wilds.", effect = UpgradeEffect.CollectRange,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(30, 2), new UpgradeLevel(60, 4) } },
-            new UpgradeOption { id = "tree-start", title = "Spring Tonic", description = "Revive the Great Cheese Tree, guardian of Mousetown. Its branches will bear cheese again. Return to gather the harvest.", effect = UpgradeEffect.TownTreeStart,
+            new UpgradeOption { id = "tree-start", title = "Spring Tonic", description = "Carry the fully charged Forest Charm's energy into the Great Tree with this tonic. Awaken our guardian and return to gather its harvest.", effect = UpgradeEffect.TownTreeStart,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(30, 1) } },
             new UpgradeOption { id = "tree-batch", title = "Growth Potion", description = "A hearty brew for hungry roots. The Great Tree bears more cheese each harvest. Revive it with Spring Tonic first.", effect = UpgradeEffect.TownTreeBatch,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(30, 8), new UpgradeLevel(60, 12), new UpgradeLevel(140, 20), new UpgradeLevel(450, 60), new UpgradeLevel(1400, 180) } },
@@ -130,7 +132,7 @@ namespace CheeseTownPhone
                 levels = new List<UpgradeLevel> { new UpgradeLevel(40, 4), new UpgradeLevel(100, 3), new UpgradeLevel(300, 2), new UpgradeLevel(1000, 1) } },
             new UpgradeOption { id = "tree-capacity", title = "Cozy Cellar", description = "Make room for a richer harvest. The Great Tree can hold more cheese before resting. Revive it first; return to gather your stores.", effect = UpgradeEffect.TownTreeCapacity,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(30, 500), new UpgradeLevel(90, 1200), new UpgradeLevel(250, 3000), new UpgradeLevel(650, 8000) } },
-            new UpgradeOption { id = "wild-tree-growth", title = "Forest Charm", description = "A little woodland magic. Wild cheese trees grow larger and drop more cheese when felled. Each kind keeps its natural bounty.", effect = UpgradeEffect.WildTreeGrowth,
+            new UpgradeOption { id = "wild-tree-growth", title = "Forest Charm", description = "A charm passed down through generations. Feed it cheese energy to strengthen wild trees and their harvests. Who knows what might stir when its light is full?", effect = UpgradeEffect.WildTreeGrowth,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(20, 1.25f, 1.2f), new UpgradeLevel(30, 1.5f, 1.45f), new UpgradeLevel(60, 2, 1.7f) } }
         };
         // END ADDED
