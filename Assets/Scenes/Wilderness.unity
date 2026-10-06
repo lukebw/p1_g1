@@ -150,7 +150,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1856851846}
-  - {fileID: 1902961432}
   m_Father: {fileID: 1477909365}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &794296262
@@ -289,7 +288,7 @@ MonoBehaviour:
     m_Asset: {fileID: 0}
     m_Actions: []
     m_Bindings: []
-  chopHitbox: {fileID: 1902961433}
+  chopHitbox: {fileID: 1856851850}
 --- !u!1 &1027689467
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,7 +567,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 1027689469}
   playerSpriteRenderer: {fileID: 1027689470}
   weaponSpriteRenderer: {fileID: 1856851847}
-  chopHitbox: {fileID: 1902961433}
+  chopHitbox: {fileID: 1856851850}
   speed: {x: 12, y: 12}
   worldBoundary: {fileID: 5699788113763726328}
 --- !u!114 &1477909368
@@ -850,6 +849,8 @@ GameObject:
   - component: {fileID: 1856851847}
   - component: {fileID: 1856851848}
   - component: {fileID: 1856851849}
+  - component: {fileID: 1856851851}
+  - component: {fileID: 1856851850}
   m_Layer: 7
   m_Name: WeaponSprite
   m_TagString: Weapon
@@ -940,7 +941,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1856851845}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -981,8 +982,8 @@ TrailRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Time: 2
-  m_PreviewTimeScale: 0
+  m_Time: 0.1
+  m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -1073,74 +1074,25 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &1902961431
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1902961432}
-  - component: {fileID: 1902961435}
-  - component: {fileID: 1902961434}
-  - component: {fileID: 1902961433}
-  m_Layer: 7
-  m_Name: ChopHitbox
-  m_TagString: Weapon
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1902961432
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902961431}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 794296261}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1902961433
+--- !u!114 &1856851850
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902961431}
+  m_GameObject: {fileID: 1856851845}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a34b68a70ec6262428cd885cbc42ec36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChopHitbox
---- !u!114 &1902961434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902961431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.VisualScripting.Core::Unity.VisualScripting.Variables
-  _data:
-    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
-    _objectReferences: []
---- !u!58 &1902961435
+--- !u!58 &1856851851
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1902961431}
+  m_GameObject: {fileID: 1856851845}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1

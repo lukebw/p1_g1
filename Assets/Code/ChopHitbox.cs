@@ -10,6 +10,11 @@ public class ChopHitbox : MonoBehaviour
         return activeCollisions;
     }
 
+    public void TestDummyMethod()
+    {
+        Debug.Log("ChopHitbox.TestDummyMethod() called");
+    }
+
     void OnTriggerEnter2D(Collider2D hurtbox)
     {
         if (!activeCollisions.Contains(hurtbox) && hurtbox.gameObject.tag == "Tree")
