@@ -310,6 +310,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 351811611404585506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 1
 --- !u!1 &359274254673418486
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,6 +709,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600281240622238720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &601833674480528998
 GameObject:
   m_ObjectHideFlags: 0
@@ -948,6 +974,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768739352387267666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &1067444852769832634
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,7 +1546,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Stored: 10 / 100 cheese'
+  m_Text: REVIVE OUR GREAT TREE
 --- !u!1 &1914470889715270399
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,9 +2010,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'TREE PARAMETERS
+  m_Text: 'THE GREAT TREE SLUMBERS
 
-    Production 1/s   |   Value 1 cheeses / harvest'
+    FIND SPRING TONIC IN SUPPLIES'
 --- !u!1 &2735088141459082344
 GameObject:
   m_ObjectHideFlags: 0
@@ -2096,6 +2135,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2735088141459082344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &2790452544074934266
 GameObject:
   m_ObjectHideFlags: 0
@@ -3186,6 +3238,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4631402768367094435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &4646389032602235963
 GameObject:
   m_ObjectHideFlags: 0
@@ -3434,6 +3499,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4881946057138848208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &4925789279987175693
 GameObject:
   m_ObjectHideFlags: 0
@@ -3747,6 +3825,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5120415014157190438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &5377051455394017688
 GameObject:
   m_ObjectHideFlags: 0
@@ -4333,6 +4424,19 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &820000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927649418725641170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &5975709254720503602
 GameObject:
   m_ObjectHideFlags: 0
@@ -4679,6 +4783,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6506371761219035699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &6516899981273650546
 GameObject:
   m_ObjectHideFlags: 0
@@ -5156,13 +5273,16 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.2
-  m_Text: 'Welcome to Cheese Town! I''m Mayor Ellis.
+  m_Text: 'Leo, our Great Cheese Tree is fading.
 
 
-    We''re happy to have you here. Use your axe on a cheese tree, then walk over the dropped cheese to collect it. Gather 10 cheeses, and I''ll write again.
+    It has sheltered Mousetown for generations. Now winter is near and our storerooms are bare.
 
 
-    Use your tablet to read letters and visit UPGRADES. Enjoy your first day!
+    Gather cheese from the wild groves. The outfitter may have a remedy for our guardian. Help us bring it back to life.
+
+
+    Write soon,
 
 
     Mayor Ellis'
@@ -5343,7 +5463,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 15}
-  m_SizeDelta: {x: 80, y: 108}
+  m_SizeDelta: {x: 186, y: 175}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3554275823427577799
 CanvasRenderer:
@@ -5373,7 +5493,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3218785287198652767, guid: 71aefe9b73f1c2440909975f076120d6, type: 3}
+  m_Sprite: {fileID: 81738291192318471, guid: d06a7dfe535545968080a0f82f1f45b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -5504,6 +5624,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7502182394680899218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &7630284831008980490
 GameObject:
   m_ObjectHideFlags: 0
@@ -5815,7 +5948,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: CHEESE TREE
+  m_Text: GREAT CHEESE TREE
 --- !u!1 &8247240094295925920
 GameObject:
   m_ObjectHideFlags: 0
@@ -5973,6 +6106,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8393486927911105638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &8450096913459459237
 GameObject:
   m_ObjectHideFlags: 0
@@ -6095,6 +6241,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &820000011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8450096913459459237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  shopButton: 0
 --- !u!1 &8503343978823976139
 GameObject:
   m_ObjectHideFlags: 0
@@ -6557,159 +6716,3 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5514921006126594203, guid: 46d64beb442b8014ea4d0001c9267f45, type: 3}
   m_PrefabInstance: {fileID: 3652264431043259127}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &820000000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 351811611404585506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 1
---- !u!114 &820000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 600281240622238720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 768739352387267666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2735088141459082344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4631402768367094435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4881946057138848208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5120415014157190438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5927649418725641170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000008
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6506371761219035699}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7502182394680899218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000010
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8393486927911105638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0
---- !u!114 &820000011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8450096913459459237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e0316562528490588fdee35f940f4d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  shopButton: 0

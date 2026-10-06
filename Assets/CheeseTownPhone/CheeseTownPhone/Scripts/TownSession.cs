@@ -19,6 +19,11 @@ namespace CheeseTownPhone
         public TownProgress Progress { get; private set; }
         bool ownsSettings;
         int revision;
+        PrologueView prologue;
+        bool prologueCompleted;
+        int releaseInputFrame = -1;
+        public bool PrologueActive => (prologue != null && prologue.gameObject.activeSelf) || Time.frameCount <= releaseInputFrame;
+        public PrologueView Prologue => prologue;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void ResetStatics() { instance = null; }
@@ -37,6 +42,12 @@ namespace CheeseTownPhone
         }
         void SceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            // Keep the opening across scene changes and show it once per new play session.
+            if (!prologueCompleted && prologue == null && Settings.prologuePrefab != null && FindAnyObjectByType<PlayerController>() != null)
+            {
+                prologue = Instantiate(Settings.prologuePrefab, transform);
+                prologue.Begin(() => { prologueCompleted = true; releaseInputFrame = Time.frameCount + 1; });
+            }
             if (FindAnyObjectByType<CheeseTownDemo>() == null)
                 new GameObject("Town tablet").AddComponent<CheeseTownDemo>();
         }
@@ -57,7 +68,7 @@ namespace CheeseTownPhone
                 revision = Settings.Revision;
             }
             // Production and automatic collection continue while walking or changing scenes.
-            Progress.Tick(Time.deltaTime);
+            if (!PrologueActive) Progress.Tick(Time.deltaTime);
         }
         void OnDestroy()
         {

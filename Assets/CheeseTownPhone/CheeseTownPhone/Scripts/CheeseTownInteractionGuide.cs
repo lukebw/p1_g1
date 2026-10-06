@@ -42,7 +42,7 @@ namespace CheeseTownPhone
             BuildInteractionGuide();
             if (interactionGuide == null) return;
             int step = Progress.InteractionGuideStep;
-            bool visible = Progress.TotalCollected > 0 && !EndingOpen && step < TownProgress.InteractionGuideCount;
+            bool visible = Progress.TotalCollected > 0 && !EndingOpen && !TownSession.Instance.PrologueActive && step < TownProgress.InteractionGuideCount;
             interactionGuide.gameObject.SetActive(visible);
             if (!visible) return;
             interactionGuide.transform.SetAsLastSibling();
@@ -72,6 +72,11 @@ namespace CheeseTownPhone
                     case 4: targets = new[] { (RectTransform)tabletView.upgrades.categories[0].transform, tabletView.upgrades.scroll.viewport }; break;
                     case 5:
                         if (tabletView.upgrades.Rows.Count > 0) targets = new[] { (RectTransform)tabletView.upgrades.Rows[0].buy.transform };
+                        // BEGIN ADDED: Highlight main-tree startup first without purchasing on the player's behalf.
+                        if (Progress.UsesBatchProduction)
+                            foreach (var row in tabletView.upgrades.Rows)
+                                if (row.Option.effect == UpgradeEffect.TownTreeStart) { targets = new[] { (RectTransform)row.buy.transform }; break; }
+                        // END ADDED
                         break;
                     case 6: targets = new[] { (RectTransform)tabletView.collect.transform }; break;
                     case 7: targets = new[] { (RectTransform)tabletView.back.transform }; break;

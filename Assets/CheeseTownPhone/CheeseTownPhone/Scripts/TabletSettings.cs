@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace CheeseTownPhone
 {
-    // BEGIN CHANGED: Preserve serialized values; append wild growth without moving existing effects.
-    public enum UpgradeEffect { MoveSpeed = 0, CollectRange = 1, TownTreeProduction = 2, AutoCollect = 3, CheeseValue = 4, WildTreeGrowth = 5 }
+    // BEGIN CHANGED: Append new effects while preserving the serialized values of existing effects.
+    public enum UpgradeEffect { MoveSpeed = 0, CollectRange = 1, TownTreeProduction = 2, AutoCollect = 3, CheeseValue = 4, WildTreeGrowth = 5,
+        TownTreeStart = 6, TownTreeBatch = 7, TownTreeInterval = 8, TownTreeCapacity = 9 }
     // END CHANGED
     public enum UpgradeTarget { Player, Tree }
 
@@ -13,7 +14,7 @@ namespace CheeseTownPhone
     public sealed class UpgradeLevel
     {
         [Min(0)] public int price;
-        [Tooltip("Absolute speed/radius; TownTreeProduction = stock per second; WildTreeGrowth = drop-range multiplier; CheeseValue = unit value multiplier. AutoCollect follows town production.")]
+        [Tooltip("Absolute upgraded value: speed, pickup radius, batch count, maturation seconds, or storage capacity. WildTreeGrowth multiplies the drop range. TownTreeStart is a one-time unlock. Legacy effects retain their previous semantics.")]
         [Min(0)] public float value;
         [Tooltip("WildTreeGrowth only: size multiplier for harvestable world trees. Town main tree upgrades only change efficiency.")]
         [Min(.1f)] public float treeScale = 1;
@@ -31,7 +32,11 @@ namespace CheeseTownPhone
         public UpgradeEffect effect;
         public Sprite icon;
         public List<UpgradeLevel> levels = new List<UpgradeLevel>();
-        public UpgradeTarget Target => effect == UpgradeEffect.TownTreeProduction || effect == UpgradeEffect.WildTreeGrowth || effect == UpgradeEffect.CheeseValue ? UpgradeTarget.Tree : UpgradeTarget.Player;
+        // BEGIN ADDED: Keep main-tree upgrades under TREE and gate all three tracks behind startup.
+        public bool RequiresTreeStart => effect == UpgradeEffect.TownTreeBatch || effect == UpgradeEffect.TownTreeInterval || effect == UpgradeEffect.TownTreeCapacity;
+        public UpgradeTarget Target => effect == UpgradeEffect.TownTreeProduction || effect == UpgradeEffect.WildTreeGrowth || effect == UpgradeEffect.CheeseValue
+            || effect == UpgradeEffect.TownTreeStart || RequiresTreeStart ? UpgradeTarget.Tree : UpgradeTarget.Player;
+        // END ADDED
     }
 
     [CreateAssetMenu(menuName = "Cheese Town/Tablet Settings", fileName = "TabletSettings")]
@@ -80,6 +85,8 @@ namespace CheeseTownPhone
         public TabletView tabletPrefab;
         [Header("First-session interaction guide")]
         public TutorialCoachView tutorialCoachPrefab;
+        [Header("Opening narrative")]
+        public PrologueView prologuePrefab;
         // END ADDED
         // END ADDED
         [Header("Placeholder colors and layout")]
@@ -87,21 +94,50 @@ namespace CheeseTownPhone
         public Color treeColor = new Color(.90f, .73f, .31f, 1);
         public Vector2 treeSize = new Vector2(150, 200);
         [Header("Starting values - editable demonstration defaults")]
-        [UnityEngine.Serialization.FormerlySerializedAs("startingCoins")] [Min(0)] public int startingCheeses = 500;
+        [UnityEngine.Serialization.FormerlySerializedAs("startingCoins")] [Min(0)] public int startingCheeses = 0;
         [Min(0)] public float baseMoveSpeed = 4;
         [Min(0)] public float baseCollectRange = 0;
         [Min(0)] public float baseTreeProduction = 1;
         [Min(1)] public int baseCheesePrice = 1;
-        [Min(1)] public int treeCapacity = 100;
-        [Min(0)] public float initialTreeStock = 10;
+        [Min(1)] public int treeCapacity = 200;
+        [Min(0)] public float initialTreeStock = 0;
+        // BEGIN ADDED: The 10k-cheese curve retains legacy economy support for old profiles and regressions.
+        [Header("Batch production playtest - quantities, not currency value")]
+        public bool useBatchProduction = true;
+        [Min(1)] public int baseBatchSize = 5;
+        [Min(.1f)] public float baseProductionInterval = 5;
+        [Tooltip("Multiply the final wild-tree drop roll after upgrade scaling and rounding.")]
+        [Range(1, 10)] public int wildDropCountMultiplier = 1;
+        [Min(1)] public int collectionGoal = 10000;
+        // END ADDED
 
         [Header("Shop list - add/remove/reorder entries and levels")]
         public List<UpgradeOption> upgrades = Defaults();
         public int Revision { get; private set; }
 
+        // BEGIN ADDED: Prices are per-tier costs; values are absolute upgraded values, not chained multipliers.
         public static List<UpgradeOption> Defaults() => new List<UpgradeOption>
         {
-            new UpgradeOption { id = "move-speed", title = "Move Speed", description = "Increase player movement speed.", effect = UpgradeEffect.MoveSpeed,
+            new UpgradeOption { id = "move-speed", title = "Speed Boots", description = "Light-footed boots for the long road home. Move faster through the wild groves.", effect = UpgradeEffect.MoveSpeed,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(20, 6), new UpgradeLevel(50, 8) } },
+            new UpgradeOption { id = "collect-range", title = "Cheese Magnet", description = "No morsel left behind. Draw in cheese from farther away while roaming the wilds.", effect = UpgradeEffect.CollectRange,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(30, 2), new UpgradeLevel(60, 4) } },
+            new UpgradeOption { id = "tree-start", title = "Spring Tonic", description = "Revive the Great Cheese Tree, guardian of Mousetown. Its branches will bear cheese again. Return to gather the harvest.", effect = UpgradeEffect.TownTreeStart,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(30, 1) } },
+            new UpgradeOption { id = "tree-batch", title = "Growth Potion", description = "A hearty brew for hungry roots. The Great Tree bears more cheese each harvest. Revive it with Spring Tonic first.", effect = UpgradeEffect.TownTreeBatch,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(30, 8), new UpgradeLevel(60, 12), new UpgradeLevel(140, 20), new UpgradeLevel(450, 60), new UpgradeLevel(1400, 180) } },
+            new UpgradeOption { id = "tree-interval", title = "Haste Potion", description = "A taste of spring in every drop. The Great Tree ripens cheese sooner. Revive it first; gather full stores to keep it growing.", effect = UpgradeEffect.TownTreeInterval,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(40, 4), new UpgradeLevel(100, 3), new UpgradeLevel(300, 2), new UpgradeLevel(1000, 1) } },
+            new UpgradeOption { id = "tree-capacity", title = "Cozy Cellar", description = "Make room for a richer harvest. The Great Tree can hold more cheese before resting. Revive it first; return to gather your stores.", effect = UpgradeEffect.TownTreeCapacity,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(30, 500), new UpgradeLevel(90, 1200), new UpgradeLevel(250, 3000), new UpgradeLevel(650, 8000) } },
+            new UpgradeOption { id = "wild-tree-growth", title = "Forest Charm", description = "A little woodland magic. Wild cheese trees grow larger and drop more cheese when felled. Each kind keeps its natural bounty.", effect = UpgradeEffect.WildTreeGrowth,
+                levels = new List<UpgradeLevel> { new UpgradeLevel(20, 1.25f, 1.2f), new UpgradeLevel(30, 1.5f, 1.45f), new UpgradeLevel(60, 2, 1.7f) } }
+        };
+        // END ADDED
+
+        public static List<UpgradeOption> LegacyDefaults() => new List<UpgradeOption>
+        {
+            new UpgradeOption { id = "move-speed", title = "Move Speed", description = "Light-footed boots for the long road home. Move faster through the wild groves.", effect = UpgradeEffect.MoveSpeed,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(20, 6), new UpgradeLevel(50, 8) } },
             // BEGIN CHANGED: The base state is displayed as level one.
             new UpgradeOption { id = "collect-range", title = "Collect Range", description = "Expand ground cheese pickup range and the reach of manual tree collection.", effect = UpgradeEffect.CollectRange,
@@ -126,6 +162,10 @@ namespace CheeseTownPhone
             baseCheesePrice = Mathf.Clamp(baseCheesePrice, 1, 100000);
             treeCapacity = Mathf.Clamp(treeCapacity, 1, 1000000);
             initialTreeStock = Safe(initialTreeStock, 0, treeCapacity);
+            baseBatchSize = Mathf.Clamp(baseBatchSize, 1, 100000);
+            baseProductionInterval = Safe(baseProductionInterval, .1f, 3600);
+            wildDropCountMultiplier = Mathf.Clamp(wildDropCountMultiplier, 1, 10);
+            collectionGoal = Mathf.Clamp(collectionGoal, 1, 1000000000);
             treeSize.x = Safe(treeSize.x, 20, 260); treeSize.y = Safe(treeSize.y, 20, 250);
             if (upgrades == null) upgrades = new List<UpgradeOption>();
             var ids = new HashSet<string>();

@@ -8,7 +8,7 @@ namespace CheeseTownPhone
     {
         TabletView tabletView;
         public TabletView View => tabletView;
-        public bool BlocksWorldInput => EndingOpen || InteractionGuideVisible || (tabletView != null ? tabletView.IsVisible : PhoneOpen);
+        public bool BlocksWorldInput => TownSession.Instance.PrologueActive || EndingOpen || InteractionGuideVisible || (tabletView != null ? tabletView.IsVisible : PhoneOpen);
         public void CompleteUITransitions() { if (tabletView != null) tabletView.CompleteTransitions(); }
 
         void RenderPrefab(bool open)

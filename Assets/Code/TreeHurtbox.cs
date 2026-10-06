@@ -56,6 +56,9 @@ public class TreeHurtbox : MonoBehaviour
 
     public int Collect()
     {
+        // BEGIN ADDED: Batch-mode town stock is collected on its page; wild trees only supply chopped drops.
+        if (progress.UsesBatchProduction) return 0;
+        // END ADDED
         // BEGIN ADDED: Chopped trees cannot pay the separate manual collection action.
         if (tree != null && tree.IsChopped) return 0;
         // END ADDED

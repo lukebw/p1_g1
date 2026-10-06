@@ -16,7 +16,10 @@ namespace CheeseTownPhone.Editor
         static TabletSettings Config()
         {
             var c = ScriptableObject.CreateInstance<TabletSettings>();
-            c.upgrades = TabletSettings.Defaults(); c.startingCheeses=10000; c.initialTreeStock=0; c.ValidateSettings(); return c;
+            // BEGIN CHANGED: Keep legacy economy regressions explicit; UpgradeCurveChecks covers the new profile.
+            c.useBatchProduction = false; c.treeCapacity = 100;
+            c.upgrades = TabletSettings.LegacyDefaults(); c.startingCheeses=10000; c.initialTreeStock=0; c.ValidateSettings(); return c;
+            // END CHANGED
         }
         [MenuItem("Cheese Town/Run Data Checks")]
         public static void DataChecks()

@@ -83,7 +83,7 @@ namespace CheeseTownPhone
             scroll.verticalNormalizedPosition = 1;
             // BEGIN CHANGED: A missing template gives an actionable setup message.
             if (index == 0) PixelLabel(content, "Empty shop", settings.upgradeRowPrefab == null
-                ? "Assign an Upgrade Row Prefab in Tablet Settings." : "No upgrades in this category.", 60, 65, 444, 28, 8, TextAnchor.MiddleCenter);
+                ? "Assign an Upgrade Row Prefab in Tablet Settings." : "No equipment in this category.", 60, 65, 444, 28, 8, TextAnchor.MiddleCenter);
             // END CHANGED
         }
         // END ADDED
@@ -94,9 +94,9 @@ namespace CheeseTownPhone
             // BEGIN CHANGED: The prefab updates presentation while the controller supplies shared progress.
             if (!HasPixelSkin || !pixelUpgradeRows.TryGetValue(row, out var view)) return false;
             view.RefreshDisplay(level, max, Progress.CanBuy(row.option), PixelEffectName(row.option.effect),
-                PixelCurrentValue(row.option.effect), level < max ? PixelNextValue(row.option.effect, row.option.levels[level]) : "");
+                PixelCurrentValue(row.option.effect), level < max ? PixelNextValue(row.option.effect, row.option.levels[level]) : "", Progress.IsUpgradeLocked(row.option));
             // END CHANGED
-            view.buy.interactable = !Progress.GameEnded && row.option.available && level < max;
+            view.buy.interactable = !Progress.GameEnded && !Progress.IsUpgradeLocked(row.option) && row.option.available && level < max;
             return true;
         }
         string PixelEffectName(UpgradeEffect effect)
@@ -107,6 +107,10 @@ namespace CheeseTownPhone
                 case UpgradeEffect.CollectRange: return "RADIUS";
                 // BEGIN CHANGED: Short labels leave room for full-size pixel glyphs.
                 case UpgradeEffect.TownTreeProduction: return "PER SEC";
+                case UpgradeEffect.TownTreeStart: return "REVIVE";
+                case UpgradeEffect.TownTreeBatch: return "PER BATCH";
+                case UpgradeEffect.TownTreeInterval: return "SECONDS";
+                case UpgradeEffect.TownTreeCapacity: return "CAPACITY";
                 case UpgradeEffect.WildTreeGrowth: return "DROPS x";
                 case UpgradeEffect.AutoCollect: return "AUTO";
                 // END CHANGED
@@ -120,6 +124,10 @@ namespace CheeseTownPhone
                 case UpgradeEffect.MoveSpeed: return Progress.MoveSpeed.ToString("0.##");
                 case UpgradeEffect.CollectRange: return Progress.CollectRange.ToString("0.##");
                 case UpgradeEffect.TownTreeProduction: return Progress.Production.ToString("0.##");
+                case UpgradeEffect.TownTreeStart: return Progress.MainTreeStarted ? "ALIVE" : "DORMANT";
+                case UpgradeEffect.TownTreeBatch: return Progress.BatchSize.ToString();
+                case UpgradeEffect.TownTreeInterval: return Progress.ProductionInterval.ToString("0.#");
+                case UpgradeEffect.TownTreeCapacity: return Progress.Capacity.ToString();
                 case UpgradeEffect.WildTreeGrowth: return Progress.WildTreeYieldMultiplier.ToString("0.##");
                 case UpgradeEffect.AutoCollect: return Progress.AutoEnabled ? "ON" : "OFF";
                 default: return Progress.UnitPrice.ToString();
@@ -131,6 +139,10 @@ namespace CheeseTownPhone
             switch (effect)
             {
                 case UpgradeEffect.AutoCollect: return "ON";
+                case UpgradeEffect.TownTreeStart: return "ALIVE";
+                case UpgradeEffect.TownTreeBatch: return Mathf.Max(Progress.BatchSize, Mathf.RoundToInt(next.value)).ToString();
+                case UpgradeEffect.TownTreeInterval: return Mathf.Min(Progress.ProductionInterval, Mathf.Max(.1f, next.value)).ToString("0.#");
+                case UpgradeEffect.TownTreeCapacity: return Mathf.Max(Progress.Capacity, Mathf.RoundToInt(next.value)).ToString();
                 case UpgradeEffect.WildTreeGrowth: return Mathf.Max(Progress.WildTreeYieldMultiplier, next.value).ToString("0.##");
                 case UpgradeEffect.CheeseValue:
                     return Mathf.Clamp(Mathf.RoundToInt(settings.baseCheesePrice * Mathf.Max(Progress.ValueMultiplier, next.value)), 1, 1000000).ToString();

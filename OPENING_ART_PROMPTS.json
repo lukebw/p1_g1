@@ -1,0 +1,45 @@
+{
+  "generator": "built-in image_gen",
+  "prompts": [
+    {
+      "name": "speed-boots",
+      "prompt": "Use case: stylized-concept. Create ONE game inventory icon for Cheese Town. Authentic very low resolution chunky pixel art, as if drawn on a 32x32 pixel grid and enlarged with nearest-neighbor. Thick 1-pixel dark cocoa brown outline, solid stepped clusters, 3-tone shading, warm golden yellow, burnt orange, tan, cream, restrained moss green. Matches rustic wood-framed amber pixel UI. Single centered object occupying 75% square, clean readable silhouette at 28 pixels. True transparent background. NO lettering, no border, no UI card, no ground plane, no soft shadows, no gradients, no antialiasing, no small decorative particles. A pair of stout amber leather boots, cream cuffs, one tiny yellow wing attached to a boot, suggesting swift movement."
+    },
+    {
+      "name": "cheese-magnet",
+      "prompt": "Use case: stylized-concept. Create ONE game inventory icon for Cheese Town. Authentic very low resolution chunky pixel art, as if drawn on a 32x32 pixel grid and enlarged with nearest-neighbor. Thick 1-pixel dark cocoa brown outline, solid stepped clusters, 3-tone shading, warm golden yellow, burnt orange, tan, cream, restrained moss green. Matches rustic wood-framed amber pixel UI. Single centered object occupying 75% square, clean readable silhouette at 28 pixels. True transparent background. NO lettering, no border, no UI card, no ground plane, no soft shadows, no gradients, no antialiasing, no small decorative particles. A chunky horseshoe magnet in burnt orange with cream metal tips attracting one small golden wedge of cheese."
+    },
+    {
+      "name": "spring-tonic",
+      "prompt": "Use case: stylized-concept. Create ONE game inventory icon for Cheese Town. Authentic very low resolution chunky pixel art, as if drawn on a 32x32 pixel grid and enlarged with nearest-neighbor. Thick 1-pixel dark cocoa brown outline, solid stepped clusters, 3-tone shading, warm golden yellow, burnt orange, tan, cream, restrained moss green. Matches rustic wood-framed amber pixel UI. Single centered object occupying 75% square, clean readable silhouette at 28 pixels. True transparent background. NO lettering, no border, no UI card, no ground plane, no soft shadows, no gradients, no antialiasing, no small decorative particles. A squat glass potion bottle with cork stopper, golden liquid, one small fresh green sprout rising from the neck, awakening a dormant tree."
+    },
+    {
+      "name": "growth-potion",
+      "prompt": "Use case: stylized-concept. Create ONE game inventory icon for Cheese Town. Authentic very low resolution chunky pixel art, as if drawn on a 32x32 pixel grid and enlarged with nearest-neighbor. Thick 1-pixel dark cocoa brown outline, solid stepped clusters, 3-tone shading, warm golden yellow, burnt orange, tan, cream, restrained moss green. Matches rustic wood-framed amber pixel UI. Single centered object occupying 75% square, clean readable silhouette at 28 pixels. True transparent background. NO lettering, no border, no UI card, no ground plane, no soft shadows, no gradients, no antialiasing, no small decorative particles. A round squat potion flask with cork stopper, moss-green liquid and a simple gold leaf emblem, suggesting a plentiful harvest."
+    },
+    {
+      "name": "haste-potion",
+      "prompt": "Use case: stylized-concept. Create ONE game inventory icon for Cheese Town. Authentic very low resolution chunky pixel art, as if drawn on a 32x32 pixel grid and enlarged with nearest-neighbor. Thick 1-pixel dark cocoa brown outline, solid stepped clusters, 3-tone shading, warm golden yellow, burnt orange, tan, cream, restrained moss green. Matches rustic wood-framed amber pixel UI. Single centered object occupying 75% square, clean readable silhouette at 28 pixels. True transparent background. NO lettering, no border, no UI card, no ground plane, no soft shadows, no gradients, no antialiasing, no small decorative particles. A narrow angular potion bottle with cork stopper, bright amber liquid and one cream lightning-bolt emblem, suggesting faster growth."
+    },
+    {
+      "name": "cozy-cellar",
+      "prompt": "Use case: stylized-concept. Create ONE game inventory icon for Cheese Town. Authentic very low resolution chunky pixel art, as if drawn on a 32x32 pixel grid and enlarged with nearest-neighbor. Thick 1-pixel dark cocoa brown outline, solid stepped clusters, 3-tone shading, warm golden yellow, burnt orange, tan, cream, restrained moss green. Matches rustic wood-framed amber pixel UI. Single centered object occupying 75% square, clean readable silhouette at 28 pixels. True transparent background. NO lettering, no border, no UI card, no ground plane, no soft shadows, no gradients, no antialiasing, no small decorative particles. A compact wooden storage chest with warm amber boards, dark brown iron bands, slightly open lid and two golden cheese wedges peeking out. No building."
+    },
+    {
+      "name": "forest-charm",
+      "prompt": "Use case: stylized-concept. Create ONE game inventory icon for Cheese Town. Authentic very low resolution chunky pixel art, as if drawn on a 32x32 pixel grid and enlarged with nearest-neighbor. Thick 1-pixel dark cocoa brown outline, solid stepped clusters, 3-tone shading, warm golden yellow, burnt orange, tan, cream, restrained moss green. Matches rustic wood-framed amber pixel UI. Single centered object occupying 75% square, clean readable silhouette at 28 pixels. True transparent background. NO lettering, no border, no UI card, no ground plane, no soft shadows, no gradients, no antialiasing, no small decorative particles. A small rustic amulet: a golden cheese-colored ring surrounding a single lush green oak leaf, short brown cord tied above. A forest blessing."
+    },
+    {
+      "name": "autumn",
+      "prompt": "Use case: illustration-story. Landscape 16:9 concept background for the opening of a tiny rustic pixel-art game, Cheese Town. Authentic coarse 160x90 logical pixel art enlarged nearest-neighbor, crisp rectangular pixel clusters, limited palette of cocoa brown, burnt orange, ochre, muted moss and desaturated blue, subdued lighting. Atmospheric and symbolic, NOT a detailed story illustration or specific game map. Very quiet dark open middle 60 percent reserved for centered cream text added by the game. No actual text, lettering, UI, characters, faces, intricate buildings, borders, photorealism, smooth gradients, or painterly textures. Suggest autumn and approaching winter: sparse angular ochre leaves on the outer corners, layered distant moss hills and silhouettes of tree trunks at the extreme edges, large still dusk-blue sky and subdued ochre haze in the center. Warm but slightly uneasy."
+    },
+    {
+      "name": "winter",
+      "prompt": "Use case: illustration-story. Landscape 16:9 concept background for the opening of a tiny rustic pixel-art game, Cheese Town. Authentic coarse 160x90 logical pixel art enlarged nearest-neighbor, crisp rectangular pixel clusters, limited palette of cocoa brown, burnt orange, ochre, muted moss and desaturated blue, subdued lighting. Atmospheric and symbolic, NOT a detailed story illustration or specific game map. Very quiet dark open middle 60 percent reserved for centered cream text added by the game. No actual text, lettering, UI, characters, faces, intricate buildings, borders, photorealism, smooth gradients, or painterly textures. Suggest an almost empty winter storeroom, without a specific room scene: dark wooden beams framing only the extreme sides, a few simple shadowy empty basket and shelf silhouettes at the lower corners, cool blue-gray air filling the spacious center, a narrow restrained warm amber light at one edge. Quiet scarcity."
+    },
+    {
+      "name": "harvest",
+      "prompt": "Use case: illustration-story. Landscape 16:9 concept background for the opening of a tiny rustic pixel-art game, Cheese Town. Authentic coarse 160x90 logical pixel art enlarged nearest-neighbor, crisp rectangular pixel clusters, limited palette of cocoa brown, burnt orange, ochre, muted moss and desaturated blue, subdued lighting. Atmospheric and symbolic, NOT a detailed story illustration or specific game map. Very quiet dark open middle 60 percent reserved for centered cream text added by the game. No actual text, lettering, UI, characters, faces, intricate buildings, borders, photorealism, smooth gradients, or painterly textures. Suggest abundance waiting beyond town: a few stylized dark forest canopy silhouettes only at the outer edges with tiny golden cheese-like glints among leaves, distant amber dawn along the bottom horizon, open deep moss-blue center. Hopeful yet restrained, minimal visual detail."
+    }
+  ]
+}

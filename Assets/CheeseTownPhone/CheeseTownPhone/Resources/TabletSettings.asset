@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TabletSettings
   m_EditorClassIdentifier:
   townBackground: {fileID: 0}
-  cheeseTree: {fileID: 3218785287198652767, guid: 71aefe9b73f1c2440909975f076120d6, type: 3}
+  cheeseTree: {fileID: 81738291192318471, guid: d06a7dfe535545968080a0f82f1f45b6, type: 3}
   envelopeIcon: {fileID: 21300000, guid: a405e24caf20fce4e9d81fa83ca02386, type: 3}
   shopIcon: {fileID: 21300000, guid: a92419d895d970d4dbd902fe535bb8c1, type: 3}
   closeIcon: {fileID: 0}
@@ -46,23 +46,29 @@ MonoBehaviour:
   upgradePixelFont: {fileID: 12800000, guid: 0e2df659351337d41baa79f392c40fc7, type: 3}
   tabletPrefab: {fileID: 580031703993123101, guid: 7d754d6b6610f3a43b6db480024932da, type: 3}
   tutorialCoachPrefab: {fileID: 104, guid: 1dec939cba964fad9f8ee11759afef96, type: 3}
+  prologuePrefab: {fileID: 78919783142101582, guid: 3676f9f3e82093a459c8e5d35243b82b, type: 3}
   backgroundColor: {r: 0.2, g: 0.3, b: 0.34, a: 1}
   treeColor: {r: 0.9, g: 0.73, b: 0.31, a: 1}
-  treeSize: {x: 150, y: 200}
-  startingCheeses: 500
+  treeSize: {x: 186, y: 175}
+  startingCheeses: 0
   baseMoveSpeed: 4
   baseCollectRange: 0
   baseTreeProduction: 1
   baseCheesePrice: 1
-  treeCapacity: 100
-  initialTreeStock: 10
+  treeCapacity: 200
+  initialTreeStock: 0
+  useBatchProduction: 1
+  baseBatchSize: 5
+  baseProductionInterval: 5
+  wildDropCountMultiplier: 1
+  collectionGoal: 10000
   upgrades:
   - id: move-speed
     available: 1
-    title: Move Speed
-    description: Increase player movement speed.
+    title: Speed Boots
+    description: Light-footed boots for the long road home. Move faster through the wild groves.
     effect: 0
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 140f05031e2aed547bac934c5a4ac1d2, type: 3}
     levels:
     - price: 20
       value: 6
@@ -72,10 +78,10 @@ MonoBehaviour:
       treeScale: 1
   - id: collect-range
     available: 1
-    title: Collect Range
-    description: Expand ground cheese pickup range and the reach of manual tree collection.
+    title: Cheese Magnet
+    description: No morsel left behind. Draw in cheese from farther away while roaming the wilds.
     effect: 1
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 4308017f9f0ebf646ad1612b6bbc6f8d, type: 3}
     levels:
     - price: 30
       value: 2
@@ -83,55 +89,89 @@ MonoBehaviour:
     - price: 60
       value: 4
       treeScale: 1
-  - id: tree-growth
+  - id: tree-start
     available: 1
-    title: Town Main Tree
-    description: Increase the town main tree's production per second. Auto collection keeps pace with its production.
-    effect: 2
-    icon: {fileID: 0}
+    title: Spring Tonic
+    description: Revive the Great Cheese Tree, guardian of Mousetown. Its branches will bear cheese again. Return to gather the harvest.
+    effect: 6
+    icon: {fileID: 21300000, guid: 8a406876db4ac6149aefc9ec949e32dd, type: 3}
     levels:
-    - price: 60
-      value: 2
-      treeScale: 1
-    - price: 120
-      value: 4
-      treeScale: 1
-    - price: 240
-      value: 8
-      treeScale: 1
-  - id: auto-collect
-    available: 1
-    title: Auto Collect
-    description: Automatically collect shared tree stock each second at its production rate, wherever you are.
-    effect: 3
-    icon: {fileID: 0}
-    levels:
-    - price: 150
+    - price: 30
       value: 1
       treeScale: 1
-  - id: double-cheese
+  - id: tree-batch
     available: 1
-    title: Double Cheese Value
-    description: Double each cheese's cheese yield, not the number produced.
-    effect: 4
-    icon: {fileID: 0}
+    title: Growth Potion
+    description: A hearty brew for hungry roots. The Great Tree bears more cheese each harvest. Revive it with Spring Tonic first.
+    effect: 7
+    icon: {fileID: 21300000, guid: 8b75ec8120017734789b69b41a53357b, type: 3}
     levels:
-    - price: 260
+    - price: 30
+      value: 8
+      treeScale: 1
+    - price: 60
+      value: 12
+      treeScale: 1
+    - price: 140
+      value: 20
+      treeScale: 1
+    - price: 450
+      value: 60
+      treeScale: 1
+    - price: 1400
+      value: 180
+      treeScale: 1
+  - id: tree-interval
+    available: 1
+    title: Haste Potion
+    description: A taste of spring in every drop. The Great Tree ripens cheese sooner. Revive it first; gather full stores to keep it growing.
+    effect: 8
+    icon: {fileID: 21300000, guid: 43068ded21b4c2144a5df5afcdeed07f, type: 3}
+    levels:
+    - price: 40
+      value: 4
+      treeScale: 1
+    - price: 100
+      value: 3
+      treeScale: 1
+    - price: 300
       value: 2
+      treeScale: 1
+    - price: 1000
+      value: 1
+      treeScale: 1
+  - id: tree-capacity
+    available: 1
+    title: Cozy Cellar
+    description: Make room for a richer harvest. The Great Tree can hold more cheese before resting. Revive it first; return to gather your stores.
+    effect: 9
+    icon: {fileID: 21300000, guid: 2a50c1fb81c8b824fba8321e7aab7be0, type: 3}
+    levels:
+    - price: 30
+      value: 500
+      treeScale: 1
+    - price: 90
+      value: 1200
+      treeScale: 1
+    - price: 250
+      value: 3000
+      treeScale: 1
+    - price: 650
+      value: 8000
       treeScale: 1
   - id: wild-tree-growth
     available: 1
-    title: Wild Trees
-    description: Increase wild cheese tree size and the minimum and maximum cheese dropped when chopped. Ordinary and high-value trees keep their own base drop ranges.
+    title: Forest Charm
+    description: A little woodland magic. Wild cheese trees grow larger and drop more cheese when felled. Each kind keeps its natural bounty.
     effect: 5
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: d03383644da7d0146848bf12ce64280f, type: 3}
     levels:
-    - price: 60
+    - price: 20
       value: 1.25
       treeScale: 1.2
-    - price: 120
+    - price: 30
       value: 1.5
       treeScale: 1.45
-    - price: 240
+    - price: 60
       value: 2
       treeScale: 1.7

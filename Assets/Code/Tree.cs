@@ -74,7 +74,9 @@ public class Tree : MonoBehaviour
             float multiplier = CheeseTownPhone.TownSession.Instance.Progress.WildTreeYieldMultiplier;
             minimum = Mathf.CeilToInt(minimum * multiplier);
             maximum = Mathf.Max(minimum, Mathf.CeilToInt(maximum * multiplier));
-            SpawnCheese(Random.Range(minimum, maximum + 1));
+            // BEGIN CHANGED: Apply the configured drop multiplier after the existing yield rounding and random roll.
+            SpawnCheese(CheeseTownPhone.TownSession.Instance.Progress.ScaleWildDropCount(Random.Range(minimum, maximum + 1)));
+            // END CHANGED
             // END CHANGED
             StartCoroutine(LeaveStump());
         }

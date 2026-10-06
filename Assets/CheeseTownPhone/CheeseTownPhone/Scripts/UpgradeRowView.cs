@@ -74,16 +74,26 @@ namespace CheeseTownPhone
 
         // BEGIN ADDED: One-based labels leave purchase counts and level costs untouched.
         public void RefreshDisplay(int purchased, int upgradeCount, bool canBuy, string effect,
-            string current, string next)
+            string current, string next, bool locked = false)
         {
             DisplayLevel = purchased + 1; DisplayMaxLevel = upgradeCount + 1;
             level.text = "LV " + DisplayLevel + "/" + DisplayMaxLevel;
             effectName.text = effect;
-            effectValue.text = purchased < upgradeCount ? current + " > " + next : current + " (MAX)";
+            // BEGIN CHANGED: Fit four-digit capacities on two lines at the native pixel font size.
+            effectValue.text = locked ? "REVIVE\nTREE FIRST" : purchased < upgradeCount ? current + ">" + next : current + " MAX";
+            if (!locked && !Fits(effectValue.text, effectValue))
+                effectValue.text = purchased < upgradeCount ? current + " >\n" + next : current + "\nMAX";
+            // END CHANGED
             buy.interactable = canBuy;
             buy.GetComponent<Image>().sprite = !canBuy && disabledArtwork != null ? disabledArtwork : buyArtwork;
             int cost = purchased < upgradeCount ? Option.levels[purchased].price : 0;
             price.text = purchased >= upgradeCount ? "MAX" : cost <= 9999 ? cost.ToString() : "10K+";
+            if (Option.effect == UpgradeEffect.TownTreeStart)
+            {
+                level.text = purchased > 0 ? "AWAKE" : "ASLEEP";
+                // Keep each story state intact instead of wrapping halfway through ALIVE.
+                effectValue.text = purchased > 0 ? "ALIVE" : "DORMANT\n> ALIVE";
+            }
             // BEGIN CHANGED: Tooltip content comes directly from the effect description, without repeated stats.
             // END CHANGED
             for (int i = 0; i < markers.Count; i++) markers[i].sprite = i < DisplayLevel ? activeMarker : inactiveMarker;

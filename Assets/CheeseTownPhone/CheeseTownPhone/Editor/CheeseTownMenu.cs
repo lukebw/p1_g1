@@ -86,7 +86,7 @@ namespace CheeseTownPhone.Editor
             DrawPropertiesExcluding(serializedObject,"m_Script","upgrades");
             EditorGUILayout.Space();
             list.DoLayoutList();
-            EditorGUILayout.HelpBox("Effect 决定升级归属。MoveSpeed / CollectRange / AutoCollect 属于玩家；TownTreeProduction / WildTreeGrowth / CheeseValue 同属 TREE 分类。AutoCollect 无视 Value，速率跟随树产量。CheeseValue 的 Value=2 表示单价翻倍，不增加产量。TownTreeProduction 的 Value=主树每秒产量；WildTreeGrowth 的 Value=野外掉落范围倍率，Tree Scale=野外树大小倍率。",MessageType.Info);
+            EditorGUILayout.HelpBox("新曲线：TownTreeStart 为一次性启动；TownTreeBatch 的 Value=每批数量；TownTreeInterval=成熟间隔（秒，越小越快）；TownTreeCapacity=库存容量。三条生产升级必须先启动，均归 TREE。WildTreeGrowth 只影响野外树；野外数量先按升级取整、随机，再乘 Wild Drop Count Multiplier。所有价格为本级费用。旧 Production / AutoCollect / CheeseValue 仅供旧配置回归测试。",MessageType.Info);
             serializedObject.ApplyModifiedProperties();
             var data = (TabletSettings)target;
             EditorGUILayout.LabelField("素材预览窗口 / Artwork previews",EditorStyles.boldLabel);

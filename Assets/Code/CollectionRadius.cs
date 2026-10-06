@@ -39,7 +39,7 @@ public class CollectionRadius : MonoBehaviour
     // BEGIN MODIFIED: Falling cheese must finish its animation before pickup.
     void TryCollect(Collider2D collectible)
     {
-        if (!isActiveAndEnabled || progress == null || progress.GameEnded) return;
+        if (!isActiveAndEnabled || progress == null || progress.GameEnded || CheeseTownPhone.TownSession.Instance.PrologueActive) return;
         // Pick up the detected object if it is a collectible
         if (collectible.gameObject.tag == "Collectible")
         {

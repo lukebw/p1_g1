@@ -79,7 +79,7 @@ namespace CheeseTownPhone
             controls = new InputActionMap("Cheese Town Tablet");
             controls.AddAction("Tablet", InputActionType.Button, "<Keyboard>/tab").performed += _ => TogglePhone();
             controls.AddAction("Back", InputActionType.Button, "<Keyboard>/escape").performed += _ =>
-            { if (EndingOpen) return; if (InteractionGuideVisible) { DismissInteractionGuide(); return; } if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
+            { if (EndingOpen || TownSession.Instance.PrologueActive) return; if (InteractionGuideVisible) { DismissInteractionGuide(); return; } if (page != 0) ShowPage(0); else if (PhoneOpen) TogglePhone(); };
             controls.AddAction("Collect", InputActionType.Button, "<Keyboard>/e").performed += _ => TryHarvest();
             controls.Enable();
         }
@@ -161,7 +161,7 @@ namespace CheeseTownPhone
             wallet = Label(frame,"Wallet","",540,25,340,36,25,accent,true,TextAnchor.MiddleRight);
             AppButton(frame,"Letters button","ENVELOPE",settings.envelopeIcon,942,() => ShowPage(2));
             unreadBadge = Label(frame,"Unread mail","",942,74,280,24,14,accent,true);
-            AppButton(frame,"Shop button","UPGRADES",settings.shopIcon,1086,() => ShowPage(1));
+            AppButton(frame,"Shop button","SUPPLIES",settings.shopIcon,1086,() => ShowPage(1));
             AppButton(frame,"Close tablet","CLOSE",settings.closeIcon,1230,TogglePhone);
             if (settings.townBackground == null)
                 Label(frame,"Background placeholder","TOWN BACKGROUND",39,113,430,26,15,muted,true);
@@ -205,14 +205,14 @@ namespace CheeseTownPhone
         {
             shop = Box(frame,"Upgrade shop panel",28,98,1404,663,new Color(.08f,.13f,.17f)).gameObject;
             shop.GetComponent<Image>().raycastTarget = true;
-            Label(shop.transform,"Shop title","UPGRADE SHOP",22,15,350,40,28,paper,true);
+            Label(shop.transform,"Shop title","SUPPLY SHOP",22,15,350,40,28,paper,true);
             shopWallet = Label(shop.transform,"Shop wallet","",875,20,310,30,19,accent,true,TextAnchor.MiddleRight);
             Action(shop.transform,"Shop back","BACK",1220,14,162,43,() => ShowPage(0));
             Action(shop.transform,"All filter","ALL",22,66,110,36,() => ChangeFilter(0));
             Action(shop.transform,"Player filter","PLAYER",144,66,125,36,() => ChangeFilter(1));
             Action(shop.transform,"Tree filter","TREE",281,66,110,36,() => ChangeFilter(2));
             Label(shop.transform,"Rules","Production = quantity   /   Yield = cheeses per harvest",461,73,909,25,15,muted,false,TextAnchor.MiddleRight);
-            Label(shop.transform,"Option header","UPGRADE",112,118,320,22,12,muted,true);
+            Label(shop.transform,"Option header","EQUIPMENT",112,118,320,22,12,muted,true);
             Label(shop.transform,"Target header","APPLIES TO",524,118,130,22,12,muted,true);
             Label(shop.transform,"Effect header","CURRENT  >  NEXT",685,118,300,22,12,muted,true);
             Label(shop.transform,"Price header","NEXT LEVEL PRICE",1160,118,218,22,12,muted,true);
@@ -277,7 +277,7 @@ namespace CheeseTownPhone
         // END CHANGED
         public void TogglePhone()
         {
-            if (EndingOpen || HarvestTutorialActive) return;
+            if (EndingOpen || HarvestTutorialActive || TownSession.Instance.PrologueActive) return;
             if (InteractionGuideVisible) { DismissInteractionGuide(); return; }
             // BEGIN ADDED: Reverse an in-flight transition from its current position.
             if (tabletView != null) { TogglePrefab(); return; }
@@ -291,7 +291,7 @@ namespace CheeseTownPhone
         }
         public void ShowPage(int value)
         {
-            if (EndingOpen) return;
+            if (EndingOpen || TownSession.Instance.PrologueActive) return;
             if (value == 2) selectedLetter = Progress.MailboxEntryIndex;
             if (value == 1 && page != 1) Progress.NotifyShopOpened();
             page = value;
@@ -319,6 +319,9 @@ namespace CheeseTownPhone
         void Update()
         {
             if (!built) return;
+            // Hide the entire gameplay canvas during the opening, including nested HUD canvases.
+            // This controller stays active outside it so the UI is restored after skip or completion.
+            ScreenCanvas.gameObject.SetActive(!TownSession.Instance.PrologueActive);
             // BEGIN ADDED: Window changes must retain integer UI enlargement.
             UpdatePixelScale();
             // END ADDED
@@ -332,9 +335,11 @@ namespace CheeseTownPhone
         }
         public void TryHarvest()
         {
-            if (EndingOpen || !PhoneOpen || page != 0) return;
+            if (EndingOpen || TownSession.Instance.PrologueActive || !PhoneOpen || page != 0) return;
             int amount = Progress.Collect();
-            Notify(amount == 0 ? "The tree is growing more cheese." : amount+" cheese  =  +"+((long)amount*Progress.UnitPrice)+" cheeses");
+            Notify(Progress.UsesBatchProduction
+                ? !Progress.MainTreeStarted ? "Find Spring Tonic in SUPPLIES to revive the Great Tree." : amount == 0 ? "The next harvest is ripening." : "+" + amount + " CHEESE"
+                : amount == 0 ? "The tree is growing more cheese." : amount+" cheese  =  +"+((long)amount*Progress.UnitPrice)+" cheeses");
             Refresh();
         }
         public void Buy(UpgradeOption option)
@@ -342,8 +347,9 @@ namespace CheeseTownPhone
             if (EndingOpen) return;
             if (Progress.Buy(option))
             {
-                Notify(option.title+" upgraded.");
+                Notify(option.effect == UpgradeEffect.TownTreeStart ? "The Great Tree stirs back to life!" : option.title + " acquired!");
             }
+            else if (Progress.IsUpgradeLocked(option)) Notify("Revive the Great Tree with Spring Tonic first.");
             Refresh();
         }
         public void ReplyToMayor()
@@ -370,6 +376,16 @@ namespace CheeseTownPhone
             stats.text = "PLAYER PARAMETERS\nSpeed "+Progress.MoveSpeed.ToString("0.##")+"   |   Range "+Progress.CollectRange.ToString("0.##")+
                 "   |   Auto "+(Progress.AutoEnabled ? Progress.AutoRate.ToString("0.##")+"/s" : "OFF");
             priceLabel.text = "TREE PARAMETERS\nProduction "+Progress.Production.ToString("0.##")+"/s   |   Value "+Progress.UnitPrice+" cheeses / harvest";
+            // BEGIN ADDED: Show stock, average production, and the next batch using actual cheese quantities.
+            if (Progress.UsesBatchProduction)
+            {
+                stock.text = Progress.MainTreeStarted ? "STORED " + Mathf.FloorToInt(Progress.Stock) + " / " + Progress.Capacity + " CHEESE" : "REVIVE OUR GREAT TREE";
+                stats.text = "WINTER STORES " + Progress.Cheeses + "/" + Progress.CollectionGoal + "\nMOVE " + Progress.MoveSpeed.ToString("0.##") + "  RANGE " + Progress.CollectRange.ToString("0.##");
+                priceLabel.text = !Progress.MainTreeStarted ? "THE GREAT TREE SLUMBERS\nFIND SPRING TONIC IN SUPPLIES" :
+                    Progress.BatchSize + " EVERY " + Progress.ProductionInterval.ToString("0.#") + "s  (" + Progress.Production.ToString("0.#") + "/s)\n" +
+                    (Progress.Stock >= Progress.Capacity ? "FULL - COLLECT TO RESUME" : "NEXT " + Progress.NextBatchIn.ToString("0.0") + "s  COLLECT +" + Mathf.FloorToInt(Progress.Stock));
+            }
+            // END ADDED
             // BEGIN CHANGED: Fit the town tree artwork inside the content area.
             float treeFit = HasPixelSkin
                 ? Mathf.Min(1, 194 / tree.sizeDelta.y, 240 / tree.sizeDelta.x)
@@ -387,11 +403,11 @@ namespace CheeseTownPhone
                 // BEGIN ADDED: Skinned rows show price and progress without repeating baked BUY text.
                 if (RefreshPixelUpgradeRow(row, level, max)) continue;
                 // END ADDED
-                row.level.text = "LEVEL "+level+" / "+max;
+                row.level.text = "LEVEL "+(level + 1)+" / "+(max + 1);
                 row.current.text = Current(row.option.effect);
                 row.next.text = level < max ? "Next: "+Effect(row.option.effect,row.option.levels[level]) : max == 0 ? "No levels configured" : "Fully upgraded";
-                row.buy.interactable = !Progress.GameEnded && row.option.available && level < max;
-                row.cost.text = max == 0 ? "UNAVAILABLE" : level >= max ? "MAX LEVEL" :
+                row.buy.interactable = !Progress.GameEnded && !Progress.IsUpgradeLocked(row.option) && row.option.available && level < max;
+                row.cost.text = Progress.IsUpgradeLocked(row.option) ? "REVIVE THE GREAT TREE FIRST" : max == 0 ? "UNAVAILABLE" : level >= max ? "MAX LEVEL" :
                     Progress.Cheeses < row.option.levels[level].price ? "NEED "+(row.option.levels[level].price-Progress.Cheeses)+" CHEESES" :
                     row.option.levels[level].price+" CHEESES  /  BUY";
             }
@@ -421,7 +437,7 @@ namespace CheeseTownPhone
             closedUnread.gameObject.SetActive(!PhoneOpen && (!hasHud || WelcomeUnread && !HarvestTutorialActive));
             // END CHANGED
             letter.text = count == 0 ? "No letters yet.\n\nCollect cheese to hear from Mayor Ellis." : Progress.Letters[selectedLetter].Body;
-            reply.text = count == 0 ? "Collected: " + Progress.TotalCollected :
+            reply.text = count == 0 ? "Cheese: " + Progress.Cheeses :
                 "LETTER " + (selectedLetter + 1) + " / " + count +
                 (Progress.Letters[selectedLetter].IsRead ? "  |  READ" : "  |  UNREAD");
             if (Progress.MailStopped) reply.text += hasHud ? "  |  MAIL ENDED" : "\nOrdinary mail has ended. Your letter history remains available.";
@@ -430,7 +446,7 @@ namespace CheeseTownPhone
             replyButton.interactable = count > 0 && !Progress.Letters[selectedLetter].IsRead;
             // BEGIN CHANGED: Supplied mail buttons already contain their lettering.
             var readLabel = replyButton.GetComponentInChildren<Text>();
-            if (readLabel != null) readLabel.text = count > 0 && Progress.Letters[selectedLetter].Id == TownProgress.FinalLetterId
+            if (readLabel != null) readLabel.text = count > 0 && (Progress.Letters[selectedLetter].Id == TownProgress.FinalLetterId || Progress.Letters[selectedLetter].Id == TownProgress.GoalLetterId)
                     ? "FINISH READING" : "MARK AS READ";
             // END CHANGED
         }
@@ -441,6 +457,10 @@ namespace CheeseTownPhone
                 case UpgradeEffect.MoveSpeed: return "Speed: "+Progress.MoveSpeed.ToString("0.##");
                 case UpgradeEffect.CollectRange: return "Radius: "+Progress.CollectRange.ToString("0.##");
                 case UpgradeEffect.TownTreeProduction: return Progress.Production.ToString("0.##")+" cheese/s";
+                case UpgradeEffect.TownTreeStart: return Progress.MainTreeStarted ? "The Great Tree is awake" : "The Great Tree slumbers";
+                case UpgradeEffect.TownTreeBatch: return Progress.BatchSize + " cheese / batch";
+                case UpgradeEffect.TownTreeInterval: return Progress.ProductionInterval.ToString("0.#") + " seconds / batch";
+                case UpgradeEffect.TownTreeCapacity: return Progress.Capacity + " cheese capacity";
                 case UpgradeEffect.WildTreeGrowth: return "Drops "+Progress.WildTreeYieldMultiplier.ToString("0.##")+"x | Size "+Progress.WildTreeScale.ToString("0.##")+"x";
                 case UpgradeEffect.AutoCollect: return Progress.AutoEnabled ? "Auto: "+Progress.AutoRate.ToString("0.##")+" cheese/s" : "Auto collection: OFF";
                 default: return "Value: "+Progress.UnitPrice+" cheeses / harvest";
@@ -453,6 +473,10 @@ namespace CheeseTownPhone
                 case UpgradeEffect.MoveSpeed: return "speed "+level.value.ToString("0.##");
                 case UpgradeEffect.CollectRange: return "radius "+level.value.ToString("0.##");
                 case UpgradeEffect.TownTreeProduction: return level.value.ToString("0.##")+" cheese/s";
+                case UpgradeEffect.TownTreeStart: return "revive the Great Tree";
+                case UpgradeEffect.TownTreeBatch: return level.value.ToString("0") + " cheese / batch";
+                case UpgradeEffect.TownTreeInterval: return level.value.ToString("0.#") + " seconds / batch";
+                case UpgradeEffect.TownTreeCapacity: return level.value.ToString("0") + " cheese capacity";
                 case UpgradeEffect.WildTreeGrowth: return "Drops "+level.value.ToString("0.##")+"x, size "+level.treeScale.ToString("0.##")+"x";
                 case UpgradeEffect.AutoCollect: return "match tree production / second";
                 default: return level.value.ToString("0.##")+"x cheese yield (quantity unchanged)";

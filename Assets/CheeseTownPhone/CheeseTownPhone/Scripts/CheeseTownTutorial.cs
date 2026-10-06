@@ -100,7 +100,7 @@ namespace CheeseTownPhone
             if (tutorialRoot == null) return;
             UpdateInteractionGuide();
             if (Progress.TotalCollected == 0 && tutorialTree == null) FindTutorialTree();
-            bool active = HarvestTutorialActive && !PhoneOpen;
+            bool active = HarvestTutorialActive && !PhoneOpen && !TownSession.Instance.PrologueActive;
             tutorialRoot.gameObject.SetActive(active);
             if (!active) return;
             // If the player chops a different tree, guide them to its drops instead.
