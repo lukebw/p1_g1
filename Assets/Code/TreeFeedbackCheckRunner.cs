@@ -141,8 +141,6 @@ public sealed class TreeFeedbackCheckRunner : MonoBehaviour
         CursorController cursor = cursorObject.AddComponent<CursorController>();
         cursor.chopHitbox = hitbox;
         Check(cursor.cursorActionMap != null && cursor.cursorActionMap.enabled, "Cursor input map is missing or disabled.");
-        hitbox.GetActiveCollisions().Add(collision);
-        hitbox.GetActiveCollisions().Add(collision);
         Mouse mouse = InputSystem.AddDevice<Mouse>();
         yield return new WaitForSeconds(0.5f);
         int before = tree.health;

@@ -3,26 +3,18 @@ using System.Collections.Generic;
 
 public class ChopHitbox : MonoBehaviour
 {
-    List<Collider2D> activeCollisions = new List<Collider2D>();
-
-    public List<Collider2D> GetActiveCollisions()
-    {
-        return activeCollisions;
-    }
+    public UnityEngine.Events.UnityEvent onTreeHit = new UnityEngine.Events.UnityEvent();
 
     void OnTriggerEnter2D(Collider2D hurtbox)
     {
-        if (!activeCollisions.Contains(hurtbox) && hurtbox.gameObject.tag == "Tree")
+        if (hurtbox != null && hurtbox.gameObject.tag == "Tree" &&hurtbox.enabled && hurtbox.gameObject.activeInHierarchy)
         {
-            activeCollisions.Add(hurtbox);
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D hurtbox)
-    {
-        if (activeCollisions.Contains(hurtbox))
-        {
-            activeCollisions.Remove(hurtbox);
+            TreeHurtbox treeHurtbox = hurtbox.GetComponent<TreeHurtbox>();
+            if (treeHurtbox != null && treeHurtbox.enabled)
+            {
+                onTreeHit.Invoke();
+                treeHurtbox.RegisterHit(1);
+            }
         }
     }
 }

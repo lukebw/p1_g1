@@ -1,11 +1,12 @@
 using UnityEngine;
-[RequireComponent(typeof(CursorController))]
+[RequireComponent(typeof(ChopHitbox))]
 [DisallowMultipleComponent]
 public sealed class TreeHitAudio : MonoBehaviour
 {
     CursorController cursor;
-    void Awake() { cursor = GetComponent<CursorController>(); }
-    void OnEnable() { cursor.onTreeHit.AddListener(Play); }
-    void OnDisable() { cursor.onTreeHit.RemoveListener(Play); }
+    ChopHitbox chopHitbox;
+    void Awake() { chopHitbox = GetComponent<ChopHitbox>(); }
+    void OnEnable() { chopHitbox.onTreeHit.AddListener(Play); }
+    void OnDisable() { chopHitbox.onTreeHit.RemoveListener(Play); }
     void Play() { TownAudio.Instance?.PlayAxe(); }
 }

@@ -6,12 +6,13 @@ public class CursorController : MonoBehaviour
 {
     public InputActionMap cursorActionMap;
     public ChopHitbox chopHitbox;
-    public UnityEngine.Events.UnityEvent onTreeHit = new UnityEngine.Events.UnityEvent();
+    public Animator weaponAnimator;
 
     InputAction pointAction;
     InputAction clickAction;
 
     float cursorZ = 1f;
+    string onChopActionParam = "onChopAction";
 
     // BEGIN MODIFIED: Subscribe once per enable so clicks do not accumulate each frame.
     void OnEnable()
@@ -55,20 +56,10 @@ public class CursorController : MonoBehaviour
         // BEGIN CHANGED: Prevent world chops through a tablet that is still closing.
         if (tablet != null && (tablet.BlocksWorldInput || tablet.IsPointerOverInteractionGuide(pointAction.ReadValue<Vector2>()))) return;
         // END CHANGED
-        transform.rotation = Quaternion.Euler(0, 0, 45);
-        if (chopHitbox == null) return;
-        HashSet<Tree> hitTrees = new HashSet<Tree>();
-        foreach (Collider2D collider in chopHitbox.GetActiveCollisions())
+        if (weaponAnimator != null)
         {
-            if (collider == null || !collider.enabled || !collider.gameObject.activeInHierarchy) continue;
-            TreeHurtbox hurtbox = collider.GetComponent<TreeHurtbox>();
-            if (hurtbox == null || !hurtbox.enabled) continue;
-            Tree tree = hurtbox.tree != null ? hurtbox.tree : hurtbox.GetComponentInParent<Tree>();
-            if (tree != null && !tree.IsChopped && hitTrees.Add(tree)) {
-                hurtbox.RegisterHit(1);
-            }
+            weaponAnimator.SetTrigger(onChopActionParam); // Trigger weapon swing animation
         }
-        if (hitTrees.Count > 0) onTreeHit.Invoke();
     }
 
     void OnChopCanceled(InputAction.CallbackContext context)
