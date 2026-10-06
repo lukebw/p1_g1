@@ -566,6 +566,7 @@ MonoBehaviour:
     m_Priority: 0
   playerAnimator: {fileID: 1027689469}
   playerSpriteRenderer: {fileID: 1027689470}
+  weaponAnimator: {fileID: 1856851849}
   weaponSpriteRenderer: {fileID: 1856851847}
   chopHitbox: {fileID: 1856851850}
   speed: {x: 12, y: 12}
@@ -866,7 +867,7 @@ Transform:
   m_GameObject: {fileID: 1856851845}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.38268343, w: 0.92387956}
-  m_LocalPosition: {x: 0.055, y: 0, z: 0}
+  m_LocalPosition: {x: 0.04, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
