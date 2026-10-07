@@ -10,7 +10,7 @@ namespace CheeseTownPhone
         public Text heading, body;
         public Button next, skip;
         public RectTransform[] shades, focusEdges;
-        [Range(0, 1)] public float shadeOpacity = .58f;
+        [Range(0, 1)] public float shadeOpacity = .75f;
         [Min(0)] public float focusPadding = 3;
         public string[] titles;
         [TextArea(1, 2)] public string[] instructions;

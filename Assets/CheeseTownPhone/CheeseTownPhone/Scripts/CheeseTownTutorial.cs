@@ -32,7 +32,7 @@ namespace CheeseTownPhone
             // Draw below the launcher; no tutorial graphics intercept gameplay input.
             tutorialRoot.SetAsFirstSibling();
             for (int i = 0; i < 4; i++)
-                tutorialShade[i] = Box(tutorialRoot, "Tutorial shade " + i, 0, 0, 1, 1, new Color(.22f, .22f, .22f, .58f));
+                tutorialShade[i] = Box(tutorialRoot, "Tutorial shade " + i, 0, 0, 1, 1, new Color(.22f, .22f, .22f, .75f));
             for (int i = 0; i < 4; i++)
                 tutorialBorder[i] = Box(tutorialRoot, "Tree highlight " + i, 0, 0, 1, 1, new Color(1, .83f, .22f));
             tutorialPrompt = Label(tutorialRoot, "Tutorial instruction", ChopInstruction, 0, 0, 1, 1,
@@ -139,7 +139,7 @@ namespace CheeseTownPhone
             tutorialShadeMesh.SetCoverage(UnityEngine.Rect.MinMaxRect(origin.x - bleed, origin.y - bleed,
                 origin.x + width + bleed, origin.y + height + bleed),
                 UnityEngine.Rect.MinMaxRect(origin.x + left, origin.y + bottom, origin.x + right, origin.y + top),
-                new Color(.22f, .22f, .22f, .58f));
+                new Color(.22f, .22f, .22f, .75f));
             float thickness = 3 / scale;
             TutorialRect(tutorialBorder[0], left, bottom, thickness, top - bottom);
             TutorialRect(tutorialBorder[1], right - thickness, bottom, thickness, top - bottom);
