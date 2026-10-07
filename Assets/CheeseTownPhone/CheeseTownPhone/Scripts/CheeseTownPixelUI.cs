@@ -18,11 +18,16 @@ namespace CheeseTownPhone
         // END ADDED
         bool HasPixelSkin => settings != null && settings.mainFrame != null;
 
-        // BEGIN ADDED: Integer enlargement keeps each drawn pixel equally sized.
+        // BEGIN ADDED: Retain the integer helper for bitmap checks and editor previews.
         public static float PixelScaleFor(int width, int height)
         {
             float fit = Mathf.Min(width / PixelLayoutSize.x, height / PixelLayoutSize.y);
             return fit >= 1 ? Mathf.Floor(fit) : Mathf.Max(.01f, fit);
+        }
+        // The display viewport may fill 16:9 continuously, while authored UI keeps integer pixels.
+        public static float DisplayScaleFor(int width, int height)
+        {
+            return Mathf.Max(.01f, Mathf.Min(width / PixelLayoutSize.x, height / PixelLayoutSize.y));
         }
         void ConfigurePixelLayout()
         {
@@ -33,6 +38,8 @@ namespace CheeseTownPhone
             scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
             stage.sizeDelta = scaler.referenceResolution;
             UpdatePixelScale();
+            if (pixelAspectViewport != null)
+                pixelAspectViewport.Configure(ScreenCanvas, stage, scaler.referenceResolution, false);
         }
         void UpdatePixelScale()
         {

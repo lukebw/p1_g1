@@ -78,11 +78,10 @@ namespace CheeseTownPhone
                 Place(focusEdges[2], min, new Vector2(max.x - min.x, 1));
                 Place(focusEdges[3], new Vector2(min.x, max.y - 1), new Vector2(max.x - min.x, 1));
             }
-            // Keep the caption on the opposite side from bottom controls.
-            float y = focused && max.y <= bounds.yMax - 66
-                ? bounds.yMax - 56 : bounds.yMin + 34;
+            // Use one lower-middle caption band for every step, above tablet footer controls.
+            float y = Mathf.Round(bounds.center.y - 72);
             Place(body.rectTransform, new Vector2(bounds.xMin + 16, y), new Vector2(bounds.width - 32, 28));
-            Place(heading.rectTransform, new Vector2(bounds.xMin + 16, y - 14), new Vector2(bounds.width - 32, 12));
+            Place(heading.rectTransform, new Vector2(bounds.xMin + 16, y - 16), new Vector2(bounds.width - 32, 12));
         }
         static void Place(RectTransform rect, Vector2 position, Vector2 size)
         {

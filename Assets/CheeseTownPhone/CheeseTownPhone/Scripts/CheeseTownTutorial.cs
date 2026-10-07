@@ -148,7 +148,8 @@ namespace CheeseTownPhone
             float alpha = .75f + .25f * Mathf.Sin(Time.unscaledTime * 3);
             foreach (var edge in tutorialBorder) edge.GetComponent<Image>().color = new Color(1, .83f, .22f, alpha);
             tutorialPrompt.fontSize = HasPixelSkin ? 8 : 16;
-            TutorialRect(tutorialPrompt.rectTransform, Mathf.Round(width * .05f), height - 62, Mathf.Round(width * .9f), 44);
+            // Keep both movement and pickup captions below screen center, clear of the HUD.
+            TutorialRect(tutorialPrompt.rectTransform, Mathf.Round(width * .05f), Mathf.Round(height * .5f - 80), Mathf.Round(width * .9f), 44);
         }
     }
 }
