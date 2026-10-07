@@ -52,7 +52,7 @@ namespace CheeseTownPhone
         float footerMailAmount;
         public void PositionHud(RectTransform canvas)
         {
-            // The ending shade is a sibling of the tablet so it covers the entire viewport.
+            // The ending shade is a sibling of the tablet so it covers the full canvas.
             if (ending != null)
             {
                 var overlay = (RectTransform)ending.transform;
@@ -62,11 +62,17 @@ namespace CheeseTownPhone
             }
             if (worldHud == null || !anchorLauncherToScreen) return;
             worldHud.anchorMin = worldHud.anchorMax = new Vector2(.5f, .5f);
-            // Span the viewport so authored left/right anchors follow both screen edges.
+            // Span the active camera viewport so fullscreen letterbox bars never receive HUD controls.
+            Rect viewport = Camera.main != null ? Camera.main.rect : new Rect(0, 0, 1, 1);
+            float scale = Mathf.Max(.01f, canvas.GetComponent<Canvas>().scaleFactor);
+            float viewportWidth = Screen.width * viewport.width / scale;
+            float viewportHeight = Screen.height * viewport.height / scale;
+            float viewportLeft = canvas.rect.xMin + Screen.width * viewport.xMin / scale;
+            float viewportTop = canvas.rect.yMin + Screen.height * viewport.yMax / scale;
             worldHud.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,
-                Mathf.Max(0, Mathf.Round(canvas.rect.width - launcherScreenInset.x * 2)));
-            worldHud.anchoredPosition = new Vector2(Mathf.Round(-canvas.rect.width / 2 + launcherScreenInset.x),
-                Mathf.Round(canvas.rect.height / 2 - launcherScreenInset.y));
+                Mathf.Max(0, Mathf.Round(viewportWidth - launcherScreenInset.x * 2)));
+            worldHud.anchoredPosition = new Vector2(Mathf.Round(viewportLeft + launcherScreenInset.x),
+                Mathf.Round(viewportTop - launcherScreenInset.y));
         }
         // END ADDED
 
