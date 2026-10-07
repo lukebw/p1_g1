@@ -25,7 +25,6 @@ namespace CheeseTownPhone
         Outline welcomeGlow;
         bool WelcomeUnread => Progress != null && Progress.Letters.Count > 0 && !Progress.Letters[0].IsRead;
         public Canvas ScreenCanvas { get; private set; }
-        PixelAspectViewport pixelAspectViewport;
         readonly Color ink = new Color(.08f,.12f,.16f), paper = new Color(.92f,.94f,.92f);
         readonly Color muted = new Color(.59f,.69f,.71f), accent = new Color(.86f,.73f,.36f);
         Font font;
@@ -72,7 +71,6 @@ namespace CheeseTownPhone
             stage.SetParent(canvas.transform, false);
             stage.anchorMin = stage.anchorMax = stage.pivot = new Vector2(.5f, .5f);
             stage.sizeDelta = new Vector2(1600, 900);
-            pixelAspectViewport = canvas.AddComponent<PixelAspectViewport>();
             if (FindAnyObjectByType<EventSystem>() == null)
             {
                 var events = new GameObject("Tablet input", typeof(EventSystem), typeof(InputSystemUIInputModule));
@@ -362,7 +360,6 @@ namespace CheeseTownPhone
             SyncNarrativeVisibility();
             // BEGIN ADDED: Window changes must retain integer UI enlargement.
             UpdatePixelScale();
-            if (pixelAspectViewport != null) pixelAspectViewport.Refresh();
             // END ADDED
             if (welcomeGlow != null)
                 welcomeGlow.effectColor = new Color(1f, .86f, .3f, .45f + .25f * Mathf.Sin(Time.unscaledTime * 3f));
