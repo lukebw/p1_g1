@@ -123,7 +123,7 @@ namespace CheeseTownPhone
             new UpgradeOption { id = "move-speed", title = "Speed Boots", description = "Light-footed boots for the long road home. Move faster through the wild groves.", effect = UpgradeEffect.MoveSpeed,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(20, 6), new UpgradeLevel(50, 8) } },
             new UpgradeOption { id = "collect-range", title = "Cheese Magnet", description = "No morsel left behind. Draw in cheese from farther away while roaming the wilds.", effect = UpgradeEffect.CollectRange,
-                levels = new List<UpgradeLevel> { new UpgradeLevel(30, 2), new UpgradeLevel(60, 4) } },
+                levels = new List<UpgradeLevel> { new UpgradeLevel(30, 3), new UpgradeLevel(60, 12) } },
             new UpgradeOption { id = "tree-start", title = "Spring Tonic", description = "Carry the fully charged Forest Charm's energy into the Great Tree with this tonic. Awaken our guardian and return to gather its harvest.", effect = UpgradeEffect.TownTreeStart,
                 levels = new List<UpgradeLevel> { new UpgradeLevel(30, 1) } },
             new UpgradeOption { id = "tree-batch", title = "Growth Potion", description = "A hearty brew for hungry roots. The Great Tree bears more cheese each harvest. Revive it with Spring Tonic first.", effect = UpgradeEffect.TownTreeBatch,

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 550c507031b14b08bd0e4d90890e0a81, type: 3}
   m_Name: TabletSettings
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   townBackground: {fileID: 0}
   cheeseTree: {fileID: 81738291192318471, guid: d06a7dfe535545968080a0f82f1f45b6, type: 3}
   envelopeIcon: {fileID: 21300000, guid: a405e24caf20fce4e9d81fa83ca02386, type: 3}
@@ -85,10 +85,10 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 4308017f9f0ebf646ad1612b6bbc6f8d, type: 3}
     levels:
     - price: 30
-      value: 2
+      value: 3
       treeScale: 1
     - price: 60
-      value: 4
+      value: 12
       treeScale: 1
   - id: tree-start
     available: 1

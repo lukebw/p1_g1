@@ -8,6 +8,7 @@ namespace CheeseTownPhone
         RectTransform tutorialRoot;
         readonly RectTransform[] tutorialShade = new RectTransform[4];
         readonly RectTransform[] tutorialBorder = new RectTransform[4];
+        TutorialShadeMesh tutorialShadeMesh;
         Text tutorialPrompt;
         Tree tutorialTree;
         Tree[] tutorialTrees;
@@ -126,10 +127,19 @@ namespace CheeseTownPhone
                 bottom = Mathf.Clamp(min.y - padding, 0, height);
                 top = Mathf.Clamp(max.y + padding, bottom, height);
             }
-            TutorialRect(tutorialShade[0], 0, 0, left, height);
-            TutorialRect(tutorialShade[1], right, 0, width - right, height);
-            TutorialRect(tutorialShade[2], left, 0, right - left, bottom);
-            TutorialRect(tutorialShade[3], left, top, right - left, height - top);
+            // Cover the viewport's outermost pixels without overlapping the four shades.
+            float bleed = 2 / scale;
+            TutorialRect(tutorialShade[0], -bleed, -bleed, left + bleed, height + bleed * 2);
+            TutorialRect(tutorialShade[1], right, -bleed, width - right + bleed, height + bleed * 2);
+            TutorialRect(tutorialShade[2], left, -bleed, right - left, bottom + bleed);
+            TutorialRect(tutorialShade[3], left, top, right - left, height - top + bleed);
+            foreach (var shade in tutorialShade) shade.GetComponent<Image>().enabled = false;
+            if (tutorialShadeMesh == null) tutorialShadeMesh = TutorialShadeMesh.Create(tutorialRoot);
+            var origin = tutorialRoot.rect.min;
+            tutorialShadeMesh.SetCoverage(UnityEngine.Rect.MinMaxRect(origin.x - bleed, origin.y - bleed,
+                origin.x + width + bleed, origin.y + height + bleed),
+                UnityEngine.Rect.MinMaxRect(origin.x + left, origin.y + bottom, origin.x + right, origin.y + top),
+                new Color(.22f, .22f, .22f, .58f));
             float thickness = 3 / scale;
             TutorialRect(tutorialBorder[0], left, bottom, thickness, top - bottom);
             TutorialRect(tutorialBorder[1], right - thickness, bottom, thickness, top - bottom);

@@ -56,8 +56,9 @@ namespace CheeseTownPhone
             if (ending != null)
             {
                 var overlay = (RectTransform)ending.transform;
-                overlay.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Round(canvas.rect.width));
-                overlay.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Round(canvas.rect.height));
+                float bleed = 2 / Mathf.Max(.01f, canvas.GetComponent<Canvas>().scaleFactor);
+                overlay.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, canvas.rect.width + bleed * 2);
+                overlay.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, canvas.rect.height + bleed * 2);
             }
             if (worldHud == null || !anchorLauncherToScreen) return;
             worldHud.anchorMin = worldHud.anchorMax = new Vector2(.5f, .5f);

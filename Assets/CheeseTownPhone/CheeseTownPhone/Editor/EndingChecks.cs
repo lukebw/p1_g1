@@ -206,7 +206,9 @@ namespace CheeseTownPhone.Editor
                 if (demo != null && canvas == demo.ScreenCanvas)
                 {
                     Canvas.ForceUpdateCanvases(); demo.View.PositionHud((RectTransform)canvas.transform); Canvas.ForceUpdateCanvases();
-                    Check(Vector2.Distance(((RectTransform)demo.View.ending.transform).rect.size, ((RectTransform)canvas.transform).rect.size) < .75f, "Ending shade covers the full viewport");
+                    Vector2 shadeSize = ((RectTransform)demo.View.ending.transform).rect.size;
+                    Vector2 viewportSize = ((RectTransform)canvas.transform).rect.size;
+                    Check(shadeSize.x >= viewportSize.x && shadeSize.y >= viewportSize.y, "Ending shade covers the full viewport with edge bleed");
                     RenderPipeline.SubmitRenderRequest(camera, new UniversalRenderPipeline.SingleCameraRequest { destination = target });
                 }
                 RenderTexture.active = target; image.ReadPixels(new Rect(0, 0, width, height), 0, 0); image.Apply();

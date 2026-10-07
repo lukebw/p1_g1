@@ -80,16 +80,16 @@ public sealed class TownAudio : MonoBehaviour
     void UpdateMusic()
     {
         if (progress.GameEnded) { mainMusic.Stop(); endingMusic.Stop(); return; }
-        bool hasReserve = false;
-        foreach (var letter in progress.Letters) if (letter.Id == "reserve") hasReserve = true;
-        if (hasReserve && !lateMusic)
+        // Latch the 1,000-cheese milestone so spending does not switch the music back.
+        bool useLateMusic = lateMusic || progress.Cheeses >= 1000;
+        if (useLateMusic && !lateMusic)
         {
             lateMusic = true;
             mainMusic.Stop();
             endingMusic.Play();
         }
-        else if (hasReserve && !endingMusic.isPlaying) endingMusic.Play();
-        else if (!hasReserve && !mainMusic.isPlaying) mainMusic.Play();
+        else if (useLateMusic && !endingMusic.isPlaying) endingMusic.Play();
+        else if (!useLateMusic && !mainMusic.isPlaying) mainMusic.Play();
     }
     void LateUpdate()
     {

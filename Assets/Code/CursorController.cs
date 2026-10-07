@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CursorController : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class CursorController : MonoBehaviour
 
     InputAction pointAction;
     InputAction clickAction;
+    readonly List<RaycastResult> uiHits = new List<RaycastResult>();
 
     float cursorZ = 1f;
     string onChopActionParam = "onChopAction";
@@ -52,14 +55,28 @@ public class CursorController : MonoBehaviour
 
     void OnChopStarted(InputAction.CallbackContext context)
     {
+        Vector2 pointer = Mouse.current != null ? Mouse.current.position.ReadValue()
+            : pointAction != null ? pointAction.ReadValue<Vector2>() : Vector2.zero;
+        if (IsPointerOverButton(pointer)) return;
         var tablet = FindAnyObjectByType<CheeseTownPhone.CheeseTownDemo>();
         // BEGIN CHANGED: Prevent world chops through a tablet that is still closing.
-        if (tablet != null && (tablet.BlocksWorldInput || tablet.IsPointerOverInteractionGuide(pointAction.ReadValue<Vector2>()))) return;
+        if (tablet != null && (tablet.BlocksWorldInput || tablet.IsPointerOverInteractionGuide(pointer))) return;
         // END CHANGED
         if (weaponAnimator != null)
         {
             weaponAnimator.SetTrigger(onChopActionParam); // Trigger weapon swing animation
         }
+    }
+
+    bool IsPointerOverButton(Vector2 position)
+    {
+        if (EventSystem.current == null) return false;
+        // Raycast now: cached pointer-over state can be one frame old in input callbacks.
+        uiHits.Clear();
+        EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current) { position = position }, uiHits);
+        foreach (var hit in uiHits)
+            if (hit.gameObject.GetComponentInParent<Button>() != null) return true;
+        return false;
     }
 
     void OnChopCanceled(InputAction.CallbackContext context)

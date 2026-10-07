@@ -233,7 +233,7 @@ namespace CheeseTownPhone.Editor
                     demo.View.upgrades.categories[0].onClick.Invoke(); demo.CompleteUITransitions();
                     Check(demo.View.upgrades.Rows.Count==7,"all seven rows available after manual revival");
                     ClickBuy("move-speed"); ClickBuy("collect-range");
-                    var player=Object.FindAnyObjectByType<PlayerController>(); Near(player.speed.x,6,"world speed wiring"); Near(player.CollectRange,2,"world pickup range wiring");
+                    var player=Object.FindAnyObjectByType<PlayerController>(); Near(player.speed.x,6,"world speed wiring"); Near(player.CollectRange,3,"world pickup range wiring");
                     var circle=player.GetComponentInChildren<CollectionRadius>().GetComponent<CircleCollider2D>();
                     Near(circle.radius*Mathf.Abs(circle.transform.lossyScale.x),2,"actual pickup collider radius");
                     p.Tick(5); Check(p.Stock==5,"real session stores first batch");

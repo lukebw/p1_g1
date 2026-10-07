@@ -15,6 +15,7 @@ namespace CheeseTownPhone
         public string[] titles;
         [TextArea(1, 2)] public string[] instructions;
         readonly Vector3[] corners = new Vector3[4];
+        TutorialShadeMesh shadeMesh;
 
         public void Bind(Font pixelFont, UnityAction advance, UnityAction dismiss)
         {
@@ -55,11 +56,20 @@ namespace CheeseTownPhone
                 max = new Vector2(Mathf.Clamp(Mathf.Ceil(max.x) + focusPadding, min.x, bounds.xMax),
                     Mathf.Clamp(Mathf.Ceil(max.y) + focusPadding, min.y, bounds.yMax));
             }
-            Place(shades[0], bounds.min, new Vector2(min.x - bounds.xMin, bounds.height));
-            Place(shades[1], new Vector2(max.x, bounds.yMin), new Vector2(bounds.xMax - max.x, bounds.height));
-            Place(shades[2], new Vector2(min.x, bounds.yMin), new Vector2(max.x - min.x, min.y - bounds.yMin));
-            Place(shades[3], new Vector2(min.x, max.y), new Vector2(max.x - min.x, bounds.yMax - max.y));
-            foreach (var shade in shades) shade.GetComponent<Image>().color = new Color(.22f, .22f, .22f, shadeOpacity);
+            // Bleed only the outside edges; shared edges stay identical to avoid double shading.
+            var canvas = GetComponentInParent<Canvas>();
+            float bleed = 2 / Mathf.Max(.01f, canvas != null ? canvas.scaleFactor : 1);
+            var coverage = Rect.MinMaxRect(bounds.xMin - bleed, bounds.yMin - bleed,
+                bounds.xMax + bleed, bounds.yMax + bleed);
+            Place(shades[0], coverage.min, new Vector2(min.x - coverage.xMin, coverage.height));
+            Place(shades[1], new Vector2(max.x, coverage.yMin), new Vector2(coverage.xMax - max.x, coverage.height));
+            Place(shades[2], new Vector2(min.x, coverage.yMin), new Vector2(max.x - min.x, min.y - coverage.yMin));
+            Place(shades[3], new Vector2(min.x, max.y), new Vector2(max.x - min.x, coverage.yMax - max.y));
+            // Retain the authored rectangles for inspection; draw their shared edges only once.
+            foreach (var shade in shades) shade.GetComponent<Image>().enabled = false;
+            if (shadeMesh == null) shadeMesh = TutorialShadeMesh.Create((RectTransform)transform);
+            shadeMesh.SetCoverage(coverage, Rect.MinMaxRect(min.x, min.y, max.x, max.y),
+                new Color(.22f, .22f, .22f, shadeOpacity));
             foreach (var edge in focusEdges) edge.gameObject.SetActive(focused);
             if (focused)
             {

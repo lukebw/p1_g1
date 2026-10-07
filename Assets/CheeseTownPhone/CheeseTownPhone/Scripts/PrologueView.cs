@@ -28,8 +28,22 @@ namespace CheeseTownPhone
         int state;
         float elapsed, readable;
 
+        void LateUpdate() { RefreshCoverage(); }
+        public void RefreshCoverage()
+        {
+            var canvas = GetComponent<Canvas>();
+            if (canvas == null || advance == null) return;
+            // Full-screen art needs bleed at fractional canvas scales and odd viewport sizes.
+            // Extend only the backdrop, leaving the authored text and button anchors intact.
+            float bleed = 2 / Mathf.Max(.01f, canvas.scaleFactor);
+            var backdrop = (RectTransform)advance.transform;
+            backdrop.offsetMin = Vector2.one * -bleed;
+            backdrop.offsetMax = Vector2.one * bleed;
+        }
+
         public void Begin(Action onComplete)
         {
+            RefreshCoverage();
             completed = onComplete;
             if (chapters == null || chapters.Length == 0) { Finish(); return; }
             advance.onClick.RemoveListener(Advance); advance.onClick.AddListener(Advance);

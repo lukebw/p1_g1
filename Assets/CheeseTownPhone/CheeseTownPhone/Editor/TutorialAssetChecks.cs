@@ -55,7 +55,9 @@ namespace CheeseTownPhone.Editor
                 }
                 var size = ((RectTransform)root.transform).rect.size;
                 float hole = (100 + 2 * view.focusPadding) * (40 + 2 * view.focusPadding);
-                if (Mathf.Abs(shadedArea + hole - size.x * size.y) > .1f) throw new Exception("Spotlight coverage has gaps or overlap.");
+                if (Mathf.Abs(shadedArea + hole - (size.x + 4) * (size.y + 4)) > .1f) throw new Exception("Spotlight coverage has gaps or overlap.");
+                if (view.GetComponentInChildren<TutorialShadeMesh>() == null)
+                    throw new Exception("The spotlight must use one mesh to avoid independently rounded shade edges.");
                 if (view.next.gameObject != root || !root.GetComponent<UnityEngine.UI.Image>().raycastTarget)
                     throw new Exception("Tour must advance from a full-screen click target.");
                 UnityEngine.Object.DestroyImmediate(focus.gameObject);
