@@ -37,7 +37,12 @@ namespace CheeseTownPhone
         void UpdatePixelScale()
         {
             if (HasPixelSkin && ScreenCanvas != null)
-                ScreenCanvas.GetComponent<CanvasScaler>().scaleFactor = PixelScaleFor(Screen.width, Screen.height);
+            {
+                // Keep the supplied 2x artwork at its authored size in builds.
+                // Smaller windows may scale down, but larger displays must not enlarge the UI again.
+                float fit = Mathf.Min(Screen.width / PixelLayoutSize.x, Screen.height / PixelLayoutSize.y);
+                ScreenCanvas.GetComponent<CanvasScaler>().scaleFactor = Mathf.Max(.01f, Mathf.Min(ExportScale, fit));
+            }
         }
         // END ADDED
 
